@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\BlogController;
 use App\Http\Controllers\Api\V1\ContentController;
 use App\Http\Controllers\Api\V1\EnquiryController;
 use App\Http\Controllers\Api\V1\GalleryController;
@@ -16,6 +17,10 @@ Route::prefix('v1')->middleware('throttle:api')->group(function () {
     Route::get('services', [ContentController::class, 'services']);
     Route::get('services/{slug}', [ContentController::class, 'service']);
     Route::get('testimonials', [ContentController::class, 'testimonials']);
+
+    Route::get('blog', [BlogController::class, 'index']);
+    Route::get('blog-categories', [BlogController::class, 'categories']);
+    Route::get('blog/{slug}', [BlogController::class, 'show']);
 
     Route::get('gallery/categories', [GalleryController::class, 'categories']);
     Route::get('gallery/categories/{slug}', [GalleryController::class, 'category']);

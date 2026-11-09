@@ -17,6 +17,7 @@ class GalleryImageResource extends JsonResource
             'alt' => $this->alt_text ?: $this->title,
             'url' => $this->url,
             'thumb_url' => $this->thumb_url,
+            'large_url' => $this->large_url,
             'srcset' => $this->srcset,
             'width' => $this->width,
             'height' => $this->height,

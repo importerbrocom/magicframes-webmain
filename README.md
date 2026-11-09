@@ -14,7 +14,7 @@ read their content from the database.
 | 3 | Header/navigation, pages & SEO, services, testimonials, homepage, site settings | **done** |
 | 4 | Enquiries inbox + contact form API | **done** |
 | 5a | Blade framework, home, about/services/contact/custom pages, 404, SEO, sitemap | **done** |
-| 5b | Gallery & video pages, lightbox, blog, shop, legal pages polish | todo |
+| 5b | Gallery, portfolio, video gallery, lightbox, blog | **done** |
 
 ## Requirements
 
@@ -113,6 +113,24 @@ Pages are server-rendered Blade views in the **original design** (`public/css/st
 * Motion: page fade-in/out, scroll reveals, animated word-by-word headings, parallax, counters, hero slider — all disabled automatically for visitors who prefer reduced motion.
 
 Removed from the original template because they were fake: the countdown timer (counted down to "90 days from page load"), the form that only pretended to send, the invented team members/values/stats/testimonials, and the Florence address/phone. The stock photos that were baked into the CSS no longer show; upload your own under *Home sections*.
+
+## Galleries, videos & blog (stage 5b)
+
+| URL | What it shows |
+|---|---|
+| `/portfolio` | one card per gallery category that has published photos |
+| `/gallery` , `/gallery?category=slug` | all photos, category filter (in place, no reload), **masonry ⇄ grid** switch (remembered), *Load more*, lazy-loaded responsive WebP images |
+| `/gallery/{category}` | individual gallery with description, SEO fields, previous/next gallery |
+| `/videos`, `?category=`, `?play=slug` | film thumbnails, category filter, full-screen-capable player (YouTube/Vimeo embeds or uploaded MP4/WebM). Nothing is downloaded until a visitor presses a film — page weight stays small. `?play=slug` links open a film directly |
+| `/blog`, `/blog/{slug}` | articles with category filter, search, pagination, reading time, article structured data |
+
+**Lightbox:** click any photo → full-screen viewer with previous/next buttons, ← → and Esc keys, swipe on touch screens, captions (title + description from the admin), image counter, browser full-screen button, focus kept inside the dialog, page scroll locked while open.
+
+**Blog admin** (*Website → Blog posts*): rich-text editor with image attachments, cover image + alt text, category label, author, excerpt, SEO tab, draft / published, and **scheduled publishing** (set a future date; the post appears when the date arrives — within ~15 minutes because public pages are cached). API: `GET /api/v1/blog`, `/blog/{slug}`, `/blog-categories`.
+
+Footer links to *Gallery*, *Privacy Policy* and *Terms & Conditions* are created by the seeder; the legal links stay hidden automatically until you publish those pages.
+
+The original template's **Shop** page contained invented products, so it is now a normal editable page (no product catalogue). Tell us if you want a real shop later.
 
 ## Upload limits (important for production)
 
