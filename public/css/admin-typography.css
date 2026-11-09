@@ -92,3 +92,32 @@
 /* Table body text slightly tighter and crisper */
 .fi-ta-text-item,
 .fi-ta-cell { letter-spacing: -0.006em; }
+
+/* =========================================================
+   Light "dashboard" look (matches the reference screen)
+   ========================================================= */
+html:not(.dark) .fi-body { background: #fbfaf8; color: #111; }
+html:not(.dark) .fi-sidebar { background: #f6f5f2; border-inline-end: 1px solid #ebe8e2; }
+html:not(.dark) .fi-sidebar .fi-sidebar-header,
+html:not(.dark) .fi-topbar { background: #f6f5f2; }
+html:not(.dark) .fi-sidebar-item-label { color: #1f1f1f; }
+
+/* white rounded cards with a hairline border instead of heavy shadows */
+html:not(.dark) .fi-section,
+html:not(.dark) .fi-ta-ctn,
+html:not(.dark) .fi-wi-stats-overview-stat {
+  background: #fff;
+  border: 1px solid #ece9e3;
+  border-radius: 14px;
+  box-shadow: none;
+}
+
+/* bigger, bolder page title and calmer spacing */
+.fi-header-heading { font-size: 2rem; font-weight: 700; color: #111; }
+.dark .fi-header-heading { color: #fff; }
+.fi-section-header-heading { font-size: 1.0625rem; }
+
+/* inputs: crisp, rounded, light border */
+html:not(.dark) .fi-input-wrp { border-radius: 10px; }
+
+/* marker so you can confirm this file is the one being served: admin-typography v2 */

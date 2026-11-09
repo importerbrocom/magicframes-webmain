@@ -9,6 +9,7 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
+use Filament\Enums\ThemeMode;
 use Filament\Support\Colors\Color;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Support\Facades\Blade;
@@ -30,6 +31,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->defaultThemeMode(ThemeMode::Light)   // light by default (users can still switch to dark)
             ->passwordReset()   // "Forgot password?" e-mail link (needs working MAIL_* settings)
             ->profile()         // every user can change their own name, e-mail and password
             ->renderHook(PanelsRenderHook::HEAD_END, fn (): string => Blade::render(
