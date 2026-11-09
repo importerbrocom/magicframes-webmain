@@ -26,6 +26,8 @@ class ContentCache
 
     public static function remember(string $key, Closure $callback, int $ttl = 3600): mixed
     {
-        return Cache::remember('api:v'.self::version().':'.$key, $ttl, $callback);
+        // Normalise to plain arrays/scalars: object payloads (Collections, models) cannot be
+        // safely unserialized by the database/file cache drivers.
+        return Cache::remember('api:v'.self::version().':'.$key, $ttl, fn () => json_decode(json_encode($callback()), true));
     }
 }
