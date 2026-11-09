@@ -31,6 +31,9 @@ class AdminPanelProvider extends PanelProvider
             ->passwordReset()   // "Forgot password?" e-mail link (needs working MAIL_* settings)
             ->profile()         // every user can change their own name, e-mail and password
             ->brandName('Magic Frames Studio')
+            ->brandLogo(asset('images/admin-logo-dark.png'))          // light mode: dark logo
+            ->darkModeBrandLogo(asset('images/admin-logo-light.png'))  // dark mode: white logo
+            ->brandLogoHeight('3.75rem')
             ->favicon(asset('favicon.ico'))
             ->colors([
                 'primary' => Color::hex('#C9A24A'),
