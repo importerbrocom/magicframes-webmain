@@ -71,4 +71,11 @@ class ProductionTest extends TestCase
         $this->assertFileExists(public_path('images/admin-logo-dark.png'));
         $this->assertFileExists(public_path('images/admin-logo-light.png'));
     }
+
+    public function test_admin_loads_the_typography_stylesheet(): void
+    {
+        $html = $this->get('/admin/login')->assertOk()->getContent();
+        $this->assertStringContainsString('css/admin-typography.css', $html);
+        $this->assertFileExists(public_path('css/admin-typography.css'));
+    }
 }
