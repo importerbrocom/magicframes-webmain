@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\BlogPost;
 use App\Models\GalleryCategory;
 use App\Models\Page;
 use App\Models\Service;
@@ -27,6 +28,11 @@ class SeoController extends Controller
             }
             foreach (GalleryCategory::published()->whereHas('publishedImages')->get() as $cat) {
                 $add('/gallery/'.$cat->slug, $cat->updated_at, 'weekly', '0.7');
+            }
+            foreach (BlogPost::published()->with('seo')->get() as $post) {
+                if (! $post->seo?->noindex) {
+                    $add('/blog/'.$post->slug, $post->updated_at, 'monthly', '0.6');
+                }
             }
 
             $w = new \XMLWriter;

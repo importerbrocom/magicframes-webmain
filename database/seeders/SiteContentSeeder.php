@@ -66,6 +66,19 @@ class SiteContentSeeder extends Seeder
             }
         }
 
+        // Footer links that must exist on every install (idempotent; page-linked items vanish by themselves while their page is unpublished)
+        foreach ([
+            ['Gallery', null, '/gallery', 5],
+            ['Privacy Policy', 'privacy-policy', null, 20],
+            ['Terms & Conditions', 'terms-and-conditions', null, 21],
+        ] as [$label, $pageSlug, $url, $order]) {
+            $page = $pageSlug ? Page::where('slug', $pageSlug)->first() : null;
+            NavigationMenu::firstOrCreate(
+                ['location' => 'footer', 'label' => $label],
+                ['page_id' => $page?->id, 'url' => $url, 'sort_order' => $order],
+            );
+        }
+
         // key => [admin label, small label, title, body]
         $home = [
             'hero' => ['Hero banner', null, null, null],

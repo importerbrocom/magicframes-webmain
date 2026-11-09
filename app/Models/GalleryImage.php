@@ -72,6 +72,15 @@ class GalleryImage extends Model
         return $path ? Storage::disk('public')->url($path) : $this->url;
     }
 
+    /** Best size for the lightbox: the 1600px variant when available, else the original. */
+    public function getLargeUrlAttribute(): string
+    {
+        $variants = $this->variants ?? [];
+        $path = $variants[1600] ?? $variants['1600'] ?? null;
+
+        return $path ? Storage::disk('public')->url($path) : $this->url;
+    }
+
     public function getSrcsetAttribute(): ?string
     {
         $parts = [];
