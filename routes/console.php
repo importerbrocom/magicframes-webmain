@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schedule;
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote');
+// Needs ONE cron entry on the server:  * * * * * cd /path/to/site && php artisan schedule:run >> /dev/null 2>&1
+if (config('backup.enabled')) {
+    Schedule::command('site:backup')->dailyAt(config('backup.time'))->withoutOverlapping();
+}
