@@ -11,7 +11,7 @@ read their content from the database.
 |---|---|---|
 | 1 | Laravel + Filament foundation, restored static assets | done |
 | 2 | Gallery & video database, public JSON API, admin management, roles | **done** |
-| 3 | Header/navigation, pages, services, testimonials, homepage settings | todo |
+| 3 | Header/navigation, pages & SEO, services, testimonials, homepage, site settings | **done** |
 | 4 | Enquiries + working contact form | todo |
 | 5 | Blade pages, dynamic gallery/video frontend, animations, SEO | todo |
 
@@ -27,7 +27,7 @@ composer install
 cp .env.example .env && php artisan key:generate
 # set DB_* in .env (see below) and ADMIN_EMAIL / ADMIN_PASSWORD
 php artisan migrate --force
-php artisan db:seed --force      # roles, first super-admin, empty category structure
+php artisan db:seed --force      # roles, first super-admin, categories, pages, menus (safe to re-run)
 php artisan storage:link         # exposes storage/app/public as /storage
 php artisan serve                # admin: http://localhost:8000/admin
 ```
@@ -72,6 +72,20 @@ Inactive users and users without a role cannot enter the panel.
 
 Only published content is returned. Any admin change bumps a cache version, so the API
 reflects edits immediately.
+
+## Website content (stage 3)
+
+Admin sidebar groups:
+
+* **Website** → *Pages* (title, URL, banner, rich content, repeatable content blocks: text / image+text / image / video / call-to-action, publish toggle, SEO tab with title, description, social image, canonical, noindex), *Services*, *Testimonials*, *Site settings* (studio name, footer text, phone, WhatsApp, email, address, hours, Google Maps embed, social links, default SEO).
+* **Header & Menus** → *Header settings* (logo, show/hide, sticky, background style, call-to-action button, floating enquiry button, social icons in mobile menu) and *Menu items* (left / right / mobile-only / footer; link to a page or a custom URL; label, order, visibility, new tab).
+* **Homepage** → *Home sections* (edit text/images, reorder by drag, show/hide each block), *Hero slides*, *Statistics*.
+
+Built-in pages (home, about, services, portfolio, gallery, videos, blog, contact, shop, privacy, terms) can be edited and unpublished but not deleted. The Privacy and Terms pages start **unpublished** until the studio supplies its own legal text.
+
+**Nothing is invented.** The seeder creates structure only. Phone, email, address, hours, social links, services, testimonials, statistics and legal text start empty and list blocks with no content are not rendered. Fill them in under *Site settings*, *Services*, *Testimonials* and *Statistics*.
+
+Additional API endpoints: `GET site` (branding, header, menus, footer, contact, social), `home` (hero + ordered visible blocks with their data), `pages`, `pages/{slug}` (with blocks and resolved SEO), `services`, `services/{slug}`, `testimonials`.
 
 ## Upload limits (important for production)
 
