@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -28,6 +29,16 @@ class ImageProcessor
         }
 
         $raw = $disk->get($path);
+        $size = @getimagesizefromstring($raw);
+        if (! $size) {
+            return $empty;
+        }
+        // Decoding needs ~4 bytes/pixel; camera originals can exceed PHP's memory_limit.
+        if (! self::allowMemoryFor($size[0], $size[1])) {
+            Log::warning("Image too large to resize safely, original kept: {$path} ({$size[0]}x{$size[1]})");
+
+            return ['width' => $size[0], 'height' => $size[1], 'variants' => []];
+        }
         $src = @imagecreatefromstring($raw);
         if (! $src) {
             return $empty;
@@ -65,6 +76,45 @@ class ImageProcessor
         imagedestroy($src);
 
         return ['width' => $width, 'height' => $height, 'variants' => $variants];
+    }
+
+    /**
+     * Make sure PHP can hold a decoded width×height image. Raises memory_limit when possible
+     * (up to media.max_processing_memory_mb); returns false if it would still not fit.
+     */
+    public static function allowMemoryFor(int $width, int $height): bool
+    {
+        $needed = (int) ($width * $height * 4 * 2.5) + 48 * 1048576;
+        $limit = self::memoryLimitBytes();
+        if ($limit < 0) {
+            return true; // unlimited
+        }
+        $used = memory_get_usage(true);
+        if ($used + $needed <= $limit) {
+            return true;
+        }
+        $ceiling = (int) config('media.max_processing_memory_mb', 1024) * 1048576;
+        if ($used + $needed > $ceiling) {
+            return false;
+        }
+
+        return @ini_set('memory_limit', (string) ($used + $needed)) !== false;
+    }
+
+    private static function memoryLimitBytes(): int
+    {
+        $raw = trim((string) ini_get('memory_limit'));
+        if ($raw === '' || $raw === '-1') {
+            return -1;
+        }
+        $n = (int) $raw;
+
+        return match (strtolower(substr($raw, -1))) {
+            'g' => $n * 1073741824,
+            'm' => $n * 1048576,
+            'k' => $n * 1024,
+            default => $n,
+        };
     }
 
     /** @param array<int,string>|null $variants */

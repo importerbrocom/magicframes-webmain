@@ -10,6 +10,7 @@ use App\Models\Page;
 use App\Models\Service;
 use App\Models\Testimonial;
 use App\Services\ContentCache;
+use App\Services\SiteData;
 use Illuminate\Http\JsonResponse;
 
 /** Pages, services and testimonials. */
@@ -26,11 +27,10 @@ class ContentController extends Controller
 
     public function page(string $slug): JsonResponse
     {
-        return response()->json(ContentCache::remember("pages:show:{$slug}", function () use ($slug) {
-            $page = Page::published()->with(['sections', 'seo'])->where('slug', $slug)->firstOrFail();
+        $page = SiteData::page($slug);
+        abort_if($page === null, 404);
 
-            return ['data' => (new PageResource($page))->resolve()];
-        }));
+        return response()->json(['data' => $page]);
     }
 
     public function services(): JsonResponse

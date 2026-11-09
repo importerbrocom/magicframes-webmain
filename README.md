@@ -13,7 +13,8 @@ read their content from the database.
 | 2 | Gallery & video database, public JSON API, admin management, roles | **done** |
 | 3 | Header/navigation, pages & SEO, services, testimonials, homepage, site settings | **done** |
 | 4 | Enquiries inbox + contact form API | **done** |
-| 5 | Blade pages, dynamic gallery/video frontend, animations, SEO | todo |
+| 5a | Blade framework, home, about/services/contact/custom pages, 404, SEO, sitemap | **done** |
+| 5b | Gallery & video pages, lightbox, blog, shop, legal pages polish | todo |
 
 ## Requirements
 
@@ -98,6 +99,20 @@ Email alert: sent to the address in *Site settings → Email* (or `ENQUIRY_NOTIF
 Admin → **Enquiries**: inbox with unread badge, search, filters (status, event type, date range), inline status dropdown (New / Contacted / In Progress / Completed), detail view, internal notes, bulk status change, delete, and **Export CSV** of the current filtered view (formula-injection safe). The dashboard shows counts per status. Customer-submitted fields are read-only in the admin.
 
 Privacy: enquiries contain personal data (name, email, phone, IP). Delete old enquiries when no longer needed and mention this in your published Privacy Policy.
+
+## Public website (stage 5a)
+
+Pages are server-rendered Blade views in the **original design** (`public/css/style.css` untouched; `public/css/enhancements.css` only adds on top and uses the original colour/font variables). Content comes from the same cached data layer as the API (`App\Services\SiteData`), so the website and `/api/v1` can never disagree.
+
+* `/` Home — blocks in the order set under *Admin → Homepage → Home sections*; empty blocks are not rendered.
+* `/{slug}` — every admin-managed page (about, services, contact, privacy-policy, terms-and-conditions, any page you create). Unpublished pages return the custom 404.
+* Header, menus, footer, contact details and social links come from *Header settings*, *Menu items* and *Site settings*. Fields left empty simply do not appear.
+* `/contact` and the home page share one **real** enquiry form (`public/js/site.js` → `POST /api/v1/enquiries`) with inline field errors, a success message and spam protection.
+* `/sitemap.xml` (published, indexable pages + galleries with photos) and `/robots.txt` are generated dynamically; SEO tags (title, description, canonical, Open Graph, Twitter, noindex) come from each page's SEO tab with site-wide defaults.
+* Images: gallery photos use responsive `srcset` WebP variants; hero/banner/card images are served as resized, cached WebP (`storage/app/public/_cache/`), original files stay untouched. Very large camera files are handled safely (`MEDIA_MAX_PROCESSING_MEMORY_MB`, default 1024).
+* Motion: page fade-in/out, scroll reveals, animated word-by-word headings, parallax, counters, hero slider — all disabled automatically for visitors who prefer reduced motion.
+
+Removed from the original template because they were fake: the countdown timer (counted down to "90 days from page load"), the form that only pretended to send, the invented team members/values/stats/testimonials, and the Florence address/phone. The stock photos that were baked into the CSS no longer show; upload your own under *Home sections*.
 
 ## Upload limits (important for production)
 

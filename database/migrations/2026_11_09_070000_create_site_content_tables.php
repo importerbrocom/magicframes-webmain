@@ -21,8 +21,8 @@ return new class extends Migration
             $table->string('logo_alt')->default('Magic Frames');
             $table->boolean('is_visible')->default(true);
             $table->boolean('is_sticky')->default(true);
-            // transparent_on_top: transparent over the hero, solid after scrolling | solid: always solid
-            $table->string('background_style', 24)->default('transparent_on_top');
+            // solid: white (original look) | cream: site cream colour | transparent_on_top: see-through over the banner until scrolled
+            $table->string('background_style', 24)->default('solid');
             $table->boolean('show_cta')->default(true);
             $table->string('cta_label')->default('RSVP');
             $table->string('cta_url')->default('/contact');
