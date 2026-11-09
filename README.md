@@ -12,7 +12,7 @@ read their content from the database.
 | 1 | Laravel + Filament foundation, restored static assets | done |
 | 2 | Gallery & video database, public JSON API, admin management, roles | **done** |
 | 3 | Header/navigation, pages & SEO, services, testimonials, homepage, site settings | **done** |
-| 4 | Enquiries + working contact form | todo |
+| 4 | Enquiries inbox + contact form API | **done** |
 | 5 | Blade pages, dynamic gallery/video frontend, animations, SEO | todo |
 
 ## Requirements
@@ -86,6 +86,18 @@ Built-in pages (home, about, services, portfolio, gallery, videos, blog, contact
 **Nothing is invented.** The seeder creates structure only. Phone, email, address, hours, social links, services, testimonials, statistics and legal text start empty and list blocks with no content are not rendered. Fill them in under *Site settings*, *Services*, *Testimonials* and *Statistics*.
 
 Additional API endpoints: `GET site` (branding, header, menus, footer, contact, social), `home` (hero + ordered visible blocks with their data), `pages`, `pages/{slug}` (with blocks and resolved SEO), `services`, `services/{slug}`, `testimonials`.
+
+## Enquiries (stage 4)
+
+`POST /api/v1/enquiries` (JSON) accepts `name`, `email`, `message` (required) and `phone`, `event_type`, `event_date`, `source_page` (optional). `GET /api/v1/enquiry-options` returns the event-type list (edit it in `config/enquiry.php`). Responses: `201` stored, `422` validation errors (per field), `429` after 5 requests/minute from one IP.
+
+Spam protection: hidden honeypot field `website` (must stay empty — the form in stage 5 renders it off-screen; filled submissions get a fake success and are discarded), per-IP rate limit, HTML stripped from text, strict validation (past event dates rejected).
+
+Email alert: sent to the address in *Site settings → Email* (or `ENQUIRY_NOTIFY_EMAIL`). Configure real SMTP via the `MAIL_*` variables in `.env` (the default `log` mailer only writes to `storage/logs`). A mail failure is logged and never loses the enquiry.
+
+Admin → **Enquiries**: inbox with unread badge, search, filters (status, event type, date range), inline status dropdown (New / Contacted / In Progress / Completed), detail view, internal notes, bulk status change, delete, and **Export CSV** of the current filtered view (formula-injection safe). The dashboard shows counts per status. Customer-submitted fields are read-only in the admin.
+
+Privacy: enquiries contain personal data (name, email, phone, IP). Delete old enquiries when no longer needed and mention this in your published Privacy Policy.
 
 ## Upload limits (important for production)
 

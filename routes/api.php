@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\ContentController;
+use App\Http\Controllers\Api\V1\EnquiryController;
 use App\Http\Controllers\Api\V1\GalleryController;
 use App\Http\Controllers\Api\V1\HomeController;
 use App\Http\Controllers\Api\V1\SiteController;
@@ -23,4 +24,10 @@ Route::prefix('v1')->middleware('throttle:api')->group(function () {
     Route::get('video-categories', [VideoController::class, 'categories']);
     Route::get('videos', [VideoController::class, 'index']);
     Route::get('videos/{slug}', [VideoController::class, 'show']);
+});
+
+// Form submissions: strict per-IP throttle (see RateLimiter 'forms').
+Route::prefix('v1')->group(function () {
+    Route::get('enquiry-options', [EnquiryController::class, 'options'])->middleware('throttle:api');
+    Route::post('enquiries', [EnquiryController::class, 'store'])->middleware('throttle:forms');
 });
