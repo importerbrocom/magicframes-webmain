@@ -1,0 +1,47 @@
+# /etc/nginx/sites-available/magicframes.co.in   (adjust paths, PHP-FPM socket and certificate paths)
+server {
+    listen 80;
+    server_name magicframes.co.in www.magicframes.co.in;
+    return 301 https://magicframes.co.in$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name magicframes.co.in;
+
+    ssl_certificate     /etc/letsencrypt/live/magicframes.co.in/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/magicframes.co.in/privkey.pem;
+
+    root /var/www/magicframes/public;
+    index index.php;
+    charset utf-8;
+
+    # Uploads: must be >= MEDIA_MAX_VIDEO_KB and php.ini post_max_size
+    client_max_body_size 520M;
+
+    gzip on;
+    gzip_types text/css application/javascript application/json image/svg+xml;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    # Long cache for uploaded media and static assets (file names change when content changes)
+    location ~* \.(webp|jpg|jpeg|png|gif|svg|ico|woff2?|mp4|webm)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+        access_log off;
+        try_files $uri =404;
+    }
+    location ~* \.(css|js)$ { expires 30d; add_header Cache-Control "public"; try_files $uri =404; }
+
+    location ~ \.php$ {
+        include fastcgi_params;
+        fastcgi_pass unix:/run/php/php8.4-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_read_timeout 300;
+    }
+
+    # Never serve dotfiles (.env, .git) or anything outside public/
+    location ~ /\.(?!well-known) { deny all; }
+}
