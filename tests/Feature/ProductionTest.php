@@ -62,4 +62,20 @@ class ProductionTest extends TestCase
         auth()->logout();
         $this->get('/admin/password-reset/request')->assertOk();
     }
+
+    public function test_admin_shows_the_studio_logo_in_light_and_dark_mode(): void
+    {
+        $html = $this->get('/admin/login')->assertOk()->getContent();
+        $this->assertStringContainsString('images/admin-logo-dark.png', $html);
+        $this->assertStringContainsString('images/admin-logo-light.png', $html);
+        $this->assertFileExists(public_path('images/admin-logo-dark.png'));
+        $this->assertFileExists(public_path('images/admin-logo-light.png'));
+    }
+
+    public function test_admin_loads_the_typography_stylesheet(): void
+    {
+        $html = $this->get('/admin/login')->assertOk()->getContent();
+        $this->assertStringContainsString('css/admin-typography.css', $html);
+        $this->assertFileExists(public_path('css/admin-typography.css'));
+    }
 }

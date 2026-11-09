@@ -10,6 +10,8 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
+use Illuminate\Support\Facades\Blade;
 use Filament\Widgets\AccountWidget;
 use App\Filament\Widgets\EnquiryStats;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -30,10 +32,16 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->passwordReset()   // "Forgot password?" e-mail link (needs working MAIL_* settings)
             ->profile()         // every user can change their own name, e-mail and password
+            ->renderHook(PanelsRenderHook::HEAD_END, fn (): string => Blade::render(
+                '<link rel="stylesheet" href="{{ asset(\'css/admin-typography.css\') }}?v={{ filemtime(public_path(\'css/admin-typography.css\')) }}" />'
+            ))
             ->brandName('Magic Frames Studio')
+            ->brandLogo(asset('images/admin-logo-dark.png'))          // light mode: dark logo
+            ->darkModeBrandLogo(asset('images/admin-logo-light.png'))  // dark mode: white logo
+            ->brandLogoHeight('3.75rem')
             ->favicon(asset('favicon.ico'))
             ->colors([
-                'primary' => Color::hex('#b07c66'),
+                'primary' => Color::hex('#C9A24A'),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
