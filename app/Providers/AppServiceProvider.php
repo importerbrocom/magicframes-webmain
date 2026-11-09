@@ -6,6 +6,7 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\URL;
 use Filament\Tables\Table;
 use Illuminate\Support\ServiceProvider;
 use App\Services\ContentCache;
@@ -25,6 +26,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Generate https:// links when the site is configured with an https APP_URL.
+        if (str_starts_with((string) config('app.url'), 'https://')) {
+            URL::forceScheme('https');
+        }
+
         // Super admins pass every authorization check.
         Gate::before(fn ($user) => $user->hasRole('super-admin') ? true : null);
 

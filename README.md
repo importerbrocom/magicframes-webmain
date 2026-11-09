@@ -15,6 +15,14 @@ read their content from the database.
 | 4 | Enquiries inbox + contact form API | **done** |
 | 5a | Blade framework, home, about/services/contact/custom pages, 404, SEO, sitemap | **done** |
 | 5b | Gallery, portfolio, video gallery, lightbox, blog | **done** |
+| 6 | Production hardening, backups, deployment guide, requirements report | **done** |
+
+## Documentation
+
+* **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)** — server setup, nginx/Apache/cPanel, cron, e-mail, backups & restore, updates, launch checklist
+* **[docs/ADMIN-GUIDE.md](docs/ADMIN-GUIDE.md)** — how the studio team manages the website
+* **[docs/REQUIREMENTS-STATUS.md](docs/REQUIREMENTS-STATUS.md)** — what is done, what differs from the brief, what is still needed
+* `.env.production.example`, `scripts/deploy.sh`, `scripts/restore.sh`, `docs/nginx.conf.example`
 
 ## Requirements
 
@@ -142,7 +150,9 @@ max_execution_time = 300
 ```
 and keep `MEDIA_MAX_VIDEO_KB` in `.env` at or below it. For very large films prefer a YouTube/Vimeo link.
 
-## Backups
+## Backups (automatic)
+
+`php artisan site:backup` (scheduled daily 02:30 via cron, keeps 14) writes a zip with the database and all uploads to `storage/app/backups`; restore with `scripts/restore.sh`. Details in docs/DEPLOYMENT.md. Manual commands:
 
 * Database: `mysqldump --single-transaction -u USER -p magicframes | gzip > backup-$(date +%F).sql.gz` (daily cron, keep 14+ days, copy off-server).
 * Media: back up `storage/app/public/` (e.g. `rsync -a` or `tar czf`).
