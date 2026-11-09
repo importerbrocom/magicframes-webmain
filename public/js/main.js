@@ -19,9 +19,13 @@
 
   /* ---------- Sticky header ---------- */
   const header = $('#header');
-  const hasHero = !!$('.hero'); // only the home page has a full-screen hero
+  // Pages with a hero (home) get a header that changes on scroll; inner pages stay solid
+  // unless the admin chose the "transparent over banner" header style.
+  const transparentStyle = header && header.dataset.style === 'transparent_on_top';
+  const hasHero = !!$('.hero') || (transparentStyle && !!$('.page-banner'));
   const onScrollHeader = () => {
-    if (!hasHero) { header.classList.add('scrolled'); return; } // inner pages stay solid
+    if (!header) return;
+    if (!hasHero) { header.classList.add('scrolled'); return; }
     header.classList.toggle('scrolled', window.scrollY > 80);
   };
   onScrollHeader();
@@ -31,8 +35,9 @@
   const burger = $('#burger');
   const mobileMenu = $('#mobileMenu');
   const mobileClose = $('#mobileClose');
-  const openMenu  = () => mobileMenu.classList.add('open');
-  const closeMenu = () => mobileMenu.classList.remove('open');
+  const openMenu  = () => { mobileMenu.classList.add('open'); burger && burger.setAttribute('aria-expanded', 'true'); };
+  const closeMenu = () => { mobileMenu.classList.remove('open'); burger && burger.setAttribute('aria-expanded', 'false'); };
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
   burger && burger.addEventListener('click', openMenu);
   mobileClose && mobileClose.addEventListener('click', closeMenu);
   $$('#mobileMenu a').forEach(a => a.addEventListener('click', closeMenu));
@@ -66,7 +71,7 @@
       requestAnimationFrame(loop);
     };
     loop();
-    $$('a, button, .gallery__item, .service').forEach(el => {
+    $$('a, button, .gallery__item, .service, .vcard, .pf-card').forEach(el => {
       el.addEventListener('mouseenter', () => follow.classList.add('grow'));
       el.addEventListener('mouseleave', () => follow.classList.remove('grow'));
     });
@@ -108,14 +113,15 @@
   if (counters.length && 'IntersectionObserver' in window) {
     const runCount = el => {
       const target = +el.dataset.count;
+      const suffix = el.dataset.suffix || '';
       const dur = 1800;
       const start = performance.now();
       const tick = now => {
         const p = Math.min((now - start) / dur, 1);
         const eased = 1 - Math.pow(1 - p, 3);
-        el.textContent = Math.floor(eased * target).toLocaleString();
+        el.textContent = Math.floor(eased * target).toLocaleString() + suffix;
         if (p < 1) requestAnimationFrame(tick);
-        else el.textContent = target.toLocaleString();
+        else el.textContent = target.toLocaleString() + suffix;
       };
       requestAnimationFrame(tick);
     };
@@ -184,30 +190,6 @@
     slider.addEventListener('mouseleave', start);
   }
 
-  /* ---------- Countdown (to a future date) ---------- */
-  const cd = $('#countdown');
-  if (cd) {
-    // Target: ~90 days from load, fixed at midnight
-    const target = new Date();
-    target.setDate(target.getDate() + 90);
-    target.setHours(0, 0, 0, 0);
-
-    const pad = n => String(n).padStart(2, '0');
-    const tick = () => {
-      let diff = Math.max(0, target - new Date());
-      const d = Math.floor(diff / 86400000); diff -= d * 86400000;
-      const h = Math.floor(diff / 3600000);  diff -= h * 3600000;
-      const m = Math.floor(diff / 60000);    diff -= m * 60000;
-      const s = Math.floor(diff / 1000);
-      cd.querySelector('[data-cd="days"]').textContent  = pad(d);
-      cd.querySelector('[data-cd="hours"]').textContent = pad(h);
-      cd.querySelector('[data-cd="mins"]').textContent  = pad(m);
-      cd.querySelector('[data-cd="secs"]').textContent  = pad(s);
-    };
-    tick();
-    setInterval(tick, 1000);
-  }
-
   /* ---------- Back to top ---------- */
   const toTop = $('#toTop');
   if (toTop) {
@@ -218,19 +200,4 @@
       window.scrollTo({ top: 0, behavior: 'smooth' }));
   }
 
-  /* ---------- Form feedback ---------- */
-  const form = $('.rsvp__form');
-  if (form) {
-    form.addEventListener('submit', () => {
-      const btn = form.querySelector('.btn');
-      const txt = btn.textContent;
-      btn.textContent = 'Thank You!';
-      btn.style.background = '#8a9a7b';
-      setTimeout(() => {
-        btn.textContent = txt;
-        btn.style.background = '';
-        form.reset();
-      }, 2500);
-    });
-  }
 })();

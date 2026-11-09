@@ -41,8 +41,9 @@ class HeaderSettings extends SettingsPage
                 Toggle::make('is_visible')->label('Show header')->inline(false),
                 Toggle::make('is_sticky')->label('Sticky header (stays on screen while scrolling)')->inline(false),
                 Select::make('background_style')->native(false)->label('Header background')->options([
-                    'transparent_on_top' => 'Transparent over the banner, solid after scrolling (original look)',
-                    'solid' => 'Always solid',
+                    'solid' => 'White (original look)',
+                    'cream' => 'Cream (site background colour)',
+                    'transparent_on_top' => 'Transparent over the banner image, white after scrolling',
                 ])->required()->columnSpanFull(),
             ]),
             Section::make('Call-to-action button')->columns(2)->schema([

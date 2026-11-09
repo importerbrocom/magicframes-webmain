@@ -282,4 +282,26 @@ class GalleryVideoTest extends TestCase
         $this->assertSame(0, GalleryImage::count());
         Storage::disk('public')->assertMissing($path);
     }
+
+    public function test_large_camera_originals_are_processed_without_exhausting_memory(): void
+    {
+        // 6000x4000 needs ~100MB+ to decode; the processor must raise the limit or degrade gracefully.
+        $cat = GalleryCategory::create(['name' => 'Big']);
+        $path = UploadedFile::fake()->image('big.jpg', 6000, 4000)->store('gallery', 'public');
+        $image = GalleryImage::create(['gallery_category_id' => $cat->id, 'path' => $path]);
+
+        $this->assertSame(6000, $image->width);
+        $this->assertSame(4000, $image->height);
+        $this->assertNotEmpty($image->variants);
+        Storage::disk('public')->assertExists($image->path);
+
+        // Over the configured ceiling: original is kept, no crash, dimensions still recorded.
+        ini_set('memory_limit', '256M');
+        config(['media.max_processing_memory_mb' => 64]);
+        $path2 = UploadedFile::fake()->image('huge.jpg', 5000, 3000)->store('gallery', 'public');
+        $image2 = GalleryImage::create(['gallery_category_id' => $cat->id, 'path' => $path2]);
+        $this->assertSame(5000, $image2->width);
+        $this->assertSame([], $image2->variants);
+        $this->getJson('/api/v1/gallery/images')->assertOk(); // falls back to the original URL
+    }
 }
