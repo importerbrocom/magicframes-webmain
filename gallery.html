@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gallery — Magic Frames</title>
+  <meta name="description" content="A Magic Frames wedding gallery." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="preloader" id="preloader"><div class="preloader__inner"><img class="preloader__logo-img" src="images/logo.png" alt="Magic Frames" /><div class="preloader__bar"><span></span></div></div></div>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-follow" id="cursorFollow"></div>
+
+  <!-- HEADER -->
+  <header class="header scrolled" id="header">
+    <div class="header__inner">
+      <div class="header__left">
+        <a href="contact.html" class="rsvp-btn">RSVP</a>
+        <nav class="nav"><ul>
+          <li><a href="index.html" class="nav__link">Home</a></li>
+          <li><a href="about.html" class="nav__link">About</a></li>
+          <li><a href="portfolio.html" class="nav__link active">Portfolio</a></li>
+        </ul></nav>
+      </div>
+      <a href="index.html" class="logo-badge" aria-label="Magic Frames home">
+        <img class="logo-img" src="images/logo.png" alt="Magic Frames" />
+      </a>
+      <div class="header__right">
+        <nav class="nav"><ul>
+          <li><a href="blog.html" class="nav__link">Blog</a></li>
+          <li><a href="shop.html" class="nav__link">Shop</a></li>
+          <li><a href="contact.html" class="nav__link">Contact</a></li>
+        </ul></nav>
+        <button class="burger" id="burger" aria-label="Open menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="side-widgets">
+    <a href="contact.html" class="side-widgets__btn side-widgets__btn--pink" aria-label="RSVP"><i class="fa-solid fa-envelope-open-text"></i></a>
+  </div>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="mobile-menu__close" id="mobileClose" aria-label="Close menu"><i class="fa-solid fa-xmark"></i></button>
+    <ul>
+      <li><a href="index.html">Home</a></li><li><a href="about.html">About</a></li>
+      <li><a href="services.html">Services</a></li><li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="blog.html">Blog</a></li><li><a href="shop.html">Shop</a></li><li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="mobile-menu__social"><a href="#"><i class="fa-brands fa-instagram"></i></a><a href="#"><i class="fa-brands fa-pinterest-p"></i></a><a href="#"><i class="fa-brands fa-facebook-f"></i></a></div>
+  </div>
+
+  <!-- BANNER (filled by pages.js) -->
+  <section class="page-banner" id="galleryBanner">
+    <div class="page-banner__overlay"></div>
+    <div class="page-banner__content">
+      <span class="page-banner__label" id="galleryCat">Gallery</span>
+      <h1 class="page-banner__title" id="galleryTitle">Gallery</h1>
+      <p class="page-banner__crumbs"><a href="index.html">Home</a><span>/</span><a href="portfolio.html">Portfolio</a><span>/</span><span id="galleryDesc"></span></p>
+    </div>
+  </section>
+
+  <!-- IMAGE GRID -->
+  <section class="section">
+    <div class="container">
+      <div class="g-grid" id="galleryDetail"></div>
+
+      <div class="gnav">
+        <a class="gnav__prev" id="galleryPrev" href="#"><span class="gnav__dir"><i class="fa-solid fa-arrow-left"></i> Previous</span><span class="gnav__name"></span></a>
+        <a class="gnav__next" id="galleryNext" href="#"><span class="gnav__dir">Next <i class="fa-solid fa-arrow-right"></i></span><span class="gnav__name"></span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox">
+    <button class="lb-btn lb-close" id="lbClose" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+    <button class="lb-btn lb-prev" id="lbPrev" aria-label="Previous"><i class="fa-solid fa-chevron-left"></i></button>
+    <img id="lbImg" src="" alt="Gallery image" />
+    <button class="lb-btn lb-next" id="lbNext" aria-label="Next"><i class="fa-solid fa-chevron-right"></i></button>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer__grid">
+      <div class="footer__brand"><img class="logo-img--footer" src="images/logo.png" alt="Magic Frames" /><p>Boutique wedding &amp; event studio crafting timeless celebrations with heart.</p></div>
+      <div class="footer__col"><h4>Explore</h4><ul><li><a href="about.html">Our Story</a></li><li><a href="services.html">Services</a></li><li><a href="portfolio.html">Portfolio</a></li><li><a href="blog.html">Blog</a></li></ul></div>
+      <div class="footer__col"><h4>Visit</h4><ul><li>24 Rosewood Lane</li><li>Florence, Italy</li><li>info.magicframes.co.in</li><li>+39 055 123 456</li></ul></div>
+      <div class="footer__col"><h4>Follow</h4><div class="footer__social"><a href="#"><i class="fa-brands fa-instagram"></i></a><a href="#"><i class="fa-brands fa-pinterest-p"></i></a><a href="#"><i class="fa-brands fa-facebook-f"></i></a></div></div>
+    </div>
+    <div class="footer__bottom"><p>© <span id="year"></span> Magic Frames. Crafted with love.</p></div>
+  </footer>
+
+  <button class="totop" id="toTop" aria-label="Back to top"><i class="fa-solid fa-arrow-up"></i></button>
+
+  <script src="js/galleries.js"></script>
+  <script src="js/pages.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

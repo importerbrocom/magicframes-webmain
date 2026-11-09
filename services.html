@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Services — Magic Frames</title>
+  <meta name="description" content="Magic Frames wedding and event services — planning, styling, photography and catering." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="preloader" id="preloader"><div class="preloader__inner"><img class="preloader__logo-img" src="images/logo.png" alt="Magic Frames" /><div class="preloader__bar"><span></span></div></div></div>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-follow" id="cursorFollow"></div>
+
+  <header class="header scrolled" id="header">
+    <div class="header__inner">
+      <div class="header__left">
+        <a href="contact.html" class="rsvp-btn">RSVP</a>
+        <nav class="nav"><ul>
+          <li><a href="index.html" class="nav__link">Home</a></li>
+          <li><a href="about.html" class="nav__link">About</a></li>
+          <li><a href="portfolio.html" class="nav__link">Portfolio</a></li>
+        </ul></nav>
+      </div>
+      <a href="index.html" class="logo-badge" aria-label="Magic Frames home">
+        <img class="logo-img" src="images/logo.png" alt="Magic Frames" />
+      </a>
+      <div class="header__right">
+        <nav class="nav"><ul>
+          <li><a href="blog.html" class="nav__link">Blog</a></li>
+          <li><a href="shop.html" class="nav__link">Shop</a></li>
+          <li><a href="contact.html" class="nav__link">Contact</a></li>
+        </ul></nav>
+        <button class="burger" id="burger" aria-label="Open menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="side-widgets">
+    <a href="contact.html" class="side-widgets__btn side-widgets__btn--pink" aria-label="RSVP"><i class="fa-solid fa-envelope-open-text"></i></a>
+  </div>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="mobile-menu__close" id="mobileClose" aria-label="Close menu"><i class="fa-solid fa-xmark"></i></button>
+    <ul>
+      <li><a href="index.html">Home</a></li><li><a href="about.html">About</a></li>
+      <li><a href="services.html">Services</a></li><li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="blog.html">Blog</a></li><li><a href="shop.html">Shop</a></li><li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="mobile-menu__social"><a href="#"><i class="fa-brands fa-instagram"></i></a><a href="#"><i class="fa-brands fa-pinterest-p"></i></a><a href="#"><i class="fa-brands fa-facebook-f"></i></a></div>
+  </div>
+
+  <section class="page-banner">
+    <div class="page-banner__bg" style="background-image:url('https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=1900&q=80')"></div>
+    <div class="page-banner__overlay"></div>
+    <div class="page-banner__content">
+      <span class="page-banner__label">What We Offer</span>
+      <h1 class="page-banner__title">Services</h1>
+      <p class="page-banner__crumbs"><a href="index.html">Home</a><span>/</span>Services</p>
+    </div>
+  </section>
+
+  <section class="services section">
+    <div class="container">
+      <div class="services__grid">
+        <article class="service" data-reveal="up"><span class="service__icon"><i class="fa-solid fa-ring"></i></span><h3>Wedding Planning</h3><p>Full-service planning from first idea to final farewell, tailored entirely to you.</p></article>
+        <article class="service" data-reveal="up" style="--d:.12s"><span class="service__icon"><i class="fa-solid fa-champagne-glasses"></i></span><h3>Event Styling</h3><p>Thoughtful décor, florals and lighting that bring your vision to life beautifully.</p></article>
+        <article class="service" data-reveal="up" style="--d:.24s"><span class="service__icon"><i class="fa-solid fa-camera-retro"></i></span><h3>Photography</h3><p>Capturing the quiet glances and joyful tears you'll want to relive forever.</p></article>
+        <article class="service" data-reveal="up" style="--d:.36s"><span class="service__icon"><i class="fa-solid fa-utensils"></i></span><h3>Catering</h3><p>Seasonal menus crafted by our chefs to delight every guest at your table.</p></article>
+        <article class="service" data-reveal="up"><span class="service__icon"><i class="fa-solid fa-music"></i></span><h3>Entertainment</h3><p>Live music, DJs and performers to keep the dance floor full all night long.</p></article>
+        <article class="service" data-reveal="up" style="--d:.12s"><span class="service__icon"><i class="fa-solid fa-envelope-open-text"></i></span><h3>Stationery</h3><p>Hand-finished invitations and signage that set the tone from the very first glance.</p></article>
+        <article class="service" data-reveal="up" style="--d:.24s"><span class="service__icon"><i class="fa-solid fa-car"></i></span><h3>Transport</h3><p>Classic cars and seamless logistics so every guest arrives relaxed and on time.</p></article>
+        <article class="service" data-reveal="up" style="--d:.36s"><span class="service__icon"><i class="fa-solid fa-hotel"></i></span><h3>Venue Sourcing</h3><p>Access to the most beautiful venues, from coastal villas to hidden gardens.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="counters">
+    <div class="container counters__grid">
+      <div class="counter" data-reveal="up"><span class="counter__num" data-count="520">0</span><span class="counter__label">Happy Couples</span></div>
+      <div class="counter" data-reveal="up" style="--d:.1s"><span class="counter__num" data-count="14">0</span><span class="counter__label">Years of Love</span></div>
+      <div class="counter" data-reveal="up" style="--d:.2s"><span class="counter__num" data-count="98">0</span><span class="counter__label">Awards Won</span></div>
+      <div class="counter" data-reveal="up" style="--d:.3s"><span class="counter__num" data-count="1200">0</span><span class="counter__label">Events Planned</span></div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container footer__grid">
+      <div class="footer__brand"><img class="logo-img--footer" src="images/logo.png" alt="Magic Frames" /><p>Boutique wedding &amp; event studio crafting timeless celebrations with heart.</p></div>
+      <div class="footer__col"><h4>Explore</h4><ul><li><a href="about.html">Our Story</a></li><li><a href="services.html">Services</a></li><li><a href="portfolio.html">Portfolio</a></li><li><a href="blog.html">Blog</a></li></ul></div>
+      <div class="footer__col"><h4>Visit</h4><ul><li>24 Rosewood Lane</li><li>Florence, Italy</li><li>info.magicframes.co.in</li><li>+39 055 123 456</li></ul></div>
+      <div class="footer__col"><h4>Follow</h4><div class="footer__social"><a href="#"><i class="fa-brands fa-instagram"></i></a><a href="#"><i class="fa-brands fa-pinterest-p"></i></a><a href="#"><i class="fa-brands fa-facebook-f"></i></a></div></div>
+    </div>
+    <div class="footer__bottom"><p>© <span id="year"></span> Magic Frames. Crafted with love.</p></div>
+  </footer>
+
+  <button class="totop" id="toTop" aria-label="Back to top"><i class="fa-solid fa-arrow-up"></i></button>
+  <script src="js/main.js"></script>
+</body>
+</html>

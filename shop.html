@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop — Magic Frames</title>
+  <meta name="description" content="The Magic Frames shop — curated pieces for your celebration." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="preloader" id="preloader"><div class="preloader__inner"><img class="preloader__logo-img" src="images/logo.png" alt="Magic Frames" /><div class="preloader__bar"><span></span></div></div></div>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-follow" id="cursorFollow"></div>
+
+  <header class="header scrolled" id="header">
+    <div class="header__inner">
+      <div class="header__left">
+        <a href="contact.html" class="rsvp-btn">RSVP</a>
+        <nav class="nav"><ul>
+          <li><a href="index.html" class="nav__link">Home</a></li>
+          <li><a href="about.html" class="nav__link">About</a></li>
+          <li><a href="portfolio.html" class="nav__link">Portfolio</a></li>
+        </ul></nav>
+      </div>
+      <a href="index.html" class="logo-badge" aria-label="Magic Frames home">
+        <img class="logo-img" src="images/logo.png" alt="Magic Frames" />
+      </a>
+      <div class="header__right">
+        <nav class="nav"><ul>
+          <li><a href="blog.html" class="nav__link">Blog</a></li>
+          <li><a href="shop.html" class="nav__link active">Shop</a></li>
+          <li><a href="contact.html" class="nav__link">Contact</a></li>
+        </ul></nav>
+        <button class="burger" id="burger" aria-label="Open menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="side-widgets">
+    <a href="contact.html" class="side-widgets__btn side-widgets__btn--pink" aria-label="RSVP"><i class="fa-solid fa-envelope-open-text"></i></a>
+  </div>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="mobile-menu__close" id="mobileClose" aria-label="Close menu"><i class="fa-solid fa-xmark"></i></button>
+    <ul>
+      <li><a href="index.html">Home</a></li><li><a href="about.html">About</a></li>
+      <li><a href="services.html">Services</a></li><li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="blog.html">Blog</a></li><li><a href="shop.html">Shop</a></li><li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="mobile-menu__social"><a href="#"><i class="fa-brands fa-instagram"></i></a><a href="#"><i class="fa-brands fa-pinterest-p"></i></a><a href="#"><i class="fa-brands fa-facebook-f"></i></a></div>
+  </div>
+
+  <section class="page-banner">
+    <div class="page-banner__bg" style="background-image:url('https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=1900&q=80')"></div>
+    <div class="page-banner__overlay"></div>
+    <div class="page-banner__content">
+      <span class="page-banner__label">Curated Pieces</span>
+      <h1 class="page-banner__title">Shop</h1>
+      <p class="page-banner__crumbs"><a href="index.html">Home</a><span>/</span>Shop</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="shop-grid">
+        <div class="product" data-reveal="up">
+          <div class="product__media"><span class="product__badge">New</span><img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&w=600&q=80" alt="Gold ring set" /><button class="product__add">Add to Cart</button></div>
+          <h3 class="product__name">Gold Ring Set</h3><span class="product__price">€ 320</span>
+        </div>
+        <div class="product" data-reveal="up" style="--d:.08s">
+          <div class="product__media"><img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=600&q=80" alt="Bridal veil" /><button class="product__add">Add to Cart</button></div>
+          <h3 class="product__name">Silk Bridal Veil</h3><span class="product__price">€ 180</span>
+        </div>
+        <div class="product" data-reveal="up" style="--d:.16s">
+          <div class="product__media"><span class="product__badge">Sale</span><img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=600&q=80" alt="Bouquet" /><button class="product__add">Add to Cart</button></div>
+          <h3 class="product__name">Dried Flower Bouquet</h3><span class="product__price">€ 95</span>
+        </div>
+        <div class="product" data-reveal="up" style="--d:.24s">
+          <div class="product__media"><img src="https://images.unsplash.com/photo-1511285560929-80b456fea0e9?auto=format&fit=crop&w=600&q=80" alt="Candles" /><button class="product__add">Add to Cart</button></div>
+          <h3 class="product__name">Taper Candle Set</h3><span class="product__price">€ 48</span>
+        </div>
+        <div class="product" data-reveal="up">
+          <div class="product__media"><img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&w=600&q=80" alt="Place cards" /><button class="product__add">Add to Cart</button></div>
+          <h3 class="product__name">Letterpress Place Cards</h3><span class="product__price">€ 36</span>
+        </div>
+        <div class="product" data-reveal="up" style="--d:.08s">
+          <div class="product__media"><span class="product__badge">New</span><img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=600&q=80" alt="Table runner" /><button class="product__add">Add to Cart</button></div>
+          <h3 class="product__name">Linen Table Runner</h3><span class="product__price">€ 62</span>
+        </div>
+        <div class="product" data-reveal="up" style="--d:.16s">
+          <div class="product__media"><img src="https://images.unsplash.com/photo-1535254973040-607b474cb50d?auto=format&fit=crop&w=600&q=80" alt="Cake topper" /><button class="product__add">Add to Cart</button></div>
+          <h3 class="product__name">Brass Cake Topper</h3><span class="product__price">€ 28</span>
+        </div>
+        <div class="product" data-reveal="up" style="--d:.24s">
+          <div class="product__media"><img src="https://images.unsplash.com/photo-1530023367847-a683933f4172?auto=format&fit=crop&w=600&q=80" alt="Favor boxes" /><button class="product__add">Add to Cart</button></div>
+          <h3 class="product__name">Favor Gift Boxes</h3><span class="product__price">€ 42</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container footer__grid">
+      <div class="footer__brand"><img class="logo-img--footer" src="images/logo.png" alt="Magic Frames" /><p>Boutique wedding &amp; event studio crafting timeless celebrations with heart.</p></div>
+      <div class="footer__col"><h4>Explore</h4><ul><li><a href="about.html">Our Story</a></li><li><a href="services.html">Services</a></li><li><a href="portfolio.html">Portfolio</a></li><li><a href="blog.html">Blog</a></li></ul></div>
+      <div class="footer__col"><h4>Visit</h4><ul><li>24 Rosewood Lane</li><li>Florence, Italy</li><li>info.magicframes.co.in</li><li>+39 055 123 456</li></ul></div>
+      <div class="footer__col"><h4>Follow</h4><div class="footer__social"><a href="#"><i class="fa-brands fa-instagram"></i></a><a href="#"><i class="fa-brands fa-pinterest-p"></i></a><a href="#"><i class="fa-brands fa-facebook-f"></i></a></div></div>
+    </div>
+    <div class="footer__bottom"><p>© <span id="year"></span> Magic Frames. Crafted with love.</p></div>
+  </footer>
+
+  <button class="totop" id="toTop" aria-label="Back to top"><i class="fa-solid fa-arrow-up"></i></button>
+  <script src="js/main.js"></script>
+</body>
+</html>
