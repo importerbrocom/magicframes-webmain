@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Magic Frames — Wedding &amp; Event Planner</title>
+  <meta name="description" content="Magic Frames — an elegant wedding and event planning studio." />
+
+  <!-- Fonts: elegant serif + script -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet" />
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ============ PRELOADER ============ -->
+  <div class="preloader" id="preloader">
+    <div class="preloader__inner">
+      <img class="preloader__logo-img" src="images/logo.png" alt="Magic Frames" />
+      <div class="preloader__bar"><span></span></div>
+    </div>
+  </div>
+
+  <!-- ============ CURSOR DOT ============ -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-follow" id="cursorFollow"></div>
+
+  <!-- ============ HEADER ============ -->
+  <header class="header" id="header">
+    <div class="header__inner">
+      <!-- LEFT -->
+      <div class="header__left">
+        <a href="#contact" class="rsvp-btn">RSVP</a>
+        <nav class="nav">
+          <ul>
+            <li><a href="index.html" class="nav__link active">Home</a></li>
+            <li><a href="about.html" class="nav__link">About</a></li>
+            <li><a href="portfolio.html" class="nav__link">Portfolio</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- CENTER LOGO -->
+      <a href="index.html" class="logo-badge" aria-label="Magic Frames home">
+        <img class="logo-img" src="images/logo.png" alt="Magic Frames" />
+      </a>
+
+      <!-- RIGHT -->
+      <div class="header__right">
+        <nav class="nav">
+          <ul>
+            <li><a href="blog.html" class="nav__link">Blog</a></li>
+            <li><a href="shop.html" class="nav__link">Shop</a></li>
+            <li><a href="contact.html" class="nav__link">Contact</a></li>
+          </ul>
+        </nav>
+        <button class="burger" id="burger" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ FLOATING SIDE WIDGETS ============ -->
+  <div class="side-widgets">
+    <a href="contact.html" class="side-widgets__btn side-widgets__btn--pink" aria-label="RSVP"><i class="fa-solid fa-envelope-open-text"></i></a>
+  </div>
+
+  <!-- ============ MOBILE MENU ============ -->
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="mobile-menu__close" id="mobileClose" aria-label="Close menu"><i class="fa-solid fa-xmark"></i></button>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="mobile-menu__social">
+      <a href="#"><i class="fa-brands fa-instagram"></i></a>
+      <a href="#"><i class="fa-brands fa-pinterest-p"></i></a>
+      <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+    </div>
+  </div>
+
+  <!-- ============ HERO SLIDER ============ -->
+  <section class="hero" id="home">
+    <div class="hero__slides" id="heroSlides">
+      <div class="hero__slide is-active" style="background-image:url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1900&q=80')">
+        <div class="hero__caption">
+          <h1 class="hero__word" data-text="EVER LASTING">EVER LASTING</h1>
+          <p class="hero__meta"><span>May 21</span><em>&middot;</em><span>Restaurant</span><em>&middot;</em><span>17:00h</span></p>
+        </div>
+      </div>
+      <div class="hero__slide" style="background-image:url('https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=1900&q=80')">
+        <div class="hero__caption">
+          <h1 class="hero__word" data-text="FOREVER">FOREVER</h1>
+          <p class="hero__meta"><span>June 14</span><em>&middot;</em><span>Garden</span><em>&middot;</em><span>16:30h</span></p>
+        </div>
+      </div>
+      <div class="hero__slide" style="background-image:url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1900&q=80')">
+        <div class="hero__caption">
+          <h1 class="hero__word" data-text="TOGETHER">TOGETHER</h1>
+          <p class="hero__meta"><span>Aug 09</span><em>&middot;</em><span>Villa</span><em>&middot;</em><span>18:00h</span></p>
+        </div>
+      </div>
+    </div>
+    <div class="hero__dots" id="heroDots"></div>
+  </section>
+
+  <!-- ============ INTRO / STORY ============ -->
+  <section class="story" id="about">
+    <div class="container story__grid">
+      <div class="story__images">
+        <div class="story__img story__img--one" data-reveal="left">
+          <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80" alt="Couple at the altar" />
+        </div>
+        <div class="story__img story__img--two" data-reveal="up">
+          <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0e9?auto=format&fit=crop&w=600&q=80" alt="Wedding table setting" />
+        </div>
+        <span class="story__accent">Est. 2010</span>
+      </div>
+
+      <div class="story__text" data-reveal="right">
+        <span class="section-label">Our Story</span>
+        <h2 class="section-title">We turn moments<br/> into memories</h2>
+        <p class="section-lead">
+          Magic Frames is a boutique wedding and event studio devoted to the art of celebration.
+          From intimate vows to grand receptions, we craft every detail with care.
+        </p>
+        <p>
+          Ut enim ad minim veniam, quis nostrud exercitation ullamco. Eiusmod tempor
+          incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet,
+          consectetur adipiscing elit, sed do.
+        </p>
+        <a href="#services" class="btn btn--outline">What We Do</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ QUOTE / PARALLAX ============ -->
+  <section class="quote">
+    <div class="quote__bg" data-parallax="0.2"></div>
+    <div class="quote__overlay"></div>
+    <div class="container quote__content">
+      <p class="quote__script reveal-scroll">A thousand little moments</p>
+      <h2 class="quote__title reveal-scroll">“Love is the greatest celebration of all”</h2>
+    </div>
+  </section>
+
+  <!-- ============ SERVICES ============ -->
+  <section class="services" id="services">
+    <div class="container">
+      <div class="section-head center">
+        <span class="section-label">What We Offer</span>
+        <h2 class="section-title">Our Services</h2>
+      </div>
+
+      <div class="services__grid">
+        <article class="service" data-reveal="up">
+          <span class="service__icon"><i class="fa-solid fa-ring"></i></span>
+          <h3>Wedding Planning</h3>
+          <p>Full-service planning from first idea to final farewell, tailored entirely to you.</p>
+        </article>
+        <article class="service" data-reveal="up" style="--d:.12s">
+          <span class="service__icon"><i class="fa-solid fa-champagne-glasses"></i></span>
+          <h3>Event Styling</h3>
+          <p>Thoughtful décor, florals and lighting that bring your vision to life beautifully.</p>
+        </article>
+        <article class="service" data-reveal="up" style="--d:.24s">
+          <span class="service__icon"><i class="fa-solid fa-camera-retro"></i></span>
+          <h3>Photography</h3>
+          <p>Capturing the quiet glances and joyful tears you'll want to relive forever.</p>
+        </article>
+        <article class="service" data-reveal="up" style="--d:.36s">
+          <span class="service__icon"><i class="fa-solid fa-utensils"></i></span>
+          <h3>Catering</h3>
+          <p>Seasonal menus crafted by our chefs to delight every guest at your table.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COUNTERS ============ -->
+  <section class="counters">
+    <div class="container counters__grid">
+      <div class="counter" data-reveal="up">
+        <span class="counter__num" data-count="520">0</span>
+        <span class="counter__label">Happy Couples</span>
+      </div>
+      <div class="counter" data-reveal="up" style="--d:.1s">
+        <span class="counter__num" data-count="14">0</span>
+        <span class="counter__label">Years of Love</span>
+      </div>
+      <div class="counter" data-reveal="up" style="--d:.2s">
+        <span class="counter__num" data-count="98">0</span>
+        <span class="counter__label">Awards Won</span>
+      </div>
+      <div class="counter" data-reveal="up" style="--d:.3s">
+        <span class="counter__num" data-count="1200">0</span>
+        <span class="counter__label">Events Planned</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GALLERY ============ -->
+  <section class="gallery" id="gallery">
+    <div class="container">
+      <div class="section-head center">
+        <span class="section-label">Captured Moments</span>
+        <h2 class="section-title">Our Portfolio</h2>
+      </div>
+    </div>
+    <div class="gallery__grid">
+      <a class="gallery__item" data-reveal="up" href="gallery.html?id=garden-vows"><img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=700&q=80" alt="Bride bouquet" /><span class="gallery__plus"><i class="fa-solid fa-plus"></i></span></a>
+      <a class="gallery__item" data-reveal="up" style="--d:.08s" href="gallery.html?id=ceremony"><img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=700&q=80" alt="Ceremony" /><span class="gallery__plus"><i class="fa-solid fa-plus"></i></span></a>
+      <a class="gallery__item" data-reveal="up" style="--d:.16s" href="gallery.html?id=rings-details"><img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=700&q=80" alt="Rings" /><span class="gallery__plus"><i class="fa-solid fa-plus"></i></span></a>
+      <a class="gallery__item" data-reveal="up" style="--d:.24s" href="gallery.html?id=reception"><img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=700&q=80" alt="Reception table" /><span class="gallery__plus"><i class="fa-solid fa-plus"></i></span></a>
+      <a class="gallery__item" data-reveal="up" style="--d:.32s" href="gallery.html?id=first-dance"><img src="https://images.unsplash.com/photo-1530023367847-a683933f4172?auto=format&fit=crop&w=700&q=80" alt="First dance" /><span class="gallery__plus"><i class="fa-solid fa-plus"></i></span></a>
+      <a class="gallery__item" data-reveal="up" style="--d:.4s" href="gallery.html?id=celebration"><img src="https://images.unsplash.com/photo-1507504031003-b417219a0fde?auto=format&fit=crop&w=700&q=80" alt="Cake" /><span class="gallery__plus"><i class="fa-solid fa-plus"></i></span></a>
+    </div>
+    <div class="center" style="margin-top:2.5rem">
+      <a href="portfolio.html" class="btn btn--outline">View All Galleries</a>
+    </div>
+  </section>
+
+  <!-- ============ TESTIMONIALS ============ -->
+  <section class="testi" id="testimonials">
+    <div class="testi__bg" data-parallax="0.15"></div>
+    <div class="testi__overlay"></div>
+    <div class="container">
+      <div class="section-head center light">
+        <span class="section-label">Kind Words</span>
+        <h2 class="section-title">Love Notes</h2>
+      </div>
+
+      <div class="slider" id="slider">
+        <div class="slider__track" id="sliderTrack">
+          <figure class="slide">
+            <i class="fa-solid fa-quote-right slide__mark"></i>
+            <blockquote>Ut enim ad minim veniam, quis nostrud exercitation ullamco. Eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</blockquote>
+            <figcaption><strong>Joseph Harris</strong><span>Groomsman</span></figcaption>
+          </figure>
+          <figure class="slide">
+            <i class="fa-solid fa-quote-right slide__mark"></i>
+            <blockquote>Eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</blockquote>
+            <figcaption><strong>James Anderson</strong><span>Groom</span></figcaption>
+          </figure>
+          <figure class="slide">
+            <i class="fa-solid fa-quote-right slide__mark"></i>
+            <blockquote>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do. Eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</blockquote>
+            <figcaption><strong>Linda Davis</strong><span>Bride</span></figcaption>
+          </figure>
+        </div>
+        <div class="slider__dots" id="sliderDots"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COUNTDOWN / RSVP ============ -->
+  <section class="rsvp" id="contact">
+    <div class="container rsvp__grid">
+      <div class="rsvp__text" data-reveal="left">
+        <span class="section-label">Save the Date</span>
+        <h2 class="section-title">Let's plan<br/> something beautiful</h2>
+        <p class="section-lead">Tell us about your day and we'll be in touch within 24 hours.</p>
+        <div class="countdown" id="countdown">
+          <div><span data-cd="days">00</span><em>Days</em></div>
+          <div><span data-cd="hours">00</span><em>Hours</em></div>
+          <div><span data-cd="mins">00</span><em>Mins</em></div>
+          <div><span data-cd="secs">00</span><em>Secs</em></div>
+        </div>
+      </div>
+
+      <form class="rsvp__form" data-reveal="right" onsubmit="return false">
+        <div class="field"><input type="text" required placeholder=" " id="f-name" /><label for="f-name">Your Name</label></div>
+        <div class="field"><input type="email" required placeholder=" " id="f-email" /><label for="f-email">Email Address</label></div>
+        <div class="field"><input type="text" placeholder=" " id="f-date" /><label for="f-date">Event Date</label></div>
+        <div class="field"><textarea rows="4" placeholder=" " id="f-msg"></textarea><label for="f-msg">Tell us about your day</label></div>
+        <button class="btn" type="submit">Send Request</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="container footer__grid">
+      <div class="footer__brand">
+        <img class="logo-img--footer" src="images/logo.png" alt="Magic Frames" />
+        <p>Boutique wedding &amp; event studio crafting timeless celebrations with heart.</p>
+      </div>
+      <div class="footer__col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="about.html">Our Story</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Visit</h4>
+        <ul>
+          <li>24 Rosewood Lane</li>
+          <li>Florence, Italy</li>
+          <li>info.magicframes.co.in</li>
+          <li>+39 055 123 456</li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Follow</h4>
+        <div class="footer__social">
+          <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" aria-label="Pinterest"><i class="fa-brands fa-pinterest-p"></i></a>
+          <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>© <span id="year"></span> Magic Frames. Crafted with love.</p>
+    </div>
+  </footer>
+
+  <!-- Back to top -->
+  <button class="totop" id="toTop" aria-label="Back to top"><i class="fa-solid fa-arrow-up"></i></button>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
