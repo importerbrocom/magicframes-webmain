@@ -113,7 +113,7 @@ html:not(.dark) .fi-wi-stats-overview-stat {
 }
 
 /* bigger, bolder page title and calmer spacing */
-.fi-header-heading { font-size: 2rem; font-weight: 700; color: #111; }
+.fi-header-heading { font-size: clamp(1.5rem, 5.5vw, 2rem); font-weight: 700; color: #111; overflow-wrap: anywhere; }
 .dark .fi-header-heading { color: #fff; }
 .fi-section-header-heading { font-size: 1.0625rem; }
 
@@ -121,3 +121,11 @@ html:not(.dark) .fi-wi-stats-overview-stat {
 html:not(.dark) .fi-input-wrp { border-radius: 10px; }
 
 /* marker so you can confirm this file is the one being served: admin-typography v2 */
+
+/* phones: tighter admin chrome, comfortable tap targets */
+@media (max-width: 640px) {
+  .fi-header-heading { letter-spacing: -0.022em; }
+  .fi-sidebar-item-btn, .fi-btn, .fi-icon-btn { min-height: 44px; }
+  .fi-section-content, .fi-ta-content { font-size: 0.9375rem; }
+  .fi-wi-stats-overview-stat-value { font-size: 1.625rem; }
+}

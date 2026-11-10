@@ -35,8 +35,8 @@
   const burger = $('#burger');
   const mobileMenu = $('#mobileMenu');
   const mobileClose = $('#mobileClose');
-  const openMenu  = () => { mobileMenu.classList.add('open'); burger && burger.setAttribute('aria-expanded', 'true'); };
-  const closeMenu = () => { mobileMenu.classList.remove('open'); burger && burger.setAttribute('aria-expanded', 'false'); };
+  const openMenu  = () => { mobileMenu.classList.add('open'); document.body.classList.add('menu-open'); burger && burger.setAttribute('aria-expanded', 'true'); const c = $('#mobileClose'); c && setTimeout(() => c.focus(), 50); };
+  const closeMenu = () => { mobileMenu.classList.remove('open'); document.body.classList.remove('menu-open'); burger && burger.setAttribute('aria-expanded', 'false'); };
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
   burger && burger.addEventListener('click', openMenu);
   mobileClose && mobileClose.addEventListener('click', closeMenu);
