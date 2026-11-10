@@ -168,10 +168,10 @@
     var w = 0, h = 0, dpr = 1, items = [], running = false, visible = true, last = 0, rafId = 0;
 
     function count() {
-      var base = mode === 'petals' ? 16 : 22;
+      var base = mode === 'petals' ? 8 : 22;   // petals: just a few, so the photo stays the star
       if (phone) base = Math.round(base * 0.45);
       if (weak) base = Math.round(base * 0.5);
-      return Math.max(4, base);
+      return Math.max(3, base);
     }
     function make(initial) {
       var big = mode === 'petals';
