@@ -1,5 +1,5 @@
 <section class="testi" id="testimonials">
-  <div class="testi__bg" data-parallax="0.15" @if($s['image_url']) style="background-image:url('{{ img_url($s['image_url'], 1800) }}')" @endif></div>
+  <div class="testi__bg" data-parallax="0.15" @if($s['image_url']) style="--bg:url('{{ img_url($s['image_url'], 1800) }}');--bg-sm:url('{{ img_url($s['image_url'], 900) }}')" @endif></div>
   <div class="testi__overlay"></div>
   <div class="container">
     <div class="section-head center light">

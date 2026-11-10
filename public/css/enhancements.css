@@ -214,3 +214,147 @@ body.is-leaving{opacity:0;transition:opacity .3s ease}
   .blog-search input{min-width:0;width:100%}
 }
 @media (prefers-reduced-motion:reduce){.m-item img,.m-item__cap{transition:none!important}}
+
+/* =========================================================
+   MOBILE LAYER — phones & tablets
+   Everything here only applies on small screens / touch devices; the desktop design is untouched.
+   ========================================================= */
+
+/* ---- universal ---- */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-x:clip}
+body{overflow-x:clip}
+a,button,input,select,textarea,label,summary{touch-action:manipulation;-webkit-tap-highlight-color:rgba(201,154,134,.25)}
+img,video,iframe{max-width:100%}
+
+/* ---- responsive background images: small file on phones, large on desktop ---- */
+.hero__slide[style*="--hero"]{background-image:var(--hero)}
+.page-banner__bg[style*="--bg"],.quote__bg[style*="--bg"],.testi__bg[style*="--bg"]{background-image:var(--bg)}
+@media (max-width:700px){
+  .hero__slide[style*="--hero-sm"]{background-image:var(--hero-sm)}
+  .page-banner__bg[style*="--bg-sm"],.quote__bg[style*="--bg-sm"],.testi__bg[style*="--bg-sm"]{background-image:var(--bg-sm)}
+}
+
+/* ---- closed menu must not be reachable by keyboard / screen readers ---- */
+.mobile-menu{visibility:hidden;transition:transform .55s var(--ease),visibility 0s linear .55s}
+.mobile-menu.open{visibility:visible;transition-delay:0s}
+body.menu-open{overflow:hidden}
+
+/* ---- tablets & phones (<= 1100px) ---- */
+@media (max-width:1100px){
+  /* side-slide reveals would widen the page: use a gentle rise instead */
+  [data-reveal="left"],[data-reveal="right"]{transform:translateY(36px)}
+  [data-reveal].in{transform:none}
+
+  /* header: respect notches, slimmer bar (logo canvas has transparent padding, so the mark keeps its size) */
+  .header__inner{padding-left:max(1rem,env(safe-area-inset-left));padding-right:max(1rem,env(safe-area-inset-right));min-height:76px}
+  .logo-img{height:96px;margin-block:-10px}
+  .page-banner{padding-top:84px}
+
+  /* comfortable thumb targets */
+  .burger{width:48px;height:48px;align-items:center;justify-content:center;margin-right:-10px}
+  .rsvp-btn{min-height:44px}
+  .mobile-menu{overflow-y:auto;justify-content:flex-start;padding:5.5rem 1.5rem calc(2.5rem + env(safe-area-inset-bottom))}
+  .mobile-menu ul{margin-block:auto;gap:.4rem}
+  .mobile-menu li a{display:block;padding:.55rem 1.2rem}
+  .mobile-menu__close{width:48px;height:48px;display:flex;align-items:center;justify-content:center;top:max(1rem,env(safe-area-inset-top));right:max(1rem,env(safe-area-inset-right))}
+  .mobile-menu__social a{display:inline-flex;width:48px;height:48px;align-items:center;justify-content:center}
+
+  .hero__dots{gap:.9rem}
+  .hero__dots button,.slider__dots button{position:relative}
+  .hero__dots button::after,.slider__dots button::after{content:"";position:absolute;inset:-16px -6px}
+  .slider__dots{gap:.9rem}
+  .hero__scroll{width:44px;height:44px;display:flex;align-items:center;justify-content:center}
+
+  .page-banner__crumbs a{display:inline-block;padding:.8rem .2rem}
+  .contact-info a{display:inline-block;padding:.5rem 0}
+  .footer__col a{display:inline-block;padding:.45rem 0}
+  .footer__social a{width:46px;height:46px}
+  .filter{min-height:44px;display:inline-flex;align-items:center}
+  .layout-toggle button{width:46px;height:46px}
+  .blog-search button{min-width:44px;min-height:44px}
+  .totop{width:48px;height:48px}
+  .pager a{display:inline-flex;align-items:center;min-height:44px}
+  .g-more,.btn{min-height:46px}
+
+  /* iPhones zoom into any field smaller than 16px — keep them at 16px */
+  input,select,textarea,.field input,.field select,.field textarea,.blog-search input{font-size:16px}
+
+  /* small labels stay legible */
+  .pf-card__cat,.pf-card__count,.post__date,.vcard__cat,.counter__label,.footer__bottom p,.page-banner__crumbs{font-size:.78rem}
+
+  /* hero fills the visible screen even with a collapsing mobile address bar */
+  .hero{height:100vh;height:100svh;min-height:520px}
+
+  /* floating enquiry button: lower corner, above "back to top", clear of text */
+  .side-widgets{top:auto;bottom:calc(88px + env(safe-area-inset-bottom));right:0}
+  .side-widgets__btn{width:48px;height:48px}
+  .totop{right:max(1rem,env(safe-area-inset-right));bottom:max(1rem,calc(env(safe-area-inset-bottom) + .5rem))}
+
+  /* viewers use the dynamic viewport so toolbars never hide controls */
+  .lb-figure img{max-height:76dvh}
+  .lb-btn{width:46px;height:46px}
+}
+
+/* ---- phones (<= 560px) ---- */
+@media (max-width:560px){
+  .header__inner{padding-left:max(.6rem,env(safe-area-inset-left));padding-right:max(.6rem,env(safe-area-inset-right));min-height:70px}
+  .logo-img{height:88px;margin-block:-9px}
+  .page-banner{min-height:340px;padding-top:78px}
+  .section,.services.section{padding:4.5rem 0}
+  .gallery{padding-top:4.5rem}
+  .rsvp{padding:4.5rem 0}
+  .section-head{margin-bottom:2rem}
+  .rsvp__form{padding:1.5rem 1.25rem}
+  .container{width:min(1180px,calc(100% - 2.2rem))}
+
+  /* filter chips: one swipeable row, never wider than the screen */
+  .g-toolbar{flex-wrap:nowrap}
+  .filters{scrollbar-width:none;scroll-snap-type:x proximity;margin-inline:-1.1rem;padding-inline:1.1rem;mask-image:linear-gradient(to right,#000 92%,transparent)}
+  .filters::-webkit-scrollbar{display:none}
+  .filter{scroll-snap-align:start}
+  .blog-search{width:100%}
+
+  /* modal viewers use the whole screen on phones */
+  .vmodal{padding:0}
+  .vmodal__box{width:100%}
+  .vmodal__info{padding:1rem 1.1rem calc(1rem + env(safe-area-inset-bottom))}
+  .lb-caption{padding:0 1rem;font-size:.9rem}
+
+  .countdown div{width:64px;height:64px}
+  .story__img--two{right:-2%}
+}
+
+/* ---- phones held sideways ---- */
+@media (max-height:520px) and (orientation:landscape){
+  .hero{min-height:420px}
+  .hero__word{font-size:clamp(2.2rem,11vh,6rem)}
+  .hero__scroll{display:none}
+  .mobile-menu ul{flex-direction:row;flex-wrap:wrap;justify-content:center}
+  .notfound{padding:7rem 0 3rem}
+}
+
+/* ---- big touch screens (tablets): keep generous spacing ---- */
+@media (min-width:561px) and (max-width:1100px){
+  .section{padding:5.5rem 0}
+}
+@media (max-width:1100px){
+  .post__more{display:inline-block;padding:.9rem 0 .6rem;margin-top:-.2rem}
+}
+@media (max-width:560px){
+  .rsvp-btn{font-size:.75rem;letter-spacing:1.2px;padding:.7rem .9rem}
+}
+@media (max-width:380px){
+  .rsvp-btn{font-size:.72rem;letter-spacing:.8px;padding:.7rem .7rem}
+  .logo-img{height:80px;margin-block:-8px}
+}
+
+/* About section photos: the original rule (auto margins + absolutely-positioned children) collapsed the box to 0px on tablets/phones */
+@media (max-width:1100px){
+  .story__images{width:min(100%,460px);min-height:0;aspect-ratio:1/1.12;margin-inline:auto}
+}
+
+/* contact list: equal icon column so labels line up */
+.contact-info__item i{width:1.4rem;flex:0 0 1.4rem;text-align:center}
+
+/* The `hidden` attribute must always win (button/flex rules otherwise keep "Load more" visible on short galleries) */
+[hidden]{display:none!important}
