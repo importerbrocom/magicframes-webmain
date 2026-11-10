@@ -178,8 +178,8 @@
     function make(kind, initial) {
       var k = phone ? 0.75 : 1;
       var p = { kind: kind, x: Math.random() * w, ph: Math.random() * 6.28, sp: 0.5 + Math.random() * 0.9, sway: 10 + Math.random() * 24 };
-      if (kind === 'b') {                               // big soft bokeh disc
-        p.r = (9 + Math.pow(Math.random(), 1.6) * 34) * k;
+      if (kind === 'b') {                               // smaller soft bokeh disc
+        p.r = (5 + Math.pow(Math.random(), 1.6) * 17) * k;
         p.vy = -(4 + Math.random() * 9);
         p.a = 0.55 + Math.random() * 0.4;
         p.col = GOLD[(Math.random() * GOLD.length) | 0];
