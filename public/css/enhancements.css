@@ -358,3 +358,9 @@ body.menu-open{overflow:hidden}
 
 /* The `hidden` attribute must always win (button/flex rules otherwise keep "Load more" visible on short galleries) */
 [hidden]{display:none!important}
+
+/* Services page: no big empty band between the banner (or intro text) and the service cards */
+.page-banner + .services.section{padding-top:3rem}
+.section + .services.section{padding-top:0}
+.page-banner + .section{padding-bottom:2rem}
+.services.section .services__grid{margin-top:0}
