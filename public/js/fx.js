@@ -172,7 +172,7 @@
 
     function plan() {                                   // how many of each kind
       var f = (phone ? 0.5 : 1) * (weak ? 0.5 : 1);
-      return gold ? { b: Math.max(4, Math.round(13 * f)), g: Math.max(8, Math.round(26 * f)) }
+      return gold ? { b: Math.max(4, Math.round(9 * f)), g: Math.max(8, Math.round(18 * f)) }
                   : { b: 0, g: Math.max(4, Math.round(22 * f)) };
     }
     function make(kind, initial) {
