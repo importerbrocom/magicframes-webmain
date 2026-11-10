@@ -2,7 +2,7 @@
 <section class="hero" id="home">
   <div class="hero__slides" id="heroSlides">
     @forelse($slides as $i => $slide)
-      <div class="hero__slide {{ $i === 0 ? 'is-active' : '' }}" @if($slide['image_url']) style="background-image:url('{{ img_url($slide['image_url'], 1900) }}')" @endif>
+      <div class="hero__slide {{ $i === 0 ? 'is-active' : '' }}" @if($slide['image_url']) style="--hero:url('{{ img_url($slide['image_url'], 1900) }}');--hero-sm:url('{{ img_url($slide['image_url'], 900) }}')" @endif>
         <div class="hero__caption">
           @php $len = mb_strlen($slide['heading']); $wc = $len > 22 ? ' hero__word--xlong' : ($len > 8 ? ' hero__word--long' : ''); @endphp
           @if($i === 0)<h1 class="hero__word{{ $wc }}">{{ $slide['heading'] }}</h1>@else<h2 class="hero__word{{ $wc }}">{{ $slide['heading'] }}</h2>@endif

@@ -61,7 +61,7 @@ Tables for users, roles/permissions, settings, headers, navigation, pages, secti
 Select multiple, preview before saving, upload video + thumbnail preview, captions, replace, delete, publish ✅.
 
 ## 11. Responsive
-Layouts verified in a real browser at **1440 px and 390 px** (no horizontal scrolling). Tablet widths and real iPhone Safari / Android Chrome are covered by responsive CSS but **were not tested on physical devices** 🟡 — see the launch checklist.
+A dedicated **mobile layer** (`public/css/enhancements.css`, section "MOBILE LAYER") was added and audited in a real browser (Chromium) at **360, 390 and 768 px** on all 12 public page types: no sideways scrolling anywhere; 44 px+ tap targets (small dots have an enlarged hidden hit area); 16 px form fields (no iPhone zoom); header slimmed on phones; hero uses the visible screen height; hero/banner images are served in a smaller size on phones; notch-safe spacing; menu locks page scroll, hides from keyboards when closed and closes with Esc; lightbox supports swipe; filter chips swipe sideways inside their own row; floating enquiry button moved off the content. Tablet widths and real iPhone Safari / Android Chrome **were not tested on physical devices** 🟡 — see the launch checklist. The admin panel is Filament's own responsive layout plus a few phone tweaks; it was not audited on a phone.
 
 ## 12. SEO & performance
 Dynamic titles, meta descriptions, canonical, Open Graph / Twitter, alt text, sitemap.xml, robots.txt, clean URLs, lazy loading, WebP, resized images, cached API/pages, security headers ✅. Not measured: Lighthouse / PageSpeed scores (no live server here) 🟡. No strict Content-Security-Policy yet.

@@ -293,4 +293,27 @@ class FrontendTest extends TestCase
             $this->get($url)->assertOk(); // second request served from cache
         }
     }
+
+    public function test_mobile_foundations_are_in_place(): void
+    {
+        HeroSlide::create(['heading' => 'Mobile Hero', 'image_path' => UploadedFile::fake()->image('h.jpg', 2400, 1200)->store('hero', 'public')]);
+        Page::where('slug', 'about')->first()->update(['banner_image_path' => UploadedFile::fake()->image('b.jpg', 2400, 1200)->store('pages', 'public')]);
+
+        $home = $this->get('/')->assertOk()->getContent();
+        $this->assertStringContainsString('viewport-fit=cover', $home, 'notch-safe viewport');
+        $this->assertStringContainsString('width=device-width, initial-scale=1.0', $home);
+        // phones get a smaller hero image than desktops
+        $this->assertMatchesRegularExpression('~--hero:url\(\'[^\']*/_cache/1900/[^\']+\'\);--hero-sm:url\(\'[^\']*/_cache/900/[^\']+\'\)~', $home);
+
+        $about = $this->get('/about')->assertOk()->getContent();
+        $this->assertMatchesRegularExpression('~--bg:url\(\'[^\']*/_cache/1900/[^\']+\'\);--bg-sm:url\(\'[^\']*/_cache/900/~', $about);
+
+        $css = file_get_contents(public_path('css/enhancements.css'));
+        foreach (['MOBILE LAYER', '@media (max-width:560px)', 'safe-area-inset', '100svh', 'font-size:16px', 'prefers-reduced-motion', '.story__images{width:min(100%,460px)'] as $needle) {
+            $this->assertStringContainsString($needle, $css);
+        }
+        $js = file_get_contents(public_path('js/main.js'));
+        $this->assertStringContainsString("document.body.classList.add('menu-open')", $js);
+        $this->assertStringContainsString("document.body.classList.remove('menu-open')", $js);
+    }
 }

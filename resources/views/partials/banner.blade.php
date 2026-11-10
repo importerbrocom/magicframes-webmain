@@ -1,7 +1,7 @@
 {{-- Inner-page banner. Expects $banner = [label,title,image_url] and optional $crumbs = [[label,url],...] --}}
 <section class="page-banner">
   @if(!empty($banner['image_url']))
-    <div class="page-banner__bg" style="background-image:url('{{ img_url($banner['image_url'], 1900) }}')"></div>
+    <div class="page-banner__bg" style="--bg:url('{{ img_url($banner['image_url'], 1900) }}');--bg-sm:url('{{ img_url($banner['image_url'], 900) }}')"></div>
   @endif
   <div class="page-banner__overlay"></div>
   <div class="page-banner__content">
