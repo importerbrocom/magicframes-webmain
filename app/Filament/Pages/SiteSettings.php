@@ -44,7 +44,7 @@ class SiteSettings extends SettingsPage
                 TextInput::make('site.tagline')->maxLength(160),
                 Select::make('site.effects')->label('Decorative motion effects')->native(false)
                     ->options(['1' => 'On (recommended)', '0' => 'Off'])->selectablePlaceholder(false)
-                    ->helperText('Floating petals, photo reveals, tilt and hover effects. Visitors who prefer reduced motion never see them. Switch off for the simplest, fastest pages.'),
+                    ->helperText('Golden sparkles, photo reveals, tilt and hover effects. Visitors who prefer reduced motion never see them. Switch off for the simplest, fastest pages.'),
                 Textarea::make('footer.about')->label('Footer description')->rows(2)->maxLength(300)->columnSpanFull(),
                 TextInput::make('footer.copyright')->label('Footer copyright text')->maxLength(160)->helperText('The © and year are added automatically.'),
             ]),

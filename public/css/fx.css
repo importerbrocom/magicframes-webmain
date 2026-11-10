@@ -63,7 +63,10 @@
 .fx-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
 .page-banner .fx-canvas,.quote .fx-canvas{z-index:1}
 .hero__slide:not(.hero__slide--plain)::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
-  background:radial-gradient(ellipse at 50% 45%,transparent 38%,rgba(20,15,12,.38) 100%)}
+  /* warm shade at the top gives the golden sparkles something to glow against + a soft edge vignette */
+  background:
+    linear-gradient(180deg,rgba(54,30,8,.5) 0%,rgba(54,30,8,.2) 34%,transparent 60%),
+    radial-gradient(ellipse at 50% 45%,transparent 38%,rgba(20,15,12,.38) 100%)}
 
 /* ---------- 7. Category band (marquee) ---------- */
 .marquee{overflow:hidden;background:var(--cream-2);border-block:1px solid var(--line);padding:1.5rem 0;user-select:none}

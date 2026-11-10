@@ -28,7 +28,7 @@ Sign in at **`/admin`**. Everything visitors see is controlled from here; change
 | Add a team member | Administration → Users (roles: *super-admin* everything, *editor* all content, *enquiry-handler* enquiries only) |
 
 ## Motion effects
-The website has gentle motion: floating petals on the home banner, photos that reveal as you scroll, viewfinder corners and a "View" cursor on photos, a scrolling band of your gallery names under the banner, cards that tilt under the mouse, and a thin progress line at the top. It is on by default.
+The website has gentle motion: golden sparkles on the home banner, photos that reveal as you scroll, viewfinder corners and a "View" cursor on photos, a scrolling band of your gallery names under the banner, cards that tilt under the mouse, and a thin progress line at the top. It is on by default.
 * Switch it **Off** under *Website > Site settings > Decorative motion effects* if you want the simplest, fastest pages. The pages then look exactly as before.
 * Visitors who set "reduce motion" on their phone or computer never see any of it, and phones get a lighter version automatically.
 * The gallery band shows every gallery that has at least one published photo (needs two or more).

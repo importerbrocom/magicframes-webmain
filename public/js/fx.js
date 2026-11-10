@@ -156,9 +156,11 @@
   }
 
   /* ---------------------------------------------------------
-     5. Falling petals (hero) and floating light (banners, quote band)
+     5. Golden sparkles on the home hero (soft bokeh discs + tiny glitter),
+        and faint floating light on inner-page banners / the quote band
      --------------------------------------------------------- */
   var PALETTE = ['255,255,255', '247,243,238', '201,154,134', '230,195,179', '240,216,204'];
+  var GOLD = ['255,214,120', '255,196,80', '246,172,60', '255,232,160', '255,205,100'];
 
   function Particles(host, mode) {
     var canvas = document.createElement('canvas');
@@ -166,66 +168,82 @@
     host.insertBefore(canvas, host.firstChild);
     var ctx = canvas.getContext('2d');
     var w = 0, h = 0, dpr = 1, items = [], running = false, visible = true, last = 0, rafId = 0;
+    var gold = mode === 'gold';
 
-    function count() {
-      var base = mode === 'petals' ? 8 : 22;   // petals: just a few, so the photo stays the star
-      if (phone) base = Math.round(base * 0.45);
-      if (weak) base = Math.round(base * 0.5);
-      return Math.max(3, base);
+    function plan() {                                   // how many of each kind
+      var f = (phone ? 0.5 : 1) * (weak ? 0.5 : 1);
+      return gold ? { b: Math.max(4, Math.round(13 * f)), g: Math.max(8, Math.round(26 * f)) }
+                  : { b: 0, g: Math.max(4, Math.round(22 * f)) };
     }
-    function make(initial) {
-      var big = mode === 'petals';
-      return {
-        x: Math.random() * w, y: initial ? Math.random() * h : (big ? -20 : h + 10),
-        s: big ? 5 + Math.random() * 8 : 0.8 + Math.random() * 2,
-        vy: big ? 20 + Math.random() * 28 : -(5 + Math.random() * 12),
-        sway: 12 + Math.random() * 30, ph: Math.random() * 6.28, sp: 0.5 + Math.random() * 0.9,
-        rot: Math.random() * 6.28, vr: (Math.random() - 0.5) * 1.4,
-        flip: Math.random() * 6.28, vf: 1 + Math.random() * 2,
-        col: PALETTE[(Math.random() * PALETTE.length) | 0], a: 0.35 + Math.random() * 0.5
-      };
+    function make(kind, initial) {
+      var k = phone ? 0.75 : 1;
+      var p = { kind: kind, x: Math.random() * w, ph: Math.random() * 6.28, sp: 0.5 + Math.random() * 0.9, sway: 10 + Math.random() * 24 };
+      if (kind === 'b') {                               // big soft bokeh disc
+        p.r = (9 + Math.pow(Math.random(), 1.6) * 34) * k;
+        p.vy = -(4 + Math.random() * 9);
+        p.a = 0.55 + Math.random() * 0.4;
+        p.col = GOLD[(Math.random() * GOLD.length) | 0];
+      } else if (kind === 'g') {                        // small sharp glitter speck
+        p.r = (0.9 + Math.random() * 1.9) * k;
+        p.vy = -(6 + Math.random() * 16);
+        p.a = 0.55 + Math.random() * 0.45;
+        p.col = gold ? GOLD[(Math.random() * GOLD.length) | 0] : PALETTE[(Math.random() * PALETTE.length) | 0];
+        if (!gold) { p.r = 0.8 + Math.random() * 2; p.a = 0.35 + Math.random() * 0.5; }
+      }
+      p.y = initial ? Math.random() * h : h + p.r * 2;
+      return p;
     }
     function size() {
       dpr = Math.min(window.devicePixelRatio || 1, phone ? 1.5 : 2);
       w = host.clientWidth; h = host.clientHeight;
       canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      var n = count();
-      while (items.length < n) items.push(make(true));
-      items.length = n;
-      canvas.setAttribute('data-count', n);
+      var n = plan(), want = n.b + n.g;
+      if (items.length !== want) {
+        items = [];
+        for (var i = 0; i < n.b; i++) items.push(make('b', true));
+        for (var j = 0; j < n.g; j++) items.push(make('g', true));
+      }
+      canvas.setAttribute('data-count', want);
     }
-    function petal(p) {
-      var s = p.s, fx = Math.cos(p.flip);
-      ctx.save();
-      ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.scale(Math.max(0.25, Math.abs(fx)), 1);
-      ctx.fillStyle = 'rgba(' + p.col + ',' + p.a.toFixed(2) + ')';
-      ctx.beginPath();
-      ctx.moveTo(0, -s);
-      ctx.bezierCurveTo(s * 0.95, -s * 0.55, s * 0.75, s * 0.75, 0, s);
-      ctx.bezierCurveTo(-s * 0.75, s * 0.75, -s * 0.95, -s * 0.55, 0, -s);
-      ctx.fill();
-      ctx.restore();
+    function bokeh(p, t) {                              // soft disc with a slightly brighter rim, like a real lens
+      var tw = 0.75 + 0.25 * Math.sin(t * p.sp * 1.4 + p.ph);
+      var a = p.a * tw * (0.35 + 0.65 * Math.max(0, 1 - p.y / h));   // brighter toward the top
+      var g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
+      g.addColorStop(0, 'rgba(' + p.col + ',' + (a * 0.7).toFixed(3) + ')');
+      g.addColorStop(0.72, 'rgba(' + p.col + ',' + (a * 0.62).toFixed(3) + ')');
+      g.addColorStop(0.9, 'rgba(' + p.col + ',' + Math.min(1, a * 1.1).toFixed(3) + ')');
+      g.addColorStop(1, 'rgba(' + p.col + ',0)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill();
     }
-    function mote(p, t) {
-      var tw = 0.5 + 0.5 * Math.sin(t * p.sp * 2 + p.ph);
-      var g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.s * 4);
-      var a = (p.a * tw).toFixed(2);
-      g.addColorStop(0, 'rgba(' + p.col + ',' + a + ')'); g.addColorStop(1, 'rgba(' + p.col + ',0)');
-      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p.x, p.y, p.s * 4, 0, 6.283); ctx.fill();
+    function glitter(p, t) {                            // sharp twinkle: mostly dim, flashes bright
+      var tw = Math.pow(Math.max(0, Math.sin(t * p.sp * 2.6 + p.ph)), 3);
+      var a = p.a * (0.15 + 0.85 * tw);
+      if (a < 0.02) return;
+      var R = p.r * (gold ? 6.5 : 4);
+      var g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, R);
+      g.addColorStop(0, 'rgba(255,250,235,' + Math.min(1, a).toFixed(3) + ')');
+      g.addColorStop(0.25, 'rgba(' + p.col + ',' + (a * 0.7).toFixed(3) + ')');
+      g.addColorStop(1, 'rgba(' + p.col + ',0)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p.x, p.y, R, 0, 6.283); ctx.fill();
+      if (gold && tw > 0.55 && p.r > 1.5) {             // tiny four-point glint on the brightest flashes
+        var L = p.r * 7 * tw;
+        ctx.strokeStyle = 'rgba(255,244,205,' + (a * 0.8).toFixed(3) + ')'; ctx.lineWidth = 0.8;
+        ctx.beginPath(); ctx.moveTo(p.x - L, p.y); ctx.lineTo(p.x + L, p.y); ctx.moveTo(p.x, p.y - L); ctx.lineTo(p.x, p.y + L); ctx.stroke();
+      }
     }
     function frame(now) {
       if (!running) return;
       rafId = requestAnimationFrame(frame);
       var dt = Math.min(0.05, (now - last) / 1000); last = now;
       ctx.clearRect(0, 0, w, h);
+      ctx.globalCompositeOperation = gold ? 'lighter' : 'source-over';   // overlapping golden light adds up and glows
       var t = now / 1000;
       for (var i = 0; i < items.length; i++) {
         var p = items[i];
         p.ph += dt * p.sp; p.y += p.vy * dt; p.x += Math.sin(p.ph) * p.sway * dt;
-        if (mode === 'petals') { p.rot += p.vr * dt; p.flip += p.vf * dt; }
-        if (p.y > h + 24 || p.y < -24 || p.x < -30 || p.x > w + 30) { items[i] = make(false); items[i].x = Math.random() * w; continue; }
-        mode === 'petals' ? petal(p) : mote(p, t);
+        if (p.y < -p.r * 3 || p.x < -40 || p.x > w + 40) { items[i] = make(p.kind, false); continue; }
+        p.kind === 'b' ? bokeh(p, t) : glitter(p, t);
       }
     }
     function start() {
@@ -251,7 +269,7 @@
     check();
   }
 
-  if (hero) new Particles(hero, 'petals');
+  if (hero) new Particles(hero, 'gold');
   $$('.page-banner, .quote').forEach(function (el) { new Particles(el, 'motes'); });
 
   /* ---------------------------------------------------------

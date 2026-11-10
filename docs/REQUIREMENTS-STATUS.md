@@ -23,8 +23,8 @@ the public pages were also checked in a real browser (Chromium) at desktop and p
 |---|---|
 | Page transitions, scroll-triggered reveals, animated hero, parallax, counters, loading animation, custom cursor, hover/zoom effects, animated headings | ✅ (original effects kept + page fade, word-by-word headings, gallery hover captions) — all disabled for visitors who prefer reduced motion |
 | Image "reveal" effects | ✅ curtain-style photo reveals (gallery, portfolio, blog, about), staggered |
-| Extra effects (added on request) | ✅ falling petals on the hero and soft light on banners, letter-by-letter hero headline, scrolling gallery-name band, camera-viewfinder corners + "View/Play" cursor on photos, card tilt with glow, magnetic buttons with light sweep, section-heading ornaments, scroll progress line + back-to-top ring, preloader curtain, lightbox slide direction, About-photo parallax. All switchable in Admin, off for reduced-motion visitors, lighter on phones |
-| "Beautiful background graphics" | ✅ petals / light particles (canvas), hero vignette, ornaments; GSAP / Framer Motion not used (plain JS, no libraries) |
+| Extra effects (added on request) | ✅ golden bokeh and glitter sparkles on the hero and soft light on banners, letter-by-letter hero headline, scrolling gallery-name band, camera-viewfinder corners + "View/Play" cursor on photos, card tilt with glow, magnetic buttons with light sweep, section-heading ornaments, scroll progress line + back-to-top ring, preloader curtain, lightbox slide direction, About-photo parallax. All switchable in Admin, off for reduced-motion visitors, lighter on phones |
+| "Beautiful background graphics" | ✅ golden sparkles / light particles (canvas), hero vignette, ornaments; GSAP / Framer Motion not used (plain JS, no libraries) |
 
 ## 4. Home page
 | Item | Status |
