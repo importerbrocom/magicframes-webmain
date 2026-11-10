@@ -129,3 +129,7 @@ html:not(.dark) .fi-input-wrp { border-radius: 10px; }
   .fi-section-content, .fi-ta-content { font-size: 0.9375rem; }
   .fi-wi-stats-overview-stat-value { font-size: 1.625rem; }
 }
+
+/* Clickable dashboard stat boxes (open the filtered list) */
+a.fi-wi-stats-overview-stat { cursor: pointer; transition: box-shadow .2s ease, transform .2s ease, border-color .2s ease; }
+a.fi-wi-stats-overview-stat:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(201, 162, 74, .18); border-color: #C9A24A; }
