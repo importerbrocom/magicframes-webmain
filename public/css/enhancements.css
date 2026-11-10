@@ -355,3 +355,6 @@ body.menu-open{overflow:hidden}
 
 /* contact list: equal icon column so labels line up */
 .contact-info__item i{width:1.4rem;flex:0 0 1.4rem;text-align:center}
+
+/* The `hidden` attribute must always win (button/flex rules otherwise keep "Load more" visible on short galleries) */
+[hidden]{display:none!important}
