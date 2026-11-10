@@ -316,4 +316,61 @@ class FrontendTest extends TestCase
         $this->assertStringContainsString("document.body.classList.add('menu-open')", $js);
         $this->assertStringContainsString("document.body.classList.remove('menu-open')", $js);
     }
+
+    public function test_motion_effects_are_on_by_default_and_can_be_switched_off(): void
+    {
+        $html = $this->get('/')->assertOk()->getContent();
+        $this->assertStringContainsString('css/fx.css', $html);
+        $this->assertStringContainsString('js/fx.js', $html);
+        $this->assertStringNotContainsString('class="marquee"', $html, 'category band needs 2+ galleries with photos');
+
+        foreach (['Weddings', 'Engagements'] as $name) {
+            $cat = GalleryCategory::create(['name' => $name]);
+            GalleryImage::create(['gallery_category_id' => $cat->id, 'path' => UploadedFile::fake()->image($name.'.jpg', 900, 600)->store('gallery', 'public')]);
+        }
+        GalleryCategory::create(['name' => 'Empty gallery']);
+
+        $html = $this->get('/')->getContent();
+        $this->assertStringContainsString('class="marquee"', $html);
+        $this->assertSame(2, substr_count($html, '<ul class="marquee__list"'), 'one readable list + one decorative copy');
+        $this->assertSame(1, preg_match_all('~<ul class="marquee__list"\\s+aria-hidden="true"\\s*>~', $html), 'the copy is hidden from screen readers');
+        $this->assertStringContainsString('>Weddings</a>', $html);
+        $this->assertStringNotContainsString('Empty gallery', $html);
+        $this->assertSame(['Engagements', 'Weddings'], $this->getJson('/api/v1/home')->json('data.marquee'), 'same order as the galleries (sort order, then name)');
+        $this->assertTrue($this->getJson('/api/v1/site')->json('data.effects'));
+
+        // admin switches the effects off → pages become exactly the plain pages again
+        Setting::setMany(['site.effects' => '0']);
+        foreach (['/', '/contact', '/gallery', '/definitely-not-a-page'] as $url) {
+            $html = $this->get($url)->getContent();
+            $this->assertStringNotContainsString('css/fx.css', $html, $url);
+            $this->assertStringNotContainsString('js/fx.js', $html, $url);
+            $this->assertStringNotContainsString('class="marquee"', $html, $url);
+        }
+        $this->assertFalse($this->getJson('/api/v1/site')->json('data.effects'));
+    }
+
+    public function test_motion_effects_respect_reduced_motion_and_never_hide_content_without_javascript(): void
+    {
+        $css = file_get_contents(public_path('css/fx.css'));
+        $js = file_get_contents(public_path('js/fx.js'));
+
+        // the script exits before doing anything for visitors who prefer reduced motion
+        $this->assertStringContainsString("matchMedia('(prefers-reduced-motion: reduce)').matches) return;", $js);
+        $this->assertStringContainsString('@media (prefers-reduced-motion:reduce)', $css);
+        $this->assertStringContainsString('.marquee__track{animation:none', $css);
+        // hidden "before" states only exist once fx.js has run (no script = nothing hidden)
+        $this->assertStringContainsString('.fx-js [data-fx="curtain"] img{clip-path:inset(0 0 100% 0)}', $css);
+        $this->assertDoesNotMatchRegularExpression('~(^|\\n)\\[data-fx="curtain"\\] img\\{clip-path~', $css);
+        // pointer-only effects are limited to mouse devices; particles pause when hidden
+        $this->assertStringContainsString("(hover: hover) and (pointer: fine)", $js);
+        $this->assertStringContainsString('document.hidden', $js);
+        $this->assertStringContainsString('saveData', $js);
+        // no external libraries or network calls
+        $this->assertDoesNotMatchRegularExpression('~https?://|fetch\\(|XMLHttpRequest~', str_replace('http://www.w3.org/2000/svg', '', $js)); // the SVG namespace is a label, not a request
+
+        $out = [];
+        exec('node --check '.escapeshellarg(public_path('js/fx.js')).' 2>&1', $out, $code);
+        $this->assertSame(0, $code, implode("\n", $out));
+    }
 }

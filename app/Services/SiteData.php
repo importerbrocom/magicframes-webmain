@@ -76,6 +76,7 @@ class SiteData
         return [
             'name' => Setting::get('site.name', 'Magic Frames'),
             'tagline' => Setting::get('site.tagline'),
+            'effects' => Setting::get('site.effects', '1') !== '0',
             'header' => [
                 'visible' => $header->is_visible,
                 'sticky' => $header->is_sticky,
@@ -156,6 +157,8 @@ class SiteData
         })->filter()->values()->all();
 
         return [
+            // names of galleries that have photos: scrolling band under the hero
+            'marquee' => GalleryCategory::published()->whereHas('publishedImages')->orderBy('sort_order')->orderBy('name')->pluck('name')->all(),
             'hero' => HeroSlide::published()->get()->map(fn ($h) => [
                 'heading' => $h->heading, 'subheading' => $h->subheading, 'description' => $h->description,
                 'image_url' => $h->image_url, 'button_label' => $h->button_label, 'button_url' => $h->button_url,

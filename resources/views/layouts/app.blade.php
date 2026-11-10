@@ -37,6 +37,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
   <link rel="stylesheet" href="{{ asset('css/enhancements.css') }}?v={{ filemtime(public_path('css/enhancements.css')) }}" />
+  @if($site['effects'])
+  <link rel="stylesheet" href="{{ asset('css/fx.css') }}?v={{ filemtime(public_path('css/fx.css')) }}" />
+  @endif
   @stack('head')
   <noscript><style>[data-reveal],.reveal-scroll{opacity:1!important;transform:none!important}.preloader{display:none!important}</style></noscript>
 </head>
@@ -73,6 +76,9 @@
 
   <script src="{{ asset('js/main.js') }}?v={{ filemtime(public_path('js/main.js')) }}"></script>
   <script src="{{ asset('js/site.js') }}?v={{ filemtime(public_path('js/site.js')) }}"></script>
+  @if($site['effects'])
+  <script src="{{ asset('js/fx.js') }}?v={{ filemtime(public_path('js/fx.js')) }}" defer></script>
+  @endif
   @stack('scripts')
 </body>
 </html>

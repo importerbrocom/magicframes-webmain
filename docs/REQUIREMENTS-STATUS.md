@@ -22,8 +22,9 @@ the public pages were also checked in a real browser (Chromium) at desktop and p
 | Item | Status |
 |---|---|
 | Page transitions, scroll-triggered reveals, animated hero, parallax, counters, loading animation, custom cursor, hover/zoom effects, animated headings | ✅ (original effects kept + page fade, word-by-word headings, gallery hover captions) — all disabled for visitors who prefer reduced motion |
-| Image "reveal" effects | 🟡 slide/fade reveals are used; a clip-path reveal helper exists in the CSS but is not applied anywhere |
-| "Beautiful background graphics" | 🟡 only the original template styling; no new decorative graphics were invented |
+| Image "reveal" effects | ✅ curtain-style photo reveals (gallery, portfolio, blog, about), staggered |
+| Extra effects (added on request) | ✅ falling petals on the hero and soft light on banners, letter-by-letter hero headline, scrolling gallery-name band, camera-viewfinder corners + "View/Play" cursor on photos, card tilt with glow, magnetic buttons with light sweep, section-heading ornaments, scroll progress line + back-to-top ring, preloader curtain, lightbox slide direction, About-photo parallax. All switchable in Admin, off for reduced-motion visitors, lighter on phones |
+| "Beautiful background graphics" | ✅ petals / light particles (canvas), hero vignette, ornaments; GSAP / Framer Motion not used (plain JS, no libraries) |
 
 ## 4. Home page
 | Item | Status |

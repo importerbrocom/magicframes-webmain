@@ -71,6 +71,7 @@
     function show() {
       const it = items[index];
       img.classList.remove('loaded');
+      void img.offsetWidth; // restart the slide-in animation even when the image is cached
       img.onload = () => img.classList.add('loaded');
       img.alt = it.alt;
       img.src = it.src;
@@ -88,6 +89,7 @@
 
     function go(step) {
       if (items.length < 2) return;
+      img.setAttribute('data-dir', step > 0 ? 'next' : 'prev'); // used by the (optional) slide animation
       index = (index + step + items.length) % items.length;
       show();
     }
@@ -95,6 +97,7 @@
     function open(list, i, trigger) {
       if (!root) build();
       items = list; index = i; opener = trigger;
+      img.removeAttribute('data-dir');
       show();
       root.classList.add('open');
       document.body.style.overflow = 'hidden';

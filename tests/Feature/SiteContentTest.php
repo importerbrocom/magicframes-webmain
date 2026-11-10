@@ -18,6 +18,7 @@ use App\Models\HomeSection;
 use App\Models\NavigationMenu;
 use App\Models\Page;
 use App\Models\Service;
+use App\Models\Setting;
 use App\Models\Testimonial;
 use App\Models\User;
 use Database\Seeders\RolesAndAdminSeeder;
@@ -359,5 +360,20 @@ class SiteContentTest extends TestCase
             $this->assertStringNotContainsString('__PHP_Incomplete_Class', json_encode($second));
         }
         $this->assertSame('Home', $this->getJson('/api/v1/site')->json('data.menus.left.0.label'));
+    }
+
+    public function test_admin_can_switch_motion_effects_off_and_on(): void
+    {
+        $this->login();
+        $this->get('/')->assertSee('js/fx.js', false);
+
+        Livewire::test(SiteSettings::class)->assertFormSet(['site.effects' => '1'])
+            ->fillForm(['site' => ['name' => 'Magic Frames', 'effects' => '0']])->call('save')->assertHasNoFormErrors();
+        $this->assertSame('0', Setting::get('site.effects'));
+        $this->get('/')->assertDontSee('js/fx.js', false)->assertDontSee('css/fx.css', false);
+
+        Livewire::test(SiteSettings::class)->assertFormSet(['site.effects' => '0'])
+            ->fillForm(['site' => ['name' => 'Magic Frames', 'effects' => '1']])->call('save');
+        $this->get('/')->assertSee('js/fx.js', false);
     }
 }
