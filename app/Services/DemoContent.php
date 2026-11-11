@@ -99,6 +99,36 @@ class DemoContent
         return $removed;
     }
 
+    /** IDs of sample records of one model (e.g. GalleryImage) that are still installed. */
+    public function sampleIds(string $class): array
+    {
+        if (! $this->installed()) {
+            return [];
+        }
+        $m = json_decode((string) file_get_contents(self::manifestPath()), true) ?: [];
+
+        return array_map('intval', $m['created'][$class] ?? []);
+    }
+
+    /** Delete only the sample records of one model (files included); everything else stays. */
+    public function removeOnly(string $class): int
+    {
+        $ids = $this->sampleIds($class);
+        if (! $ids) {
+            return 0;
+        }
+        $n = 0;
+        foreach ($class::whereIn('id', $ids)->get() as $model) {
+            $model->delete();
+            $n++;
+        }
+        $m = json_decode((string) file_get_contents(self::manifestPath()), true) ?: [];
+        unset($m['created'][$class]);
+        file_put_contents(self::manifestPath(), json_encode($m, JSON_PRETTY_PRINT));
+
+        return $n;
+    }
+
     /* ------------------------------------------------------------------ helpers */
 
     private function say(string $line): void
