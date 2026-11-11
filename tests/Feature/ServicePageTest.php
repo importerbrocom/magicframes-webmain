@@ -88,27 +88,4 @@ class ServicePageTest extends TestCase
         $svc->update(['gallery' => []]);
         Storage::disk('public')->assertMissing($path);
     }
-
-    public function test_demo_install_gives_wedding_service_a_full_sample_page_and_remove_cleans_up(): void
-    {
-        $this->artisan('demo:install', ['--force' => true])->assertSuccessful();
-        $svc = Service::where('slug', 'wedding-photography')->firstOrFail();
-        $this->assertCount(8, $svc->gallery);
-        $this->assertCount(3, $svc->videos);
-        $files = $svc->detailFiles();
-        $this->assertNotEmpty($files);
-        foreach ($files as $f) {
-            Storage::disk('public')->assertExists($f);
-        }
-        $html = $this->get('/services/wedding-photography')->assertOk()->getContent();
-        $this->assertSame(8, substr_count($html, 'data-lightbox'));
-        $this->assertSame(3, preg_match_all('/ data-video /', $html));
-        $this->assertStringContainsString('youtube-nocookie.com/embed/aqz-KE-bpKQ', $html);
-        $this->assertStringContainsString('Questions', $html);
-
-        $this->artisan('demo:remove')->assertSuccessful();
-        foreach ($files as $f) {
-            Storage::disk('public')->assertMissing($f);
-        }
-    }
 }

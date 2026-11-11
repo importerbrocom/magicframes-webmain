@@ -270,27 +270,12 @@ class DemoContent
     {
         $this->say('Services…');
         $photos = [
-            'Wedding Photography' => ['wedding-ritual', 'wedding-garland', 'wedding-lamps', 'wedding-nirapara', 'wedding-family', 'wedding-petals', 'wedding-thali', 'wedding-thali-christian'],
+            'Wedding Photography' => ['wedding-ritual', 'wedding-garland', 'wedding-lamps'],
             'Pre-Wedding Shoots' => ['prewed-banana-grove', 'prewed-pink-canopy', 'prewed-umbrella'],
             'Engagement Sessions' => ['engage-rings-couple', 'engage-lamp-setup', 'engage-offerings'],
             'Cinematic Films' => ['couple-happy', 'couple-garlands', 'couple-smiling'],
             'Portrait Photography' => ['portrait-veil', 'portrait-silver', 'portrait-orange-veil'],
             'Event Coverage' => ['event-stage-flowers', 'event-stage-drapes', 'event-silk-saree'],
-        ];
-        $wedding = [
-            'description' => '<p>Sample text: this is what a full service page looks like. Your wedding is told from the first ritual to the last farewell: the haldi and mehendi mornings, the muhurtham, the garlands and the lamp, the family portraits and the quiet moments in between.</p><h3>How we work</h3><p>We meet before the day to plan the ceremonies and the family groups, then shoot unobtrusively so everyone stays relaxed. Your edited gallery is delivered online and in a printed album.</p><p>Replace all of this in Admin &gt; Website &gt; Services &gt; Wedding Photography.</p>',
-            'highlights' => ['Sample: two photographers for the full day', 'Sample: all rituals and family portraits covered', 'Sample: edited online gallery within 30 days', 'Sample: hand-bound printed album', 'Sample: highlight film of the day'],
-            'faqs' => [
-                ['question' => 'Sample question: how early should we book?', 'answer' => "Sample answer. Wedding dates fill up quickly, so please enquire as early as you can.\n\nReplace this in the Extra tab of the service."],
-                ['question' => 'Sample question: do you travel for destination weddings?', 'answer' => 'Sample answer. Yes, travel across Kerala and beyond can be arranged.'],
-                ['question' => 'Sample question: when will we receive our photos?', 'answer' => 'Sample answer. A first preview within a week, the full edited gallery in about 30 days.'],
-                ['question' => 'Sample question: can we choose the photos for the album?', 'answer' => 'Sample answer. Yes, you choose your favourites and we design the album with you.'],
-            ],
-            'videos' => [
-                ['title' => 'Sample wedding highlights (placeholder video)', 'source' => 'link', 'url' => 'https://www.youtube.com/watch?v=aqz-KE-bpKQ', 'thumb' => 'wedding-garland', 'description' => 'Placeholder: the player plays a free open film. Replace it with your own wedding film in the service Videos tab.'],
-                ['title' => 'Sample ceremony film (placeholder video)', 'source' => 'link', 'url' => 'https://www.youtube.com/watch?v=eRsGyueVLvQ', 'thumb' => 'wedding-ritual', 'description' => 'Placeholder video.'],
-                ['title' => 'Sample family moments (placeholder video)', 'source' => 'link', 'url' => 'https://www.youtube.com/watch?v=R6MlUcmOul8', 'thumb' => 'wedding-family', 'description' => 'Placeholder video.'],
-            ],
         ];
         foreach ([
             ['Wedding Photography', 'fa-solid fa-camera-retro', 'Full-day coverage of your ceremony and celebrations.'],
@@ -300,18 +285,12 @@ class DemoContent
             ['Portrait Photography', 'fa-solid fa-user', 'Individual and family portraits with a natural feel.'],
             ['Event Coverage', 'fa-solid fa-champagne-glasses', 'Receptions, parties and milestone events.'],
         ] as $i => [$title, $icon, $short]) {
-            $extra = $title === 'Wedding Photography' ? $wedding : [];
-            $videos = array_map(fn ($v) => [
-                'title' => $v['title'], 'source' => 'link', 'url' => $v['url'], 'description' => $v['description'],
-                'thumbnail' => $this->photo($v['thumb'], 'demo/services'),
-            ], $extra['videos'] ?? []);
             $this->track(Service::create([
                 'title' => $title, 'icon' => $icon, 'short_description' => $short.' (sample)', 'sort_order' => $i,
-                'description' => $extra['description'] ?? '<p>Sample text for the '.$title.' page. Describe what you offer, how the day works and what makes your style special.</p><p>Replace everything on this page in Admin &gt; Website &gt; Services &gt; Edit.</p>',
-                'highlights' => $extra['highlights'] ?? ['Sample point: replace with what is included', 'Sample point: delivery time and format', 'Sample point: number of photographers'],
-                'faqs' => $extra['faqs'] ?? [['question' => 'Sample question: how do we book?', 'answer' => 'Sample answer. Replace this in the Extra tab of the service.']],
-                'gallery' => array_map(fn ($key) => ['image' => $this->photo($key, 'demo/services'), 'title' => $this->credit($key)['caption'] ?? $title, 'alt' => $this->credit($key)['alt'] ?? $title.' sample photo'], $photos[$title]),
-                'videos' => $videos,
+                'description' => '<p>Sample text for the '.$title.' page. Describe what you offer, how the day works and what makes your style special.</p><p>Replace everything on this page in Admin &gt; Website &gt; Services &gt; Edit.</p>',
+                'highlights' => ['Sample point: replace with what is included', 'Sample point: delivery time and format', 'Sample point: number of photographers'],
+                'faqs' => [['question' => 'Sample question: how do we book?', 'answer' => 'Sample answer. Replace this in the Extra tab of the service.']],
+                'gallery' => array_map(fn ($key) => ['image' => $this->photo($key, 'demo/services'), 'title' => $title, 'alt' => $title.' sample photo'], $photos[$title]),
             ]));
         }
     }
