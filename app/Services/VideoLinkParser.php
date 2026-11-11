@@ -46,10 +46,10 @@ class VideoLinkParser
             if ($v['type'] === 'youtube') {
                 $id = $v['id'];
 
-                return ['type' => 'youtube', 'src' => "https://www.youtube-nocookie.com/embed/{$id}?autoplay=1&mute=1&loop=1&playlist={$id}&controls=0&playsinline=1&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1"];
+                return ['type' => 'youtube', 'src' => "https://www.youtube-nocookie.com/embed/{$id}?autoplay=1&mute=1&loop=1&playlist={$id}&controls=0&playsinline=1&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&enablejsapi=1"];
             }
             if ($v['type'] === 'vimeo') {
-                return ['type' => 'vimeo', 'src' => "https://player.vimeo.com/video/{$v['id']}?background=1&autoplay=1&muted=1&loop=1&dnt=1"];
+                return ['type' => 'vimeo', 'src' => "https://player.vimeo.com/video/{$v['id']}?autoplay=1&muted=1&loop=1&controls=0&title=0&byline=0&portrait=0&dnt=1"];
             }
         }
         if ($id = self::driveId($url)) {

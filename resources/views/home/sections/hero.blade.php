@@ -4,7 +4,7 @@
     @forelse($slides as $i => $slide)
       <div class="hero__slide {{ $i === 0 ? 'is-active' : '' }}" @if($slide['image_url']) style="--hero:url('{{ img_url($slide['image_url'], 1900) }}');--hero-sm:url('{{ img_url($slide['image_url'], 900) }}')" @endif>
         @if(!empty($slide['video_url']))
-          <video class="hero__video" src="{{ $slide['video_url'] }}" @if($slide['image_url']) poster="{{ img_url($slide['image_url'], 1900) }}" @endif
+          <video class="hero__video" src="{{ $slide['video_url'] }}"
                  muted loop playsinline webkit-playsinline preload="{{ $i === 0 ? 'auto' : 'metadata' }}" @if($i === 0) autoplay @endif aria-hidden="true" tabindex="-1"></video>
         @elseif(!empty($slide['video_embed']))
           {{-- YouTube / Vimeo / Drive: only the visible slide loads its player (see main.js) --}}
@@ -30,6 +30,11 @@
     @endforelse
   </div>
   <div class="hero__dots" id="heroDots"></div>
+  {{-- Sound controls: shown only while a video slide with controllable sound is on screen (see main.js) --}}
+  <div class="hero__sound" id="heroSound" hidden>
+    <button type="button" class="hero__mute" id="heroMute" aria-label="Turn sound on" aria-pressed="true"><i class="fa-solid fa-volume-xmark"></i></button>
+    <input type="range" class="hero__vol" id="heroVol" min="0" max="100" value="70" aria-label="Volume" />
+  </div>
   <a href="#after-hero" class="hero__scroll" aria-label="Scroll down"><i class="fa-solid fa-angle-down"></i></a>
 </section>
 <span id="after-hero"></span>

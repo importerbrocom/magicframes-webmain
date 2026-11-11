@@ -376,3 +376,28 @@ body.menu-open{overflow:hidden}
 .hero__embed--drive{width:100%;height:100%;pointer-events:auto;z-index:0}
 .hero__slide:has(.hero__embed){background-color:#111}
 @media (prefers-reduced-motion:reduce){.hero__embed--youtube,.hero__embed--vimeo{display:none}}
+
+/* Video slides show ONLY the video (no picture behind it); the picture is kept for reduced-motion visitors */
+.hero__slide:has(.hero__video,.hero__embed){background-image:none!important;background-color:#000}
+@media (prefers-reduced-motion:reduce){
+  .hero__slide[style*="--hero"]:has(.hero__video,.hero__embed){background-image:var(--hero)!important}
+}
+
+/* Sound controls (mute button + volume slider) */
+.hero__sound{position:absolute;left:max(1.4rem,env(safe-area-inset-left));bottom:2rem;z-index:6;display:flex;align-items:center;gap:.7rem;
+  padding:.35rem .9rem .35rem .4rem;border-radius:999px;background:rgba(20,16,12,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.28);color:#fff}
+.hero__sound[hidden]{display:none!important}
+.hero__mute{width:42px;height:42px;border-radius:50%;border:0;background:#c99a86;color:#fff;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .2s,background .2s}
+.hero__mute:hover{transform:scale(1.08);background:#b9876f}
+.hero__mute:focus-visible,.hero__vol:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.hero__vol{-webkit-appearance:none;appearance:none;width:110px;height:4px;border-radius:4px;background:rgba(255,255,255,.45);outline:none;cursor:pointer}
+.hero__vol::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:#fff;border:0;box-shadow:0 0 0 3px rgba(201,154,134,.6)}
+.hero__vol::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:#fff;border:0;box-shadow:0 0 0 3px rgba(201,154,134,.6)}
+@media (max-width:700px){
+  .hero__sound{bottom:1.2rem;padding:.3rem}
+  .hero__vol{display:none}   /* phones use the device volume buttons; the round button still mutes / unmutes */
+}
+
+/* Stop focus / keyboard from scrolling the hero sideways (keeps the sound pill in place) */
+.hero{overflow:hidden;overflow:clip}

@@ -133,11 +133,17 @@
     counters.forEach(c => cio.observe(c));
   }
 
-  /* ---------- Hero slider ---------- */
+  /* ---------- Hero slider (images and/or background videos with sound controls) ---------- */
   const heroSlides = $$('#heroSlides .hero__slide');
   const heroDots = $('#heroDots');
   if (heroSlides.length && heroDots) {
     let hi = 0, htimer;
+    const multi = heroSlides.length > 1;
+    const soundBox = $('#heroSound'), muteBtn = $('#heroMute'), volBar = $('#heroVol');
+    // Shared sound state. Browsers only allow autoplay WITH sound in some cases, so we start
+    // muted when needed and switch the sound on at the visitor's first click / tap / key press.
+    const snd = { muted: true, volume: 0.7, chosen: false };
+
     heroSlides.forEach((_, i) => {
       const b = document.createElement('button');
       b.setAttribute('aria-label', `Slide ${i + 1}`);
@@ -146,6 +152,88 @@
       heroDots.appendChild(b);
     });
     const hDots = $$('button', heroDots);
+
+    const mediaOf = k => {
+      const sl = heroSlides[k];
+      return { video: sl.querySelector('.hero__video'), frame: sl.querySelector('.hero__embed') };
+    };
+    const post = (f, msg) => { try { f.contentWindow && f.contentWindow.postMessage(typeof msg === 'string' ? msg : JSON.stringify(msg), '*'); } catch (e) {} };
+    // Send the current sound state to the player on the visible slide
+    function applySound() {
+      const { video, frame } = mediaOf(hi);
+      if (video) { video.volume = snd.volume; video.muted = snd.muted; }
+      if (frame && frame.getAttribute('src')) {
+        if (frame.classList.contains('hero__embed--youtube')) {
+          post(frame, { event: 'command', func: snd.muted ? 'mute' : 'unMute', args: [] });
+          post(frame, { event: 'command', func: 'setVolume', args: [Math.round(snd.volume * 100)] });
+        } else if (frame.classList.contains('hero__embed--vimeo')) {
+          post(frame, { method: 'setMuted', value: snd.muted });
+          post(frame, { method: 'setVolume', value: snd.volume });
+        }
+      }
+      if (muteBtn) {
+        muteBtn.setAttribute('aria-pressed', snd.muted ? 'true' : 'false');
+        muteBtn.setAttribute('aria-label', snd.muted ? 'Turn sound on' : 'Turn sound off');
+        muteBtn.innerHTML = `<i class="fa-solid ${snd.muted || snd.volume === 0 ? 'fa-volume-xmark' : (snd.volume < 0.4 ? 'fa-volume-low' : 'fa-volume-high')}"></i>`;
+      }
+      if (volBar) volBar.value = Math.round(snd.volume * 100);
+    }
+    // Show the controls only when the visible slide has a video whose sound we can control (not Drive)
+    function updateControls() {
+      if (!soundBox) return;
+      const { video, frame } = mediaOf(hi);
+      const ok = !!video || (!!frame && !frame.classList.contains('hero__embed--drive'));
+      soundBox.hidden = !ok;
+      if (ok) applySound();
+    }
+    function userSound(muted) { snd.muted = muted; snd.chosen = true; applySound(); }
+    if (muteBtn) muteBtn.addEventListener('click', () => {
+      if (snd.muted && snd.volume === 0) snd.volume = 0.7;
+      userSound(!snd.muted);
+    });
+    if (volBar) volBar.addEventListener('input', () => {
+      snd.volume = volBar.value / 100;
+      snd.muted = snd.volume === 0;
+      snd.chosen = true;
+      applySound();
+    });
+
+    // Play the visible slide's video, pause / unload the others
+    function heroVideos() {
+      heroSlides.forEach((sl, k) => {
+        const { video: v, frame: f } = mediaOf(k);
+        if (f) {                                   // YouTube / Vimeo / Drive: load when shown, unload to stop
+          if (k === hi) {
+            if (f.getAttribute('src') !== f.dataset.src) f.setAttribute('src', f.dataset.src);
+          } else if (f.getAttribute('src')) f.removeAttribute('src');
+        }
+        if (!v) return;
+        if (k !== hi) { v.pause(); return; }
+        v.loop = !multi;                           // with several slides, move on when the video ends
+        try { v.currentTime = 0; } catch (e) {}
+        // Try with sound first when the browser clearly allows it, otherwise start muted
+        const canSound = !snd.chosen ? (navigator.getAutoplayPolicy && navigator.getAutoplayPolicy(v) === 'allowed') : !snd.muted;
+        if (canSound) { snd.muted = false; }
+        v.volume = snd.volume; v.muted = snd.muted;
+        const pr = v.play();
+        if (pr && pr.catch) pr.catch(() => { snd.muted = true; applySound(); const p2 = v.play(); if (p2 && p2.catch) p2.catch(() => {}); });
+      });
+      updateControls();
+    }
+    heroSlides.forEach((sl) => {
+      const f = sl.querySelector('.hero__embed');
+      if (f) f.addEventListener('load', () => { if (sl === heroSlides[hi]) setTimeout(applySound, 600); });
+      const v = sl.querySelector('.hero__video');
+      if (v) v.addEventListener('ended', () => { if (multi && sl === heroSlides[hi]) { heroNext(); heroReset(); } });
+    });
+    // First click / tap / key press anywhere: turn the sound on (unless the visitor already chose)
+    const wake = (e) => {
+      if (e && e.target && e.target.closest && e.target.closest('#heroSound')) return;   // the sound buttons handle themselves
+      ['pointerdown', 'keydown', 'touchend'].forEach(ev => window.removeEventListener(ev, wake, true));
+      if (!snd.chosen && snd.muted && !soundBox.hidden) { snd.muted = false; applySound(); }
+    };
+    if (soundBox) ['pointerdown', 'keydown', 'touchend'].forEach(ev => window.addEventListener(ev, wake, true));
+
     const heroGo = i => {
       heroSlides[hi].classList.remove('is-active');
       hDots[hi].classList.remove('active');
@@ -154,26 +242,16 @@
       hDots[hi].classList.add('active');
       heroVideos();
     };
-    // Background videos: play (muted, looping) only on the visible slide, pause the rest
-    function heroVideos() {
-      heroSlides.forEach((sl, k) => {
-        const f = sl.querySelector('.hero__embed');
-        if (f) {                                   // link-based video: load on show, unload to stop
-          if (k === hi) { if (f.getAttribute('src') !== f.dataset.src) f.setAttribute('src', f.dataset.src); }
-          else if (f.getAttribute('src')) f.removeAttribute('src');
-          return;
-        }
-        const v = sl.querySelector('.hero__video');
-        if (!v) return;
-        v.muted = true;
-        if (k === hi) { try { v.currentTime = 0; } catch (e) {} const pr = v.play(); if (pr && pr.catch) pr.catch(() => {}); }
-        else v.pause();
-      });
-    }
-    heroVideos();
     const heroNext = () => heroGo(hi + 1);
-    const heroStart = () => (htimer = setInterval(heroNext, 6000));
-    const heroReset = () => { clearInterval(htimer); heroStart(); };
+    // How long a slide stays: pictures 6s; uploaded video until it ends; YouTube/Vimeo/Drive 30s
+    const heroStart = () => {
+      clearTimeout(htimer);
+      if (!multi) return;
+      const { video, frame } = mediaOf(hi);
+      htimer = setTimeout(() => { heroNext(); heroStart(); }, video ? 120000 : (frame ? 30000 : 6000));
+    };
+    const heroReset = () => { heroStart(); };
+    heroVideos();
     heroStart();
   }
 
