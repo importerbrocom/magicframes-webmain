@@ -162,6 +162,32 @@ class SiteData
         ];
     }
 
+    /**
+     * Home "Portfolio" block: photos marked Featured first, topped up with the newest published photos,
+     * so the block never disappears just because nothing is featured. With no photos at all it falls back
+     * to the gallery categories' cover images.
+     */
+    private static function portfolioItems(int $limit, Request $request): array
+    {
+        $featured = GalleryImage::published()->with('category')->where('is_featured', true)
+            ->orderBy('sort_order')->orderByDesc('id')->limit($limit)->get();
+        if ($featured->count() < $limit) {
+            $featured = $featured->concat(
+                GalleryImage::published()->with('category')->whereNotIn('id', $featured->pluck('id'))
+                    ->latest('id')->limit($limit - $featured->count())->get()
+            );
+        }
+        if ($featured->isNotEmpty()) {
+            return GalleryImageResource::collection($featured)->resolve($request);
+        }
+
+        return GalleryCategory::published()->whereNotNull('cover_path')->orderBy('sort_order')->orderBy('name')->limit($limit)->get()
+            ->map(fn (GalleryCategory $c) => [
+                'title' => $c->name, 'alt' => $c->name, 'thumb_url' => img_url($c->cover_url, 900), 'srcset' => null,
+                'category' => ['slug' => $c->slug, 'name' => $c->name],
+            ])->all();
+    }
+
     private static function buildHome(): array
     {
         $request = Request::create('/');
@@ -172,9 +198,7 @@ class SiteData
                 'stats' => Statistic::published()->limit($limit)->get()->map(fn ($x) => [
                     'label' => $x->label, 'value' => $x->value, 'suffix' => $x->suffix,
                 ])->all(),
-                'portfolio' => GalleryImageResource::collection(
-                    GalleryImage::published()->with('category')->where('is_featured', true)->orderBy('sort_order')->orderByDesc('id')->limit($limit)->get()
-                )->resolve($request),
+                'portfolio' => self::portfolioItems($limit, $request),
                 'videos' => VideoResource::collection(
                     Video::published()->with('category')->where('is_featured', true)->orderBy('sort_order')->orderByDesc('id')->limit($limit)->get()
                 )->resolve($request),
