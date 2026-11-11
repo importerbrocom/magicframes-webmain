@@ -198,6 +198,26 @@
       applySound();
     });
 
+    // Start a video; if sound is refused fall back to muted; if even that fails, retry on events / first touch
+    function startVideo(v) {
+      const tryPlay = () => {
+        if (!v.paused && !v.ended) return;
+        const pr = v.play();
+        if (pr && pr.catch) pr.catch(() => {
+          if (!v.muted) { snd.muted = true; applySound(); v.muted = true; const p2 = v.play(); if (p2 && p2.catch) p2.catch(() => {}); }
+        });
+      };
+      tryPlay();
+      if (!v.dataset.armed) {
+        v.dataset.armed = '1';
+        ['loadeddata', 'canplay'].forEach(ev => v.addEventListener(ev, () => { if (heroSlides[hi].contains(v)) tryPlay(); }));
+        window.addEventListener('load', () => { if (heroSlides[hi].contains(v)) tryPlay(); });
+        document.addEventListener('visibilitychange', () => { if (!document.hidden && heroSlides[hi].contains(v)) tryPlay(); });
+        ['pointerdown', 'touchend', 'keydown', 'scroll'].forEach(ev => window.addEventListener(ev, () => { if (heroSlides[hi].contains(v) && v.paused) tryPlay(); }, { passive: true }));
+        v.addEventListener('error', () => { if (window.console) console.warn('Hero video could not be played - re-export it as MP4 (H.264 video + AAC audio) or WebM.'); });
+      }
+    }
+
     // Play the visible slide's video, pause / unload the others
     function heroVideos() {
       heroSlides.forEach((sl, k) => {
@@ -215,8 +235,7 @@
         const canSound = !snd.chosen ? (navigator.getAutoplayPolicy && navigator.getAutoplayPolicy(v) === 'allowed') : !snd.muted;
         if (canSound) { snd.muted = false; }
         v.volume = snd.volume; v.muted = snd.muted;
-        const pr = v.play();
-        if (pr && pr.catch) pr.catch(() => { snd.muted = true; applySound(); const p2 = v.play(); if (p2 && p2.catch) p2.catch(() => {}); });
+        startVideo(v);
       });
       updateControls();
     }

@@ -43,7 +43,7 @@ class HeroSlideResource extends Resource
             FileUpload::make('video_path')->label('Background video (optional)')->disk('public')->directory('hero/video')->visibility('public')
                 ->acceptedFileTypes(['video/mp4', 'video/webm'])->maxSize(config('media.max_hero_video_kb'))
                 ->hint('Max file size: '.number_format(config('media.max_hero_video_kb') / 1024).' MB')
-                ->helperText('MP4 or WebM. Plays automatically, muted and on a loop behind the headline. Keep it short (10–30 seconds) and compressed for fast loading. Use the image below as the picture shown while the video loads.')
+                ->helperText('MP4 (H.264 video + AAC audio - the most compatible; H.265/HEVC from some phones will NOT play in Chrome/Firefox) or WebM. Plays automatically, muted and on a loop behind the headline. Keep it short (10–30 seconds) and compressed for fast loading. Use the image below as the picture shown while the video loads.')
                 ->columnSpanFull(),
             TextInput::make('video_link')->label('…or a video link (YouTube, Vimeo or Google Drive)')->url()->maxLength(500)
                 ->placeholder('https://www.youtube.com/watch?v=… or https://drive.google.com/file/d/…/view')

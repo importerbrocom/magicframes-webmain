@@ -369,19 +369,14 @@ body.menu-open{overflow:hidden}
 .hero__video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none}
 .hero__slide:has(.hero__video){background-color:#111}
 .hero__caption{position:relative;z-index:2}
-@media (prefers-reduced-motion:reduce){.hero__video{display:none}}
 
 /* Hero slide with a YouTube / Vimeo link: cover the slide like a background video */
 .hero__embed{position:absolute;top:50%;left:50%;width:max(100%,177.78vh);height:max(100%,56.25vw);transform:translate(-50%,-50%);border:0;z-index:0;pointer-events:none}
 .hero__embed--drive{width:100%;height:100%;pointer-events:auto;z-index:0}
 .hero__slide:has(.hero__embed){background-color:#111}
-@media (prefers-reduced-motion:reduce){.hero__embed--youtube,.hero__embed--vimeo{display:none}}
 
-/* Video slides show ONLY the video (no picture behind it); the picture is kept for reduced-motion visitors */
+/* Video slides show ONLY the video (no picture behind it) */
 .hero__slide:has(.hero__video,.hero__embed){background-image:none!important;background-color:#000}
-@media (prefers-reduced-motion:reduce){
-  .hero__slide[style*="--hero"]:has(.hero__video,.hero__embed){background-image:var(--hero)!important}
-}
 
 /* Sound controls (mute button + volume slider) */
 .hero__sound{position:absolute;left:max(1.4rem,env(safe-area-inset-left));bottom:2rem;z-index:6;display:flex;align-items:center;gap:.7rem;
