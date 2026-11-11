@@ -257,12 +257,16 @@
     function check() {
       var r = host.getBoundingClientRect();
       visible = r.bottom > 0 && r.top < window.innerHeight;
-      if (visible && !document.hidden) start(); else stop();
+      // No sparkles while a hero video slide is showing (main.js sets .hero--video)
+      var blocked = host.classList.contains('hero--video');
+      if (blocked) ctx.clearRect(0, 0, w, h);
+      if (visible && !document.hidden && !blocked) start(); else stop();
     }
 
     size();
     if ('ResizeObserver' in window) new ResizeObserver(function () { size(); check(); }).observe(host); else window.addEventListener('resize', size);
     onScroll(check);
+    if ('MutationObserver' in window) new MutationObserver(check).observe(host, { attributes: true, attributeFilter: ['class'] });
     window.addEventListener('load', check);
     document.addEventListener('visibilitychange', check);
     setTimeout(check, 1200);

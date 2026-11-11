@@ -396,3 +396,7 @@ body.menu-open{overflow:hidden}
 
 /* Stop focus / keyboard from scrolling the hero sideways (keeps the sound pill in place) */
 .hero{overflow:hidden;overflow:clip}
+
+/* Video slides: no golden sparkles and no warm shade (the video shows as it is) */
+.hero--video .fx-canvas{display:none}
+.hero__slide:has(.hero__video,.hero__embed)::before{display:none!important}

@@ -180,8 +180,11 @@
     }
     // Show the controls only when the visible slide has a video whose sound we can control (not Drive)
     function updateControls() {
+      const heroEl = $('.hero');
+      const m = mediaOf(hi);
+      if (heroEl) heroEl.classList.toggle('hero--video', !!(m.video || m.frame));   // video slide: no sparkle effect
       if (!soundBox) return;
-      const { video, frame } = mediaOf(hi);
+      const { video, frame } = m;
       const ok = !!video || (!!frame && !frame.classList.contains('hero__embed--drive'));
       soundBox.hidden = !ok;
       if (ok) applySound();
@@ -223,6 +226,11 @@
       heroSlides.forEach((sl, k) => {
         const { video: v, frame: f } = mediaOf(k);
         if (f) {                                   // YouTube / Vimeo / Drive: load when shown, unload to stop
+          if (multi && !f.dataset.once) {          // several slides: play once, then move on (no looping)
+            f.dataset.once = '1';
+            f.dataset.src = f.dataset.src.replace(/&loop=1&playlist=[A-Za-z0-9_-]+/, '&loop=0').replace('&loop=1', '&loop=0');
+            if (f.getAttribute('src') && k === hi) f.setAttribute('src', f.dataset.src);
+          }
           if (k === hi) {
             if (f.getAttribute('src') !== f.dataset.src) f.setAttribute('src', f.dataset.src);
           } else if (f.getAttribute('src')) f.removeAttribute('src');
@@ -241,9 +249,28 @@
     }
     heroSlides.forEach((sl) => {
       const f = sl.querySelector('.hero__embed');
-      if (f) f.addEventListener('load', () => { if (sl === heroSlides[hi]) setTimeout(applySound, 600); });
+      if (f) f.addEventListener('load', () => {
+        if (sl !== heroSlides[hi]) return;
+        setTimeout(applySound, 600);
+        // ask YouTube / Vimeo to tell us when the video finishes
+        if (f.classList.contains('hero__embed--youtube')) post(f, { event: 'listening', id: 1, channel: 'widget' });
+        if (f.classList.contains('hero__embed--vimeo')) post(f, { method: 'addEventListener', value: 'finish' });
+      });
       const v = sl.querySelector('.hero__video');
-      if (v) v.addEventListener('ended', () => { if (multi && sl === heroSlides[hi]) { heroNext(); heroReset(); } });
+      if (v) {
+        v.addEventListener('ended', () => { if (multi && sl === heroSlides[hi]) { heroNext(); heroReset(); } });
+        v.addEventListener('error', () => { if (multi && sl === heroSlides[hi]) setTimeout(() => { if (sl === heroSlides[hi]) { heroNext(); heroReset(); } }, 3000); });   // unplayable file: don't get stuck
+      }
+    });
+    // YouTube / Vimeo "video ended" messages -> next slide
+    window.addEventListener('message', (e) => {
+      if (!multi) return;
+      const f = mediaOf(hi).frame;
+      if (!f || e.source !== f.contentWindow) return;
+      let d = e.data; if (typeof d === 'string') { try { d = JSON.parse(d); } catch (x) { return; } }
+      if (!d) return;
+      const ended = (d.event === 'onStateChange' && d.info === 0) || (d.event === 'infoDelivery' && d.info && d.info.playerState === 0) || d.event === 'finish';
+      if (ended) { heroNext(); heroReset(); }
     });
     // First click / tap / key press anywhere: turn the sound on (unless the visitor already chose)
     const wake = (e) => {
@@ -262,12 +289,14 @@
       heroVideos();
     };
     const heroNext = () => heroGo(hi + 1);
-    // How long a slide stays: pictures 6s; uploaded video until it ends; YouTube/Vimeo/Drive 30s
+    // How long a slide stays: pictures 6s; a video slide until the video ENDS (long safety timeout only);
+    // Google Drive can't tell us when it ends, so it stays 30s
     const heroStart = () => {
       clearTimeout(htimer);
       if (!multi) return;
       const { video, frame } = mediaOf(hi);
-      htimer = setTimeout(() => { heroNext(); heroStart(); }, video ? 120000 : (frame ? 30000 : 6000));
+      const drive = frame && frame.classList.contains('hero__embed--drive');
+      htimer = setTimeout(() => { heroNext(); heroStart(); }, drive ? 30000 : (video || frame ? 900000 : 6000));
     };
     const heroReset = () => { heroStart(); };
     heroVideos();
