@@ -79,7 +79,7 @@ class DemoContent
         $removed = [];
 
         foreach ($m['created'] as $class => $ids) {
-            foreach ($class::whereIn('id', $ids)->get() as $model) {
+            foreach ($class::whereIn('id', $this->onlyRealSamples($class, $ids))->get() as $model) {
                 $model->delete(); // model hooks also delete the files
             }
             $removed[class_basename($class)] = count($ids);
@@ -107,7 +107,22 @@ class DemoContent
         }
         $m = json_decode((string) file_get_contents(self::manifestPath()), true) ?: [];
 
-        return array_map('intval', $m['created'][$class] ?? []);
+        $ids = array_map('intval', $m['created'][$class] ?? []);
+
+        return $this->onlyRealSamples($class, $ids);
+    }
+
+    /**
+     * Safety net: a sample photo always lives under storage "demo/…". If the manifest is stale
+     * (e.g. the database was reset and IDs were reused), never touch records that are not samples.
+     */
+    private function onlyRealSamples(string $class, array $ids): array
+    {
+        if ($ids && $class === GalleryImage::class) {
+            return GalleryImage::whereIn('id', $ids)->where('path', 'like', 'demo/%')->pluck('id')->map(fn ($i) => (int) $i)->all();
+        }
+
+        return $ids;
     }
 
     /** Delete only the sample records of one model (files included); everything else stays. */

@@ -56,4 +56,19 @@ class GallerySampleRemovalTest extends TestCase
         $this->artisan('demo:remove')->assertSuccessful();
         $this->assertTrue(GalleryImage::whereKey($mine->id)->exists());
     }
+
+    public function test_stale_manifest_never_deletes_own_photos(): void
+    {
+        Storage::fake('public');
+        $this->seed([RolesAndAdminSeeder::class, GalleryStructureSeeder::class, SiteContentSeeder::class]);
+        $cat = GalleryCategory::first();
+        $mine = GalleryImage::create(['gallery_category_id' => $cat->id, 'title' => 'Mine', 'path' => 'gallery/mine.jpg', 'is_published' => true]);
+        // a leftover manifest that (wrongly) lists my photo's id
+        file_put_contents(DemoContent::manifestPath(), json_encode(['created' => [GalleryImage::class => [$mine->id]], 'updated' => [], 'settings' => []]));
+
+        $this->assertSame([], app(DemoContent::class)->sampleIds(GalleryImage::class));
+        $this->assertSame(0, app(DemoContent::class)->removeOnly(GalleryImage::class));
+        app(DemoContent::class)->remove();
+        $this->assertTrue(GalleryImage::whereKey($mine->id)->exists());
+    }
 }
