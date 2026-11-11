@@ -40,13 +40,12 @@ class HomePortfolioTest extends TestCase
         $this->get('/')->assertOk()->assertSee('href="/gallery/engagement"', false)->assertSee('class="gallery__item"', false);
     }
 
-    public function test_featured_photos_still_come_first(): void
+    public function test_when_photos_are_featured_only_those_show(): void
     {
         $cat = GalleryCategory::first();
         GalleryImage::create(['gallery_category_id' => $cat->id, 'alt_text' => 'Plain one', 'path' => 'gallery/p.jpg', 'is_published' => true]);
         GalleryImage::create(['gallery_category_id' => $cat->id, 'alt_text' => 'Star one', 'path' => 'gallery/s.jpg', 'is_published' => true, 'is_featured' => true]);
 
-        $html = $this->get('/')->assertOk()->getContent();
-        $this->assertLessThan(strpos($html, 'Plain one'), strpos($html, 'Star one'));
+        $this->get('/')->assertOk()->assertSee('Star one')->assertDontSee('Plain one');
     }
 }

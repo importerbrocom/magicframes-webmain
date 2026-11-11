@@ -163,19 +163,16 @@ class SiteData
     }
 
     /**
-     * Home "Portfolio" block: photos marked Featured first, topped up with the newest published photos,
-     * so the block never disappears just because nothing is featured. With no photos at all it falls back
+     * Home "Portfolio" block: the photos marked Featured; when none are featured, the newest published
+     * photos, so the block never disappears just because nothing is featured. With no photos at all it falls back
      * to the gallery categories' cover images.
      */
     private static function portfolioItems(int $limit, Request $request): array
     {
         $featured = GalleryImage::published()->with('category')->where('is_featured', true)
             ->orderBy('sort_order')->orderByDesc('id')->limit($limit)->get();
-        if ($featured->count() < $limit) {
-            $featured = $featured->concat(
-                GalleryImage::published()->with('category')->whereNotIn('id', $featured->pluck('id'))
-                    ->latest('id')->limit($limit - $featured->count())->get()
-            );
+        if ($featured->isEmpty()) {   // nothing marked Featured: show the newest photos instead
+            $featured = GalleryImage::published()->with('category')->latest('id')->limit($limit)->get();
         }
         if ($featured->isNotEmpty()) {
             return GalleryImageResource::collection($featured)->resolve($request);
