@@ -49,3 +49,14 @@ The website has gentle motion: golden sparkles on the home banner, photos that r
 - **Video by link.** Instead of uploading, paste a YouTube, Vimeo or Google Drive link in *…or a video link* on the hero slide (an uploaded file wins if both are set). YouTube and Vimeo play automatically, muted and looping. Google Drive: share the file as "Anyone with the link"; Drive shows its own player, so autoplay is not guaranteed there.
 - **Video as the first slide, with sound controls.** Put the video slide first (drag to reorder in Hero slides). When a slide has a video, only the video shows (no picture behind it). A round sound button and a volume slider appear at the bottom-left of the home banner. Browsers do not allow a page to start with sound before the visitor interacts, so the video starts playing at once and the sound switches on at the visitor's first click, tap or key press (or immediately where the browser allows it). Visitors can mute, unmute and change the volume at any time. On phones only the round button shows (they use the phone's volume keys). With several slides, a video plays once to its end and then the next slide appears (a YouTube / Vimeo video too; Google Drive videos stay for 30 seconds). Over a video slide the golden sparkles are shown at half strength (fewer, with a lighter tint) so the video stays clear. Google Drive videos use Drive's own player, so the sound controls are not shown for them.
 
+
+## Instagram feed (latest posts on the home page)
+
+The "On Instagram" block can show your latest posts as a picture grid (each picture opens the post on Instagram) above the Follow button. Instagram only allows this with an access token from **your own** account:
+
+1. The Instagram account must be a **Professional** account (Business or Creator). Switch in the Instagram app: Settings > Account type and tools. It is free.
+2. Go to https://developers.facebook.com, log in and create an app (type: Business). Add the product **Instagram** > **API setup with Instagram login**.
+3. Under *Generate access tokens* add your Instagram account (you will be asked to log in to it) and click **Generate token**. Copy the long token.
+4. In the admin open **Website > Site settings > Instagram feed**, paste the token, choose how many posts to show and click **Save**. You get a message saying whether Instagram accepted it.
+
+How it behaves: new posts appear automatically about every hour (the site keeps its own copy of the pictures, so the page stays fast, and the last posts stay visible if Instagram is down). The token is renewed automatically before it expires. It is stored encrypted and never shown again. To stop the feed, tick *Disconnect Instagram* and save. If the token ever stops working, the Site settings box tells you; generate a new token and paste it. For the hourly refresh without visitors, the server cron job (`schedule:run`) should be set up; without it the feed still refreshes when visitors open the home page.

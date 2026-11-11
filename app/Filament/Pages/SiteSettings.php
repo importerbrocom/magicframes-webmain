@@ -3,6 +3,9 @@
 namespace App\Filament\Pages;
 
 use App\Models\Setting;
+use App\Services\InstagramFeed;
+use Filament\Forms\Components\Toggle;
+use Filament\Notifications\Notification;
 use BackedEnum;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
@@ -27,7 +30,7 @@ class SiteSettings extends SettingsPage
     public const KEYS = [
         'site.name', 'site.tagline', 'site.effects', 'footer.about', 'footer.copyright',
         'contact.phone', 'contact.whatsapp', 'contact.email', 'contact.address', 'contact.hours', 'contact.map_embed_url',
-        'social.instagram', 'social.facebook', 'social.youtube', 'social.pinterest',
+        'instagram.limit', 'social.instagram', 'social.facebook', 'social.youtube', 'social.pinterest',
         'seo.default_description', 'seo.default_og_image',
     ];
 
@@ -63,6 +66,17 @@ class SiteSettings extends SettingsPage
                 TextInput::make('social.youtube')->url()->maxLength(255),
                 TextInput::make('social.pinterest')->url()->maxLength(255),
             ]),
+            Section::make('Instagram feed (latest posts on the home page)')->columns(2)->collapsed(fn () => ! app(InstagramFeed::class)->token())->schema([
+                TextInput::make('instagram_token')->label('Instagram access token')->password()->revealable()->maxLength(600)->dehydrated()
+                    ->placeholder(fn () => app(InstagramFeed::class)->token() ? '•••••••• saved - paste a new token only to replace it' : 'Paste the token here')
+                    ->helperText(fn () => app(InstagramFeed::class)->token()
+                        ? (app(InstagramFeed::class)->lastError() ? 'Connected, but the last update failed: '.app(InstagramFeed::class)->lastError() : 'Connected. New posts are picked up automatically about every hour.')
+                        : 'Not connected yet. How to get the token: see "Instagram feed" in docs/ADMIN-GUIDE.md (Meta developer app > Instagram API with Instagram Login > Generate token). The Instagram account must be a Professional (Business or Creator) account.')
+                    ->columnSpanFull(),
+                Select::make('instagram.limit')->label('Number of posts to show')->native(false)->selectablePlaceholder(false)
+                    ->options(['4' => '4', '6' => '6', '8' => '8', '10' => '10', '12' => '12']),
+                Toggle::make('instagram_disconnect')->label('Disconnect Instagram (remove the saved token and the feed)')->inline(false),
+            ]),
             Section::make('Default SEO')->collapsed()->schema([
                 Textarea::make('seo.default_description')->rows(2)->maxLength(320)->label('Default meta description'),
                 FileUpload::make('seo.default_og_image')->label('Default social sharing image')->image()->disk('public')->directory('seo')->visibility('public')->maxSize(5120)->hint('Max file size: 5 MB')
@@ -78,6 +92,7 @@ class SiteSettings extends SettingsPage
         foreach (self::KEYS as $key) {
             data_set($out, $key, $values[$key] ?? null);
         }
+        data_set($out, 'instagram.limit', $values['instagram.limit'] ?? '8');
         data_set($out, 'site.effects', ($values['site.effects'] ?? null) === '0' ? '0' : '1');
 
         return $out;
@@ -94,5 +109,19 @@ class SiteSettings extends SettingsPage
             \Illuminate\Support\Facades\Storage::disk('public')->delete($old);
         }
         Setting::setMany($flat);
+
+        // Instagram: the token is stored encrypted and never shown again
+        $feed = app(InstagramFeed::class);
+        if (! empty($data['instagram_disconnect'])) {
+            $feed->saveToken(null);
+            $this->data['instagram_disconnect'] = false;
+            $this->data['instagram_token'] = null;
+            Notification::make()->title('Instagram disconnected')->success()->send();
+        } elseif (filled($data['instagram_token'] ?? null)) {
+            $feed->saveToken($data['instagram_token']);
+            $r = $feed->sync();
+            $this->data['instagram_token'] = null;
+            Notification::make()->title($r['ok'] ? 'Instagram connected' : 'Token saved, but Instagram refused it')->body($r['message'])->{$r['ok'] ? 'success' : 'danger'}()->send();
+        }
     }
 }

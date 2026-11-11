@@ -30,7 +30,7 @@ the public pages were also checked in a real browser (Chromium) at desktop and p
 | Item | Status |
 |---|---|
 | Hero, about, services, featured photography, featured videos, recent projects, testimonials, statistics, contact/enquiry, footer; all manageable and re-orderable | ✅ |
-| Instagram section | 🟡 shows a "Follow us" button linking to your Instagram. A live photo feed needs an Instagram API token (not available). |
+| Instagram section | ✅ latest-posts grid from the official Instagram API (token pasted in Site settings, see ADMIN-GUIDE.md); shows the Follow button only until a token is saved |
 | Real content (texts, photos, stats, testimonials) | 📝 Intentionally empty until the studio enters genuine content. |
 
 ## 5–6. Galleries & videos

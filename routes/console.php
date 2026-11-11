@@ -6,3 +6,6 @@ use Illuminate\Support\Facades\Schedule;
 if (config('backup.enabled')) {
     Schedule::command('site:backup')->dailyAt(config('backup.time'))->withoutOverlapping();
 }
+
+// Keep the home page Instagram feed fresh (does nothing until a token is saved in Site settings)
+Schedule::command('instagram:sync')->hourly()->withoutOverlapping();
