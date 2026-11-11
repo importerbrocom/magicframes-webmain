@@ -64,3 +64,7 @@ How it behaves: new posts appear automatically about every hour (the site keeps 
 ## WhatsApp button
 
 A round green WhatsApp button floats at the bottom-right of every page. At the top of the page it sits in the corner; once you scroll and the "back to top" arrow appears, it moves up to sit just above the arrow. It opens a WhatsApp chat with the number set in **Website > Site settings > Contact details > WhatsApp number** (with a ready "Hello… I would like to know more about your photography services" message). If that field is empty the button is not shown. Enter the number with the country code, e.g. +91 98765 43210 (a plain 10-digit Indian number gets +91 added automatically).
+
+## Adding gallery images with a title
+
+Website > Gallery > Images > New: after choosing the category and the pictures you can fill in **Title** (caption in the lightbox), **Alt text** (for Google / screen readers; the title is used if left empty) and **Description**. With several pictures at once the same details are applied to all of them; tick *Number the titles* to get "Title 1, Title 2…". You can open any picture later to give it its own title.
