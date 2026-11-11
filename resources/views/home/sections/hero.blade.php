@@ -6,6 +6,10 @@
         @if(!empty($slide['video_url']))
           <video class="hero__video" src="{{ $slide['video_url'] }}" @if($slide['image_url']) poster="{{ img_url($slide['image_url'], 1900) }}" @endif
                  muted loop playsinline webkit-playsinline preload="{{ $i === 0 ? 'auto' : 'metadata' }}" @if($i === 0) autoplay @endif aria-hidden="true" tabindex="-1"></video>
+        @elseif(!empty($slide['video_embed']))
+          {{-- YouTube / Vimeo / Drive: only the visible slide loads its player (see main.js) --}}
+          <iframe class="hero__embed hero__embed--{{ $slide['video_embed']['type'] }}" title="" aria-hidden="true" tabindex="-1" loading="eager" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"
+                  data-src="{{ $slide['video_embed']['src'] }}" @if($i === 0) src="{{ $slide['video_embed']['src'] }}" @endif></iframe>
         @endif
         <div class="hero__caption">
           @php $len = mb_strlen($slide['heading']); $wc = $len > 22 ? ' hero__word--xlong' : ($len > 8 ? ' hero__word--long' : ''); @endphp

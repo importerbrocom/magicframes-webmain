@@ -157,6 +157,12 @@
     // Background videos: play (muted, looping) only on the visible slide, pause the rest
     function heroVideos() {
       heroSlides.forEach((sl, k) => {
+        const f = sl.querySelector('.hero__embed');
+        if (f) {                                   // link-based video: load on show, unload to stop
+          if (k === hi) { if (f.getAttribute('src') !== f.dataset.src) f.setAttribute('src', f.dataset.src); }
+          else if (f.getAttribute('src')) f.removeAttribute('src');
+          return;
+        }
         const v = sl.querySelector('.hero__video');
         if (!v) return;
         v.muted = true;

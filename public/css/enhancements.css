@@ -370,3 +370,9 @@ body.menu-open{overflow:hidden}
 .hero__slide:has(.hero__video){background-color:#111}
 .hero__caption{position:relative;z-index:2}
 @media (prefers-reduced-motion:reduce){.hero__video{display:none}}
+
+/* Hero slide with a YouTube / Vimeo link: cover the slide like a background video */
+.hero__embed{position:absolute;top:50%;left:50%;width:max(100%,177.78vh);height:max(100%,56.25vw);transform:translate(-50%,-50%);border:0;z-index:0;pointer-events:none}
+.hero__embed--drive{width:100%;height:100%;pointer-events:auto;z-index:0}
+.hero__slide:has(.hero__embed){background-color:#111}
+@media (prefers-reduced-motion:reduce){.hero__embed--youtube,.hero__embed--vimeo{display:none}}

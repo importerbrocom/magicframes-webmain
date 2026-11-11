@@ -161,7 +161,7 @@ class SiteData
             'marquee' => GalleryCategory::published()->whereHas('publishedImages')->orderBy('sort_order')->orderBy('name')->pluck('name')->all(),
             'hero' => HeroSlide::published()->get()->map(fn ($h) => [
                 'heading' => $h->heading, 'subheading' => $h->subheading, 'description' => $h->description,
-                'image_url' => $h->image_url, 'video_url' => $h->video_url, 'button_label' => $h->button_label, 'button_url' => $h->button_url,
+                'image_url' => $h->image_url, 'video_url' => $h->video_url, 'video_embed' => $h->video_embed, 'button_label' => $h->button_label, 'button_url' => $h->button_url,
             ])->all(),
             'sections' => $sections,
         ];

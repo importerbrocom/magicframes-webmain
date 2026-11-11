@@ -15,7 +15,7 @@ class HeroSlide extends Model
 
     protected array $fileColumns = ['image_path', 'video_path'];
 
-    protected $fillable = ['heading', 'subheading', 'description', 'image_path', 'video_path', 'button_label', 'button_url', 'sort_order', 'is_published'];
+    protected $fillable = ['heading', 'subheading', 'description', 'image_path', 'video_path', 'video_link', 'button_label', 'button_url', 'sort_order', 'is_published'];
 
     protected function casts(): array
     {
@@ -35,5 +35,11 @@ class HeroSlide extends Model
     public function getVideoUrlAttribute(): ?string
     {
         return $this->publicUrl($this->video_path);
+    }
+
+    /** @return array{type:string,src:string}|null  YouTube / Vimeo / Google Drive background embed */
+    public function getVideoEmbedAttribute(): ?array
+    {
+        return \App\Services\VideoLinkParser::heroEmbed($this->video_link);
     }
 }
