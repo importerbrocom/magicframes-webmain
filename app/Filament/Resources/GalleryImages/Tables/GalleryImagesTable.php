@@ -25,23 +25,16 @@ class GalleryImagesTable
                 ImageColumn::make('thumb')->label('')->getStateUsing(fn (GalleryImage $r) => $r->thumb_url)->square()->size(64),
                 TextColumn::make('title')->searchable()->placeholder('—')->limit(40),
                 TextColumn::make('category.name')->label('Category')->sortable()->badge(),
-                TextColumn::make('sample_tag')->label('')->getStateUsing(fn (GalleryImage $r) => in_array($r->id, app(\App\Services\DemoContent::class)->sampleIds(GalleryImage::class), true) ? 'Sample' : null)->badge()->color('gray'),
                 ToggleColumn::make('is_featured')->label('Featured'),
                 ToggleColumn::make('is_published')->label('Published'),
                 TextColumn::make('created_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->defaultSort('created_at', 'desc')   // newest uploads first
+            ->defaultSort('sort_order')
             ->reorderable('sort_order')
             ->filters([
                 SelectFilter::make('gallery_category_id')->label('Category')->relationship('category', 'name')->preload(),
                 TernaryFilter::make('is_featured')->label('Featured'),
                 TernaryFilter::make('is_published')->label('Published'),
-                TernaryFilter::make('sample')->label('Photos')->placeholder('All photos')
-                    ->trueLabel('Only sample photos')->falseLabel('Only my photos')
-                    ->queries(
-                        true: fn ($q) => $q->whereIn('id', app(\App\Services\DemoContent::class)->sampleIds(GalleryImage::class) ?: [0]),
-                        false: fn ($q) => $q->whereNotIn('id', app(\App\Services\DemoContent::class)->sampleIds(GalleryImage::class)),
-                    ),
             ])
             ->recordActions([EditAction::make(), DeleteAction::make()])
             ->toolbarActions([

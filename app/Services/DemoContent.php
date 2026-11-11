@@ -79,7 +79,7 @@ class DemoContent
         $removed = [];
 
         foreach ($m['created'] as $class => $ids) {
-            foreach ($class::whereIn('id', $this->onlyRealSamples($class, $ids))->get() as $model) {
+            foreach ($class::whereIn('id', $ids)->get() as $model) {
                 $model->delete(); // model hooks also delete the files
             }
             $removed[class_basename($class)] = count($ids);
@@ -97,51 +97,6 @@ class DemoContent
         Storage::disk('public')->deleteDirectory('demo');
 
         return $removed;
-    }
-
-    /** IDs of sample records of one model (e.g. GalleryImage) that are still installed. */
-    public function sampleIds(string $class): array
-    {
-        if (! $this->installed()) {
-            return [];
-        }
-        $m = json_decode((string) file_get_contents(self::manifestPath()), true) ?: [];
-
-        $ids = array_map('intval', $m['created'][$class] ?? []);
-
-        return $this->onlyRealSamples($class, $ids);
-    }
-
-    /**
-     * Safety net: a sample photo always lives under storage "demo/…". If the manifest is stale
-     * (e.g. the database was reset and IDs were reused), never touch records that are not samples.
-     */
-    private function onlyRealSamples(string $class, array $ids): array
-    {
-        if ($ids && $class === GalleryImage::class) {
-            return GalleryImage::whereIn('id', $ids)->where('path', 'like', 'demo/%')->pluck('id')->map(fn ($i) => (int) $i)->all();
-        }
-
-        return $ids;
-    }
-
-    /** Delete only the sample records of one model (files included); everything else stays. */
-    public function removeOnly(string $class): int
-    {
-        $ids = $this->sampleIds($class);
-        if (! $ids) {
-            return 0;
-        }
-        $n = 0;
-        foreach ($class::whereIn('id', $ids)->get() as $model) {
-            $model->delete();
-            $n++;
-        }
-        $m = json_decode((string) file_get_contents(self::manifestPath()), true) ?: [];
-        unset($m['created'][$class]);
-        file_put_contents(self::manifestPath(), json_encode($m, JSON_PRETTY_PRINT));
-
-        return $n;
     }
 
     /* ------------------------------------------------------------------ helpers */

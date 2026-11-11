@@ -81,7 +81,3 @@ Every published service now has its own page at `/services/<name>` (the service 
 - **SEO**: the page address (slug) and the Google title / description.
 
 Each page ends with an "Enquire now" button that opens the Contact page with the service already mentioned in the message, and shows the other services. Unpublished services have no page. After deploying run `php artisan migrate --force`.
-
-## Your own gallery photos vs. sample photos
-
-Gallery > Images lists the newest uploads first, so photos you add (also through "Add images" on a category) appear at the top. Sample photos from the demo carry a grey **Sample** tag; the filter (funnel icon) > Photos can show *Only my photos* or *Only sample photos*. The red **Remove sample photos** button deletes only the sample gallery photos; your own uploads, the categories and the rest of the demo (slides, services…) stay. The button disappears once no sample photos are left.
