@@ -40,3 +40,9 @@ The website has gentle motion: golden sparkles on the home banner, photos that r
 * Videos: for long films prefer a YouTube/Vimeo link.
 * Never publish testimonials, awards or numbers that are not genuine.
 * Enquiries contain personal data — delete old ones you no longer need and mention this in your Privacy Policy.
+
+## Hero video and upload size limits
+
+- **Hero slides can play a video.** In Admin > Homepage > Hero slides, open a slide and add a *Background video* (MP4 or WebM, max 50 MB). It starts by itself, muted and looping, behind the headline. Keep it short (10-30 seconds) and compressed. The *Hero image* is still used as the picture shown while the video loads, and for visitors who prefer reduced motion. Only the slide that is showing plays its video.
+- **Every upload box shows its maximum file size** (top right of the box): hero image 15 MB, hero video 50 MB, gallery photos 20 MB, gallery category cover 10 MB, services 10 MB, home sections / page banners / blog covers 15 MB, social sharing images 5 MB, testimonial photos 5 MB, logo 2 MB, videos 500 MB (thumbnails 20 MB).
+- Your hosting must allow at least as much: `upload_max_filesize` and `post_max_size` in PHP (see DEPLOYMENT.md). After deploying run `php artisan migrate --force` (adds the hero video column).

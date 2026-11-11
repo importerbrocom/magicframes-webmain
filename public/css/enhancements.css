@@ -364,3 +364,9 @@ body.menu-open{overflow:hidden}
 .section + .services.section{padding-top:0}
 .page-banner + .section{padding-bottom:2rem}
 .services.section .services__grid{margin-top:0}
+
+/* Hero slide with a background video: fills the slide, sits under the shade and the headline */
+.hero__video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none}
+.hero__slide:has(.hero__video){background-color:#111}
+.hero__caption{position:relative;z-index:2}
+@media (prefers-reduced-motion:reduce){.hero__video{display:none}}

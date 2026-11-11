@@ -65,7 +65,7 @@ class SiteSettings extends SettingsPage
             ]),
             Section::make('Default SEO')->collapsed()->schema([
                 Textarea::make('seo.default_description')->rows(2)->maxLength(320)->label('Default meta description'),
-                FileUpload::make('seo.default_og_image')->label('Default social sharing image')->image()->disk('public')->directory('seo')->visibility('public')->maxSize(5120)
+                FileUpload::make('seo.default_og_image')->label('Default social sharing image')->image()->disk('public')->directory('seo')->visibility('public')->maxSize(5120)->hint('Max file size: 5 MB')
                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp']),
             ]),
         ];

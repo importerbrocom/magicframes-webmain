@@ -152,7 +152,19 @@
       hi = (i + heroSlides.length) % heroSlides.length;
       heroSlides[hi].classList.add('is-active');
       hDots[hi].classList.add('active');
+      heroVideos();
     };
+    // Background videos: play (muted, looping) only on the visible slide, pause the rest
+    function heroVideos() {
+      heroSlides.forEach((sl, k) => {
+        const v = sl.querySelector('.hero__video');
+        if (!v) return;
+        v.muted = true;
+        if (k === hi) { try { v.currentTime = 0; } catch (e) {} const pr = v.play(); if (pr && pr.catch) pr.catch(() => {}); }
+        else v.pause();
+      });
+    }
+    heroVideos();
     const heroNext = () => heroGo(hi + 1);
     const heroStart = () => (htimer = setInterval(heroNext, 6000));
     const heroReset = () => { clearInterval(htimer); heroStart(); };

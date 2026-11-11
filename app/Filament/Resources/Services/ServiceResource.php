@@ -40,7 +40,7 @@ class ServiceResource extends Resource
             Textarea::make('short_description')->rows(2)->maxLength(400)->helperText('Shown on cards (home page & services list).')->columnSpanFull(),
             RichEditor::make('description')->columnSpanFull(),
             FileUpload::make('image_path')->label('Image')->image()->disk('public')->directory('services')->visibility('public')
-                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])->maxSize(10240)->columnSpanFull(),
+                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])->maxSize(10240)->hint('Max file size: 10 MB')->columnSpanFull(),
             TextInput::make('sort_order')->numeric()->default(0)->minValue(0),
             Toggle::make('is_published')->label('Published')->default(true)->inline(false),
         ]);

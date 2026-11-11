@@ -35,7 +35,7 @@ class BlogPostForm
                         Textarea::make('excerpt')->rows(2)->maxLength(500)->columnSpanFull()
                             ->helperText('Short summary on the blog list. Leave empty to use the start of the article.'),
                         FileUpload::make('cover_path')->label('Cover image')->image()->disk('public')->directory('blog')->visibility('public')
-                            ->acceptedFileTypes($img)->maxSize(15360)->columnSpanFull(),
+                            ->acceptedFileTypes($img)->maxSize(15360)->hint('Max file size: 15 MB')->columnSpanFull(),
                         TextInput::make('cover_alt')->label('Cover image description (alt text)')->maxLength(200)->columnSpanFull(),
                     ]),
                     Section::make('Article text')->schema([
@@ -56,7 +56,7 @@ class BlogPostForm
                         TextInput::make('meta_title')->maxLength(70)->helperText('Leave empty to use the post title.'),
                         Textarea::make('meta_description')->rows(3)->maxLength(320),
                         FileUpload::make('og_image_path')->label('Social sharing image')->image()->disk('public')->directory('seo')->visibility('public')
-                            ->acceptedFileTypes($img)->maxSize(5120)->helperText('Defaults to the cover image.'),
+                            ->acceptedFileTypes($img)->maxSize(5120)->hint('Max file size: 5 MB')->helperText('Defaults to the cover image.'),
                         Toggle::make('noindex')->label('Hide from search engines'),
                     ]),
                 ]),

@@ -40,9 +40,9 @@ class HomeSectionResource extends Resource
             Textarea::make('body')->label('Text')->rows(4)->maxLength(2000)->columnSpanFull(),
             Textarea::make('body_secondary')->label('Additional text')->rows(3)->maxLength(2000)->columnSpanFull(),
             FileUpload::make('image_path')->label('Main image')->image()->disk('public')->directory('home')->visibility('public')
-                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])->maxSize(15360),
+                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])->maxSize(15360)->hint('Max file size: 15 MB'),
             FileUpload::make('image_secondary_path')->label('Second image')->image()->disk('public')->directory('home')->visibility('public')
-                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])->maxSize(15360),
+                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])->maxSize(15360)->hint('Max file size: 15 MB'),
             TextInput::make('button_label')->maxLength(40),
             TextInput::make('button_url')->maxLength(255)->placeholder('/about'),
             TextInput::make('items_limit')->label('Items shown')->numeric()->minValue(1)->maxValue(24)->default(6)

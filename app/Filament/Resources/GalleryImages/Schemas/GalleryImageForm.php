@@ -34,7 +34,7 @@ class GalleryImageForm
                     ->helperText('Select one or many images (JPG, PNG or WebP, max 20 MB each). Web-optimised versions are generated automatically.')
                     ->multiple()->reorderable()->appendFiles()
                     ->image()->imagePreviewHeight('140')->panelLayout('grid')
-                    ->acceptedFileTypes(self::MIMES)->maxSize(20480)->maxFiles(50)
+                    ->acceptedFileTypes(self::MIMES)->maxSize(20480)->hint('Max file size: 20 MB')->maxFiles(50)
                     ->disk('public')->directory('gallery')->visibility('public')
                     ->required()->visibleOn('create')->columnSpanFull(),
 
@@ -42,7 +42,7 @@ class GalleryImageForm
                 FileUpload::make('path')
                     ->label('Image (upload a new file to replace)')
                     ->image()->imagePreviewHeight('220')
-                    ->acceptedFileTypes(self::MIMES)->maxSize(20480)
+                    ->acceptedFileTypes(self::MIMES)->maxSize(20480)->hint('Max file size: 20 MB')
                     ->disk('public')->directory('gallery')->visibility('public')
                     ->required()->visibleOn('edit')->columnSpanFull(),
 

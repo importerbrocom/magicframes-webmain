@@ -47,7 +47,7 @@ class PageForm
                         TextInput::make('banner_label')->maxLength(60)->label('Small script label'),
                         TextInput::make('banner_title')->maxLength(160)->label('Banner heading'),
                         FileUpload::make('banner_image_path')->label('Banner image')->image()->disk('public')->directory('pages')->visibility('public')
-                            ->acceptedFileTypes(self::IMG)->maxSize(15360)->columnSpanFull(),
+                            ->acceptedFileTypes(self::IMG)->maxSize(15360)->hint('Max file size: 15 MB')->columnSpanFull(),
                     ]),
                     Section::make('Main content')->schema([
                         RichEditor::make('content')->label('')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('pages/attachments')->hiddenLabel(),
@@ -64,7 +64,7 @@ class PageForm
                             TextInput::make('heading')->maxLength(160)->visible(fn (Get $g) => $g('type') !== 'image'),
                             RichEditor::make('body')->columnSpanFull()->visible(fn (Get $g) => in_array($g('type'), ['text', 'image_text', 'cta', 'video'], true)),
                             FileUpload::make('image_path')->label('Image')->image()->disk('public')->directory('pages')->visibility('public')
-                                ->acceptedFileTypes(self::IMG)->maxSize(15360)
+                                ->acceptedFileTypes(self::IMG)->maxSize(15360)->hint('Max file size: 15 MB')
                                 ->visible(fn (Get $g) => in_array($g('type'), ['image_text', 'image', 'cta'], true))
                                 ->required(fn (Get $g) => in_array($g('type'), ['image_text', 'image'], true)),
                             TextInput::make('image_alt')->maxLength(200)->label('Image description (alt text)')->visible(fn (Get $g) => in_array($g('type'), ['image_text', 'image'], true)),
@@ -85,7 +85,7 @@ class PageForm
                         TextInput::make('meta_title')->maxLength(70)->helperText('Leave empty to use the page title. Ideal: under 60 characters.'),
                         Textarea::make('meta_description')->rows(3)->maxLength(320)->helperText('Ideal: 120–160 characters.'),
                         FileUpload::make('og_image_path')->label('Social sharing image (Open Graph)')->image()->disk('public')->directory('seo')->visibility('public')
-                            ->acceptedFileTypes(self::IMG)->maxSize(5120)->helperText('1200×630 px recommended.'),
+                            ->acceptedFileTypes(self::IMG)->maxSize(5120)->hint('Max file size: 5 MB')->helperText('1200×630 px recommended.'),
                         TextInput::make('canonical_url')->url()->maxLength(255),
                         Toggle::make('noindex')->label('Hide from search engines'),
                     ]),

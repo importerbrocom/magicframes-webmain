@@ -38,7 +38,7 @@ class TestimonialResource extends Resource
             TextInput::make('client_role')->label('Role / event')->maxLength(120)->placeholder('e.g. Bride'),
             Select::make('rating')->options([5 => '★★★★★ (5)', 4 => '★★★★☆ (4)', 3 => '★★★☆☆ (3)', 2 => '★★☆☆☆ (2)', 1 => '★☆☆☆☆ (1)'])->default(5)->required()->native(false),
             FileUpload::make('photo_path')->label('Client photograph')->image()->avatar()->disk('public')->directory('testimonials')->visibility('public')
-                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])->maxSize(5120),
+                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])->maxSize(5120)->hint('Max file size: 5 MB'),
             Textarea::make('body')->label('Testimonial')->required()->rows(5)->maxLength(1500)->columnSpanFull()
                 ->helperText('Only publish genuine client feedback.'),
             TextInput::make('sort_order')->numeric()->default(0)->minValue(0),

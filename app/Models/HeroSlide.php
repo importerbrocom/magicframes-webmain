@@ -13,9 +13,9 @@ class HeroSlide extends Model
 {
     use CleansUpFiles;
 
-    protected array $fileColumns = ['image_path'];
+    protected array $fileColumns = ['image_path', 'video_path'];
 
-    protected $fillable = ['heading', 'subheading', 'description', 'image_path', 'button_label', 'button_url', 'sort_order', 'is_published'];
+    protected $fillable = ['heading', 'subheading', 'description', 'image_path', 'video_path', 'button_label', 'button_url', 'sort_order', 'is_published'];
 
     protected function casts(): array
     {
@@ -30,5 +30,10 @@ class HeroSlide extends Model
     public function getImageUrlAttribute(): ?string
     {
         return $this->publicUrl($this->image_path);
+    }
+
+    public function getVideoUrlAttribute(): ?string
+    {
+        return $this->publicUrl($this->video_path);
     }
 }
