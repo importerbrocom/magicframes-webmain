@@ -61,6 +61,55 @@ class SiteData
         return ContentCache::remember('testimonials:list', fn () => TestimonialResource::collection(Testimonial::published()->get())->response()->getData(true))['data'];
     }
 
+    /** Full data for one service's own page (null when missing / unpublished). */
+    public static function service(string $slug): ?array
+    {
+        $data = ContentCache::remember("services:page:{$slug}", function () use ($slug) {
+            $svc = Service::published()->where('slug', $slug)->first();
+            if (! $svc) {
+                return ['missing' => true];
+            }
+            $url = fn (?string $path) => $path ? Storage::disk('public')->url($path) : null;
+
+            $photos = collect($svc->gallery ?? [])->filter(fn ($g) => ! empty($g['image']))->map(fn ($g) => [
+                'url' => $url($g['image']), 'title' => $g['title'] ?? null, 'alt' => ($g['alt'] ?? null) ?: ($g['title'] ?? null),
+            ])->values()->all();
+
+            $videos = collect($svc->videos ?? [])->map(function ($v) use ($url) {
+                $title = $v['title'] ?? 'Video';
+                if (($v['source'] ?? 'link') === 'upload') {
+                    if (empty($v['file'])) {
+                        return null;
+                    }
+
+                    return ['title' => $title, 'description' => $v['description'] ?? null, 'embed' => null, 'file' => $url($v['file']), 'thumb' => $url($v['thumbnail'] ?? null)];
+                }
+                $parsed = VideoLinkParser::parse($v['url'] ?? null);
+                if (! $parsed) {
+                    return null;
+                }
+
+                return [
+                    'title' => $title, 'description' => $v['description'] ?? null,
+                    'embed' => VideoLinkParser::embedUrl($parsed['type'], $parsed['id']), 'file' => null,
+                    'thumb' => $url($v['thumbnail'] ?? null) ?: VideoLinkParser::thumbnailUrl($parsed['type'], $parsed['id']),
+                ];
+            })->filter()->values()->all();
+
+            return [
+                'id' => $svc->id, 'title' => $svc->title, 'slug' => $svc->slug, 'icon' => $svc->icon,
+                'short_description' => $svc->short_description, 'description' => $svc->description,
+                'image_url' => $svc->image_url,
+                'highlights' => collect($svc->highlights ?? [])->map(fn ($h) => is_array($h) ? ($h['text'] ?? null) : $h)->filter()->values()->all(),
+                'faqs' => collect($svc->faqs ?? [])->filter(fn ($f) => filled($f['question'] ?? null) && filled($f['answer'] ?? null))->values()->all(),
+                'photos' => $photos, 'videos' => $videos,
+                'seo' => ['title' => $svc->seo_title, 'description' => $svc->seo_description],
+            ];
+        }, 86400);
+
+        return empty($data['missing']) ? $data : null;
+    }
+
     private static function buildSite(): array
     {
         $header = Header::current();

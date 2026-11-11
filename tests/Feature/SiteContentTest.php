@@ -9,7 +9,9 @@ use App\Filament\Resources\HomeSections\Pages\ManageHomeSections;
 use App\Filament\Resources\NavigationMenus\Pages\ManageNavigationMenus;
 use App\Filament\Resources\Pages\Pages\CreatePage;
 use App\Filament\Resources\Pages\Pages\EditPage;
-use App\Filament\Resources\Services\Pages\ManageServices;
+use App\Filament\Resources\Services\Pages\CreateService;
+use App\Filament\Resources\Services\Pages\EditService;
+use App\Filament\Resources\Services\Pages\ListServices;
 use App\Filament\Resources\Statistics\Pages\ManageStatistics;
 use App\Filament\Resources\Testimonials\Pages\ManageTestimonials;
 use App\Models\GalleryCategory;
@@ -228,15 +230,12 @@ class SiteContentTest extends TestCase
     public function test_services_crud_and_ordering_reflect_in_api(): void
     {
         $this->login();
-        Livewire::test(ManageServices::class)
-            ->callAction(CreateAction::class, [
-                'title' => 'Wedding Photography', 'short_description' => 'Full-day coverage', 'is_published' => true, 'sort_order' => 2,
-                'image_path' => UploadedFile::fake()->image('s.jpg', 800, 600),
-            ])->assertHasNoFormErrors();
-        Livewire::test(ManageServices::class)
-            ->callAction(CreateAction::class, ['title' => 'Albums', 'is_published' => true, 'sort_order' => 1])->assertHasNoFormErrors();
-        Livewire::test(ManageServices::class)
-            ->callAction(CreateAction::class, ['title' => 'Draft service', 'is_published' => false])->assertHasNoFormErrors();
+        Livewire::test(CreateService::class)->fillForm([
+            'title' => 'Wedding Photography', 'short_description' => 'Full-day coverage', 'is_published' => true, 'sort_order' => 2,
+            'image_path' => UploadedFile::fake()->image('s.jpg', 800, 600),
+        ])->call('create')->assertHasNoFormErrors();
+        Livewire::test(CreateService::class)->fillForm(['title' => 'Albums', 'is_published' => true, 'sort_order' => 1])->call('create')->assertHasNoFormErrors();
+        Livewire::test(CreateService::class)->fillForm(['title' => 'Draft service', 'is_published' => false])->call('create')->assertHasNoFormErrors();
 
         $list = $this->getJson('/api/v1/services')->assertOk()->json('data');
         $this->assertSame(['Albums', 'Wedding Photography'], array_column($list, 'title'));
@@ -245,14 +244,14 @@ class SiteContentTest extends TestCase
         $this->getJson('/api/v1/services/draft-service')->assertNotFound();
 
         $svc = Service::where('slug', 'albums')->first();
-        Livewire::test(ManageServices::class)
-            ->callTableAction('edit', $svc, ['title' => 'Photo Albums'])->assertHasNoFormErrors();
+        Livewire::test(EditService::class, ['record' => $svc->getRouteKey()])
+            ->fillForm(['title' => 'Photo Albums'])->call('save')->assertHasNoFormErrors();
         $this->assertSame('Photo Albums', $this->getJson('/api/v1/services')->json('data.0.title'));
 
         $withImage = Service::where('slug', 'wedding-photography')->first();
         $path = $withImage->image_path;
         Storage::disk('public')->assertExists($path);
-        Livewire::test(ManageServices::class)->callTableAction('delete', $withImage);
+        Livewire::test(ListServices::class)->callTableAction('delete', $withImage);
         Storage::disk('public')->assertMissing($path);
         $this->getJson('/api/v1/services')->assertJsonCount(1, 'data');
     }

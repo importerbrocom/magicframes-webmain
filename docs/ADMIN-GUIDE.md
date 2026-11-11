@@ -68,3 +68,16 @@ A round green WhatsApp button floats at the bottom-right of every page. At the t
 ## Adding gallery images with a title
 
 Website > Gallery > Images > New: after choosing the category and the pictures you can fill in **Title** (caption in the lightbox), **Alt text** (for Google / screen readers; the title is used if left empty) and **Description**. With several pictures at once the same details are applied to all of them; tick *Number the titles* to get "Title 1, Title 2…". You can open any picture later to give it its own title.
+
+## A page for every service
+
+Every published service now has its own page at `/services/<name>` (the service cards on the home page and the Services page link to it). Edit it in **Website > Services > Edit**, tab by tab:
+
+- **Basics**: title, card text, main image (also the banner of the service page), order, published.
+- **Details**: the full writing (rich text) and a short tick list "What is included".
+- **Photos**: add photos one by one, each with a title (caption) and alt text; drag to reorder. Visitors open them in the photo viewer.
+- **Videos**: add YouTube / Vimeo links or upload video files (with an optional thumbnail). Visitors press play to watch.
+- **Extra**: questions and answers (FAQ) shown as an open-and-close list (also helps Google).
+- **SEO**: the page address (slug) and the Google title / description.
+
+Each page ends with an "Enquire now" button that opens the Contact page with the service already mentioned in the message, and shows the other services. Unpublished services have no page. After deploying run `php artisan migrate --force`.

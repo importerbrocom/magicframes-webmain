@@ -269,6 +269,14 @@ class DemoContent
     private function services(): void
     {
         $this->say('Services…');
+        $photos = [
+            'Wedding Photography' => ['wedding-ritual', 'wedding-garland', 'wedding-lamps'],
+            'Pre-Wedding Shoots' => ['prewed-banana-grove', 'prewed-pink-canopy', 'prewed-umbrella'],
+            'Engagement Sessions' => ['engage-rings-couple', 'engage-lamp-setup', 'engage-offerings'],
+            'Cinematic Films' => ['couple-happy', 'couple-garlands', 'couple-smiling'],
+            'Portrait Photography' => ['portrait-veil', 'portrait-silver', 'portrait-orange-veil'],
+            'Event Coverage' => ['event-stage-flowers', 'event-stage-drapes', 'event-silk-saree'],
+        ];
         foreach ([
             ['Wedding Photography', 'fa-solid fa-camera-retro', 'Full-day coverage of your ceremony and celebrations.'],
             ['Pre-Wedding Shoots', 'fa-solid fa-heart', 'Relaxed, romantic sessions at the locations you love.'],
@@ -279,7 +287,10 @@ class DemoContent
         ] as $i => [$title, $icon, $short]) {
             $this->track(Service::create([
                 'title' => $title, 'icon' => $icon, 'short_description' => $short.' (sample)', 'sort_order' => $i,
-                'description' => '<p>Sample description for '.$title.'. Replace in Admin > Services.</p>',
+                'description' => '<p>Sample text for the '.$title.' page. Describe what you offer, how the day works and what makes your style special.</p><p>Replace everything on this page in Admin &gt; Website &gt; Services &gt; Edit.</p>',
+                'highlights' => ['Sample point: replace with what is included', 'Sample point: delivery time and format', 'Sample point: number of photographers'],
+                'faqs' => [['question' => 'Sample question: how do we book?', 'answer' => 'Sample answer. Replace this in the Extra tab of the service.']],
+                'gallery' => array_map(fn ($key) => ['image' => $this->photo($key, 'demo/services'), 'title' => $title, 'alt' => $title.' sample photo'], $photos[$title]),
             ]));
         }
     }
