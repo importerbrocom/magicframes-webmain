@@ -413,9 +413,9 @@ body.menu-open{overflow:hidden}
 @media (max-width:560px){.ig-grid{grid-template-columns:repeat(2,1fr);gap:.4rem;margin-bottom:1.8rem}}
 
 /* ---- Floating WhatsApp button (sits just above "back to top") ---- */
-.wa-float{position:fixed;right:26px;bottom:90px;z-index:800;width:52px;height:52px;border-radius:50%;background:#25d366;color:#fff;
+.wa-float{position:fixed;right:26px;bottom:26px;z-index:800;width:52px;height:52px;border-radius:50%;background:#25d366;color:#fff;
   display:flex;align-items:center;justify-content:center;font-size:1.85rem;line-height:1;text-decoration:none;
-  box-shadow:0 6px 18px rgba(37,211,102,.45);transition:transform .25s,box-shadow .25s,background .25s}
+  box-shadow:0 6px 18px rgba(37,211,102,.45);transition:transform .25s,box-shadow .25s,background .25s,bottom .4s var(--ease,ease)}
 .wa-float:hover{background:#1ebe57;transform:scale(1.08);box-shadow:0 8px 24px rgba(37,211,102,.6)}
 .wa-float:focus-visible{outline:3px solid #fff;outline-offset:2px;box-shadow:0 0 0 6px #25d366}
 .wa-float::before{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid #25d366;animation:waPulse 2.6s ease-out infinite;pointer-events:none}
@@ -425,10 +425,14 @@ body.menu-open{overflow:hidden}
 .wa-float:hover .wa-float__tip,.wa-float:focus-visible .wa-float__tip{opacity:1;visibility:visible}
 @media (prefers-reduced-motion:reduce){.wa-float::before{animation:none;display:none}}
 @media (max-width:560px){
-  .wa-float{width:50px;height:50px;font-size:1.75rem;right:max(1rem,env(safe-area-inset-right));bottom:max(4.6rem,calc(env(safe-area-inset-bottom) + 4.1rem))}
+  .wa-float{width:50px;height:50px;font-size:1.75rem;right:max(1rem,env(safe-area-inset-right));bottom:max(1rem,calc(env(safe-area-inset-bottom) + .5rem))}
   .wa-float__tip{display:none}
 }
 @media print{.wa-float{display:none}}
+/* The "back to top" arrow only appears after scrolling: until then the WhatsApp button sits in the corner (no empty gap);
+   once the arrow shows, WhatsApp slides up above it. */
+body:has(.totop.show) .wa-float{bottom:90px}
+@media (max-width:560px){body:has(.totop.show) .wa-float{bottom:max(4.6rem,calc(env(safe-area-inset-bottom) + 4.1rem))}}
 /* short desktop windows: keep the enquiry tab above the WhatsApp button */
 @media (min-width:1101px){.side-widgets{top:max(110px,min(46%,calc(100vh - 230px)))}}
 @media (max-width:1100px){.side-widgets{bottom:calc(160px + env(safe-area-inset-bottom))}}   /* enquiry tab sits above the WhatsApp button */

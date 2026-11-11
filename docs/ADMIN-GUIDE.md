@@ -63,4 +63,4 @@ How it behaves: new posts appear automatically about every hour (the site keeps 
 
 ## WhatsApp button
 
-A round green WhatsApp button floats at the bottom-right of every page, just above the "back to top" arrow. It opens a WhatsApp chat with the number set in **Website > Site settings > Contact details > WhatsApp number** (with a ready "Hello… I would like to know more about your photography services" message). If that field is empty the button is not shown. Enter the number with the country code, e.g. +91 98765 43210 (a plain 10-digit Indian number gets +91 added automatically).
+A round green WhatsApp button floats at the bottom-right of every page. At the top of the page it sits in the corner; once you scroll and the "back to top" arrow appears, it moves up to sit just above the arrow. It opens a WhatsApp chat with the number set in **Website > Site settings > Contact details > WhatsApp number** (with a ready "Hello… I would like to know more about your photography services" message). If that field is empty the button is not shown. Enter the number with the country code, e.g. +91 98765 43210 (a plain 10-digit Indian number gets +91 added automatically).
