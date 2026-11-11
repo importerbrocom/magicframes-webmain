@@ -171,7 +171,7 @@
     var gold = mode === 'gold';
 
     function plan() {                                   // how many of each kind
-      var f = (phone ? 0.5 : 1) * (weak ? 0.5 : 1);
+      var f = (phone ? 0.5 : 1) * (weak ? 0.5 : 1) * (host.classList.contains('hero--video') ? 0.5 : 1);   // video slide: half the sparkles
       return gold ? { b: Math.max(4, Math.round(9 * f)), g: Math.max(8, Math.round(18 * f)) }
                   : { b: 0, g: Math.max(4, Math.round(22 * f)) };
     }
@@ -257,16 +257,13 @@
     function check() {
       var r = host.getBoundingClientRect();
       visible = r.bottom > 0 && r.top < window.innerHeight;
-      // No sparkles while a hero video slide is showing (main.js sets .hero--video)
-      var blocked = host.classList.contains('hero--video');
-      if (blocked) ctx.clearRect(0, 0, w, h);
-      if (visible && !document.hidden && !blocked) start(); else stop();
+      if (visible && !document.hidden) start(); else stop();
     }
 
     size();
     if ('ResizeObserver' in window) new ResizeObserver(function () { size(); check(); }).observe(host); else window.addEventListener('resize', size);
     onScroll(check);
-    if ('MutationObserver' in window) new MutationObserver(check).observe(host, { attributes: true, attributeFilter: ['class'] });
+    if ('MutationObserver' in window) new MutationObserver(function () { size(); check(); }).observe(host, { attributes: true, attributeFilter: ['class'] });
     window.addEventListener('load', check);
     document.addEventListener('visibilitychange', check);
     setTimeout(check, 1200);
