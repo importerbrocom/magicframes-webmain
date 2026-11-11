@@ -180,7 +180,7 @@ class SiteData
 
         return GalleryCategory::published()->whereNotNull('cover_path')->orderBy('sort_order')->orderBy('name')->limit($limit)->get()
             ->map(fn (GalleryCategory $c) => [
-                'title' => $c->name, 'alt' => $c->name, 'thumb_url' => img_url($c->cover_url, 900), 'srcset' => null,
+                'title' => $c->name, 'alt' => $c->name, 'thumb_url' => img_url($c->cover_url, 1400), 'srcset' => null,
                 'category' => ['slug' => $c->slug, 'name' => $c->name],
             ])->all();
     }

@@ -40,9 +40,9 @@
       <div class="section-head center"><span class="section-label">Gallery</span><h2 class="section-title">{{ $service['title'] }} Photos</h2></div>
       <div class="masonry" id="gallery" data-gallery data-page="1" data-last="1">
         @foreach($service['photos'] as $ph)
-          <a class="m-item" href="{{ img_url($ph['url'], 1800) }}" data-lightbox data-full="{{ img_url($ph['url'], 1800) }}"
+          <a class="m-item" href="{{ img_url($ph['url'], 2560) }}" data-lightbox data-full="{{ img_url($ph['url'], 2560) }}"
              data-title="{{ $ph['title'] }}" data-caption="" style="aspect-ratio:4/3">
-            <img src="{{ img_url($ph['url'], 700) }}" alt="{{ $ph['alt'] ?: $service['title'] }}" loading="lazy" decoding="async" />
+            <img src="{{ img_url($ph['url'], 1280) }}" alt="{{ $ph['alt'] ?: $service['title'] }}" loading="lazy" decoding="async" />
             <span class="m-item__cap">@if($ph['title']){{ $ph['title'] }}@else<i class="fa-solid fa-magnifying-glass-plus"></i>@endif</span>
           </a>
         @endforeach
@@ -59,7 +59,7 @@
         @foreach($service['videos'] as $v)
           <a class="vcard" href="#" data-video data-slug="" data-title="{{ $v['title'] }}" data-desc="{{ $v['description'] }}" data-embed="{{ $v['embed'] }}" data-file="{{ $v['file'] }}" data-poster="{{ $v['thumb'] }}">
             <span class="vcard__media">
-              @if($v['thumb'])<img src="{{ img_url($v['thumb'], 800) }}" alt="" loading="lazy" decoding="async" />@endif
+              @if($v['thumb'])<img src="{{ img_url($v['thumb'], 1280) }}" alt="" loading="lazy" decoding="async" />@endif
               <span class="vcard__play"><i class="fa-solid fa-play"></i></span>
             </span>
             <span class="vcard__title">{{ $v['title'] }}</span>

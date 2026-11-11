@@ -461,3 +461,8 @@ a.service:hover .service__more i{transform:translateX(5px)}
 .svc__cta .section-lead{margin-bottom:1.6rem}
 .svc__more-services{padding:5rem 0;background:var(--cream-2,#efe8df)}
 @media (max-width:700px){.svc{padding:3.2rem 0}.svc__list{grid-template-columns:1fr}.svc__q summary{font-size:1.1rem}}
+
+/* ---- HD: bigger video player (YouTube/Vimeo pick 1080p only when the player is large enough) ---- */
+.vmodal__box{width:min(1600px,100%,calc((92vh - 6rem) * 16 / 9))}
+/* crisp image scaling */
+.m-item img,.gallery__item img,.ig-tile img,.vcard__media img,.service__thumb img{image-rendering:auto;-webkit-backface-visibility:hidden;backface-visibility:hidden}

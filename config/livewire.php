@@ -11,7 +11,7 @@ return [
         'disk' => env('LIVEWIRE_TEMPORARY_FILE_UPLOAD_DISK'),
         'rules' => ['required', 'file', 'max:'.max(
             (int) env('MEDIA_MAX_VIDEO_KB', 512000),
-            (int) env('MEDIA_MAX_HERO_VIDEO_KB', 51200),
+            (int) env('MEDIA_MAX_HERO_VIDEO_KB', 102400),
             (int) env('MEDIA_MAX_IMAGE_KB', 20480),
         )],
         'directory' => null,

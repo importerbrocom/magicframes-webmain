@@ -345,3 +345,19 @@
   }
 
 })();
+
+/* ---------- HD YouTube thumbnails: use the 1280x720 image when the video has one ---------- */
+(function () {
+  function upgrade(root) {
+    (root || document).querySelectorAll('img[src*="img.youtube.com/vi/"][src$="/hqdefault.jpg"]:not([data-hd-tried])').forEach(function (img) {
+      img.setAttribute('data-hd-tried', '1');
+      var hd = img.src.replace('/hqdefault.jpg', '/maxresdefault.jpg');
+      var probe = new Image();
+      probe.onload = function () { if (probe.naturalWidth > 200) img.src = hd; };   // missing HD = 120px placeholder
+      probe.src = hd;
+    });
+  }
+  window.mfHdThumbs = upgrade;
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { upgrade(); }); else upgrade();
+})();
+

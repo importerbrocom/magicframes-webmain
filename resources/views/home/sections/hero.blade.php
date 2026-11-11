@@ -2,7 +2,7 @@
 <section class="hero" id="home">
   <div class="hero__slides" id="heroSlides">
     @forelse($slides as $i => $slide)
-      <div class="hero__slide {{ $i === 0 ? 'is-active' : '' }}" @if($slide['image_url']) style="--hero:url('{{ img_url($slide['image_url'], 1900) }}');--hero-sm:url('{{ img_url($slide['image_url'], 900) }}')" @endif>
+      <div class="hero__slide {{ $i === 0 ? 'is-active' : '' }}" @if($slide['image_url']) style="--hero:url('{{ img_url($slide['image_url'], 2560) }}');--hero-sm:url('{{ img_url($slide['image_url'], 1280) }}')" @endif>
         @if(!empty($slide['video_url']))
           <video class="hero__video" src="{{ $slide['video_url'] }}"
                  muted loop playsinline webkit-playsinline preload="{{ $i === 0 ? 'auto' : 'metadata' }}" @if($i === 0) autoplay @endif aria-hidden="true" tabindex="-1"></video>

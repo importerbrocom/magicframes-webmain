@@ -1,5 +1,5 @@
 <section class="testi" id="testimonials">
-  <div class="testi__bg" data-parallax="0.15" @if($s['image_url']) style="--bg:url('{{ img_url($s['image_url'], 1800) }}');--bg-sm:url('{{ img_url($s['image_url'], 900) }}')" @endif></div>
+  <div class="testi__bg" data-parallax="0.15" @if($s['image_url']) style="--bg:url('{{ img_url($s['image_url'], 2560) }}');--bg-sm:url('{{ img_url($s['image_url'], 1280) }}')" @endif></div>
   <div class="testi__overlay"></div>
   <div class="container">
     <div class="section-head center light">
@@ -10,7 +10,7 @@
       <div class="slider__track" id="sliderTrack">
         @foreach($s['items'] as $t)
           <figure class="slide">
-            @if($t['photo_url'])<img class="slide__photo" src="{{ img_url($t['photo_url'], 160) }}" alt="{{ $t['client_name'] }}" loading="lazy" />@else<i class="fa-solid fa-quote-right slide__mark"></i>@endif
+            @if($t['photo_url'])<img class="slide__photo" src="{{ img_url($t['photo_url'], 320) }}" alt="{{ $t['client_name'] }}" loading="lazy" />@else<i class="fa-solid fa-quote-right slide__mark"></i>@endif
             <div class="slide__stars" aria-label="{{ $t['rating'] }} out of 5 stars">{!! str_repeat('<i class="fa-solid fa-star"></i>', $t['rating']) !!}</div>
             <blockquote>{{ $t['body'] }}</blockquote>
             <figcaption><strong>{{ $t['client_name'] }}</strong>@if($t['client_role'])<span>{{ $t['client_role'] }}</span>@endif</figcaption>

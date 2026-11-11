@@ -70,6 +70,6 @@ class VideoLinkParser
 
     public static function thumbnailUrl(string $type, string $id): ?string
     {
-        return $type === 'youtube' ? "https://img.youtube.com/vi/{$id}/hqdefault.jpg" : null;
+        return $type === 'youtube' ? "https://img.youtube.com/vi/{$id}/hqdefault.jpg" : null;   // always exists; main.js upgrades it to maxresdefault (HD) when available
     }
 }

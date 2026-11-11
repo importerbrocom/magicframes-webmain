@@ -67,7 +67,7 @@ class FrontendTest extends TestCase
         $html = $this->get('/')->assertOk()->getContent();
         $this->assertStringContainsString('Timeless Frames', $html);
         $this->assertStringContainsString('<h1 class="hero__word hero__word--long">Timeless Frames</h1>', $html);
-        $this->assertStringContainsString('/storage/_cache/1900/', $html, 'hero image is served as a resized WebP');
+        $this->assertStringContainsString('/storage/_cache/hd/2560/', $html, 'hero image is served as a resized WebP');
         $this->assertStringContainsString('Wedding Photography', $html);
         $this->assertStringContainsString('fa-solid fa-camera', $html);
         $this->assertStringContainsString('data-count="120"', $html);
@@ -78,7 +78,7 @@ class FrontendTest extends TestCase
         $this->assertStringContainsString('srcset=', $html);
         $this->assertStringContainsString('Highlights Film', $html);
         $this->assertStringContainsString('/videos?play=highlights-film', $html);
-        Storage::disk('public')->assertExists(collect(Storage::disk('public')->allFiles('_cache/1900'))->first());
+        Storage::disk('public')->assertExists(collect(Storage::disk('public')->allFiles('_cache/hd/2560'))->first());
     }
 
     public function test_home_falls_back_gracefully_without_hero_slides(): void
@@ -274,7 +274,7 @@ class FrontendTest extends TestCase
         $path = UploadedFile::fake()->image('big.jpg', 3000, 2000)->store('hero', 'public');
         $url = Storage::disk('public')->url($path);
         $resized = img_url($url, 800);
-        $this->assertStringContainsString('/_cache/800/hero/', $resized);
+        $this->assertStringContainsString('/_cache/hd/800/hero/', $resized);
         $file = str($resized)->after('/storage/')->toString();
         Storage::disk('public')->assertExists($file);
         [$w] = getimagesizefromstring(Storage::disk('public')->get($file));
@@ -303,10 +303,10 @@ class FrontendTest extends TestCase
         $this->assertStringContainsString('viewport-fit=cover', $home, 'notch-safe viewport');
         $this->assertStringContainsString('width=device-width, initial-scale=1.0', $home);
         // phones get a smaller hero image than desktops
-        $this->assertMatchesRegularExpression('~--hero:url\(\'[^\']*/_cache/1900/[^\']+\'\);--hero-sm:url\(\'[^\']*/_cache/900/[^\']+\'\)~', $home);
+        $this->assertMatchesRegularExpression('~--hero:url\(\'[^\']*/_cache/hd/2560/[^\']+\'\);--hero-sm:url\(\'[^\']*/_cache/hd/1280/[^\']+\'\)~', $home);
 
         $about = $this->get('/about')->assertOk()->getContent();
-        $this->assertMatchesRegularExpression('~--bg:url\(\'[^\']*/_cache/1900/[^\']+\'\);--bg-sm:url\(\'[^\']*/_cache/900/~', $about);
+        $this->assertMatchesRegularExpression('~--bg:url\(\'[^\']*/_cache/hd/2560/[^\']+\'\);--bg-sm:url\(\'[^\']*/_cache/hd/1280/~', $about);
 
         $css = file_get_contents(public_path('css/enhancements.css'));
         foreach (['MOBILE LAYER', '@media (max-width:560px)', 'safe-area-inset', '100svh', 'font-size:16px', 'prefers-reduced-motion', '.story__images{width:min(100%,460px)'] as $needle) {
