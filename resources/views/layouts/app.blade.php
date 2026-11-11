@@ -72,6 +72,17 @@
 
   @include('partials.footer')
 
+  @php
+    $waDigits = preg_replace('/\D/', '', (string) ($site['contact']['whatsapp'] ?? ''));
+    if (strlen($waDigits) === 10) { $waDigits = '91'.$waDigits; }   // local Indian number without country code
+  @endphp
+  @if(strlen($waDigits) >= 8)
+    <a class="wa-float" href="https://wa.me/{{ $waDigits }}?text={{ rawurlencode('Hello '.$site['name'].', I would like to know more about your photography services.') }}"
+       target="_blank" rel="noopener noreferrer" aria-label="Chat with us on WhatsApp" title="Chat with us on WhatsApp">
+      <i class="fa-brands fa-whatsapp"></i><span class="wa-float__tip">Chat on WhatsApp</span>
+    </a>
+  @endif
+
   <button class="totop" id="toTop" aria-label="Back to top"><i class="fa-solid fa-arrow-up"></i></button>
 
   <script src="{{ asset('js/main.js') }}?v={{ filemtime(public_path('js/main.js')) }}"></script>

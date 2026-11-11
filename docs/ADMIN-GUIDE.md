@@ -60,3 +60,7 @@ The "On Instagram" block can show your latest posts as a picture grid (each pict
 4. In the admin open **Website > Site settings > Instagram feed**, paste the token, choose how many posts to show and click **Save**. You get a message saying whether Instagram accepted it.
 
 How it behaves: new posts appear automatically about every hour (the site keeps its own copy of the pictures, so the page stays fast, and the last posts stay visible if Instagram is down). The token is renewed automatically before it expires. It is stored encrypted and never shown again. To stop the feed, tick *Disconnect Instagram* and save. If the token ever stops working, the Site settings box tells you; generate a new token and paste it. For the hourly refresh without visitors, the server cron job (`schedule:run`) should be set up; without it the feed still refreshes when visitors open the home page.
+
+## WhatsApp button
+
+A round green WhatsApp button floats at the bottom-right of every page, just above the "back to top" arrow. It opens a WhatsApp chat with the number set in **Website > Site settings > Contact details > WhatsApp number** (with a ready "Hello… I would like to know more about your photography services" message). If that field is empty the button is not shown. Enter the number with the country code, e.g. +91 98765 43210 (a plain 10-digit Indian number gets +91 added automatically).

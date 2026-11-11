@@ -411,3 +411,24 @@ body.menu-open{overflow:hidden}
 .ig-tile:focus-visible{outline:2px solid #c99a86;outline-offset:2px}
 @media (max-width:900px){.ig-grid{grid-template-columns:repeat(3,1fr)}}
 @media (max-width:560px){.ig-grid{grid-template-columns:repeat(2,1fr);gap:.4rem;margin-bottom:1.8rem}}
+
+/* ---- Floating WhatsApp button (sits just above "back to top") ---- */
+.wa-float{position:fixed;right:26px;bottom:90px;z-index:800;width:52px;height:52px;border-radius:50%;background:#25d366;color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:1.85rem;line-height:1;text-decoration:none;
+  box-shadow:0 6px 18px rgba(37,211,102,.45);transition:transform .25s,box-shadow .25s,background .25s}
+.wa-float:hover{background:#1ebe57;transform:scale(1.08);box-shadow:0 8px 24px rgba(37,211,102,.6)}
+.wa-float:focus-visible{outline:3px solid #fff;outline-offset:2px;box-shadow:0 0 0 6px #25d366}
+.wa-float::before{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid #25d366;animation:waPulse 2.6s ease-out infinite;pointer-events:none}
+@keyframes waPulse{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.6);opacity:0}}
+.wa-float__tip{position:absolute;right:calc(100% + 12px);top:50%;transform:translateY(-50%);white-space:nowrap;background:#2b2622;color:#fff;
+  font:500 .72rem/1 var(--sans,'Jost',sans-serif);letter-spacing:.08em;text-transform:uppercase;padding:.6rem .8rem;border-radius:4px;opacity:0;visibility:hidden;transition:.25s;pointer-events:none}
+.wa-float:hover .wa-float__tip,.wa-float:focus-visible .wa-float__tip{opacity:1;visibility:visible}
+@media (prefers-reduced-motion:reduce){.wa-float::before{animation:none;display:none}}
+@media (max-width:560px){
+  .wa-float{width:50px;height:50px;font-size:1.75rem;right:max(1rem,env(safe-area-inset-right));bottom:max(4.6rem,calc(env(safe-area-inset-bottom) + 4.1rem))}
+  .wa-float__tip{display:none}
+}
+@media print{.wa-float{display:none}}
+/* short desktop windows: keep the enquiry tab above the WhatsApp button */
+@media (min-width:1101px){.side-widgets{top:max(110px,min(46%,calc(100vh - 230px)))}}
+@media (max-width:1100px){.side-widgets{bottom:calc(160px + env(safe-area-inset-bottom))}}   /* enquiry tab sits above the WhatsApp button */
