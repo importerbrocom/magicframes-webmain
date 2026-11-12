@@ -58,12 +58,12 @@ class ServiceResource extends Resource
                 Tab::make('Details')->icon('heroicon-o-document-text')->schema([
                     RichEditor::make('description')->label('Full details (writing)')
                         ->helperText('The main text of this service\'s own page: what you offer, how it works, packages, anything you like.'),
-                    Repeater::make('highlights')->label('What is included (short list)')->defaultItems(0)->addActionLabel('Add point')->reorderable()->collapsible()
+                    Repeater::make('highlights')->label('What is included (short list)')->defaultItems(0)->addActionLabel('Add point')->reorderable()->reorderableWithButtons()->collapsible()
                         ->simple(TextInput::make('text')->required()->maxLength(160)->placeholder('e.g. Two photographers for the full day'))
                         ->helperText('Shown as a tick list on the page.'),
                 ]),
                 Tab::make('Photos')->icon('heroicon-o-photo')->schema([
-                    Repeater::make('gallery')->label('Photos for this service')->defaultItems(0)->addActionLabel('Add photo')->reorderable()->collapsible()->collapsed(false)
+                    Repeater::make('gallery')->label('Photos for this service')->defaultItems(0)->addActionLabel('Add photo')->reorderable()->reorderableWithButtons()->collapsible()->collapsed(false)
                         ->itemLabel(fn (array $state): ?string => $state['title'] ?? null)->columns(2)
                         ->schema([
                             FileUpload::make('image')->label('Photo')->image()->disk('public')->directory('services/gallery')->visibility('public')
@@ -74,7 +74,7 @@ class ServiceResource extends Resource
                         ->helperText('Shown as a photo gallery on the service page. Drag to reorder.'),
                 ]),
                 Tab::make('Videos')->icon('heroicon-o-film')->schema([
-                    Repeater::make('videos')->label('Videos for this service')->defaultItems(0)->addActionLabel('Add video')->reorderable()->collapsible()
+                    Repeater::make('videos')->label('Videos for this service')->defaultItems(0)->addActionLabel('Add video')->reorderable()->reorderableWithButtons()->collapsible()
                         ->itemLabel(fn (array $state): ?string => $state['title'] ?? null)->columns(2)
                         ->schema([
                             TextInput::make('title')->required()->maxLength(160),
@@ -103,7 +103,7 @@ class ServiceResource extends Resource
                         ->helperText('Shown as a video list on the service page; visitors press play to watch.'),
                 ]),
                 Tab::make('Extra')->icon('heroicon-o-question-mark-circle')->schema([
-                    Repeater::make('faqs')->label('Questions and answers (FAQ)')->defaultItems(0)->addActionLabel('Add question')->reorderable()->collapsible()
+                    Repeater::make('faqs')->label('Questions and answers (FAQ)')->defaultItems(0)->addActionLabel('Add question')->reorderable()->reorderableWithButtons()->collapsible()
                         ->itemLabel(fn (array $state): ?string => $state['question'] ?? null)
                         ->schema([
                             TextInput::make('question')->required()->maxLength(200),

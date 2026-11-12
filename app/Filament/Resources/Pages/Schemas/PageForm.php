@@ -54,7 +54,7 @@ class PageForm
                     ]),
                 ]),
                 Tab::make('Content blocks')->schema([
-                    Repeater::make('sections')->relationship()->orderColumn('sort_order')->reorderable()->collapsible()->cloneable()
+                    Repeater::make('sections')->relationship()->orderColumn('sort_order')->reorderable()->reorderableWithButtons()->collapsible()->collapsed()->cloneable()
                         ->addActionLabel('Add content block')
                         ->itemLabel(fn (array $state): ?string => ($state['heading'] ?? null) ?: (PageSection::TYPES[$state['type'] ?? ''] ?? 'Block'))
                         ->schema([
@@ -78,7 +78,7 @@ class PageForm
                                 }),
                             Repeater::make('items')->label('Team members')->addActionLabel('Add team member')
                                 ->visible(fn (Get $g) => $g('type') === 'team')
-                                ->reorderable()->collapsible()->cloneable()->defaultItems(0)->grid(2)->columnSpanFull()
+                                ->reorderable()->reorderableWithButtons()->collapsible()->cloneable()->defaultItems(0)->grid(2)->columnSpanFull()
                                 ->itemLabel(fn (array $state): ?string => trim(($state['name'] ?? '').(! empty($state['position']) ? ' – '.$state['position'] : '')) ?: null)
                                 ->schema([
                                     TextInput::make('name')->label('Name')->required()->maxLength(80),

@@ -76,4 +76,25 @@ class TeamBlockTest extends TestCase
         $block->update(['items' => [['name' => 'Rahul', 'position' => 'Editor']]]);
         Storage::disk('public')->assertMissing($photo);
     }
+
+    public function test_blocks_can_be_moved_up_and_down_with_buttons(): void
+    {
+        $u = User::factory()->create(['is_active' => true]);
+        $u->assignRole('super-admin');
+        $this->actingAs($u);
+        $about = Page::where('slug', 'about')->first();
+        $a = $about->sections()->create(['type' => 'text', 'heading' => 'First block', 'sort_order' => 1]);
+        $b = $about->sections()->create(['type' => 'text', 'heading' => 'Second block', 'sort_order' => 2]);
+
+        $lw = Livewire::test(EditPage::class, ['record' => $about->getRouteKey()]);
+        $keys = array_keys($lw->get('data.sections'));
+        $lw->assertSeeHtml('wire:click')->assertSee('Move up', false);
+        // move the second block up, then save
+        $lw->callAction(\Filament\Actions\Testing\TestAction::make('moveUp')->schemaComponent('sections')->arguments(['item' => $keys[1]]))
+            ->call('save')->assertHasNoFormErrors();
+
+        $this->assertSame(['Second block', 'First block'], $about->sections()->orderBy('sort_order')->pluck('heading')->all());
+        $html = $this->get('/about')->getContent();
+        $this->assertLessThan(strpos($html, 'First block'), strpos($html, 'Second block'));
+    }
 }
