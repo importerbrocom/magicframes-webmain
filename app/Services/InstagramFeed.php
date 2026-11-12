@@ -51,6 +51,66 @@ class InstagramFeed
         }
     }
 
+    private const GRAPH_VERSION = 'v23.0';
+
+    /**
+     * @param  list<string>  $errors  collects Meta's answers for a helpful message
+     */
+    private function fetchWithFacebookToken(string $token, string $fields, int $timeout, ?array &$errors): ?\Illuminate\Http\Client\Response
+    {
+        $errors = [];
+        $v = self::GRAPH_VERSION;
+        $q = ['fields' => $fields, 'limit' => 12, 'access_token' => $token];
+        $ids = array_values(array_unique(array_filter([$this->accountId(), $this->discoverAccountId($token, $timeout)])));
+
+        $urls = [];
+        foreach ($ids as $id) {
+            $urls[] = self::FB_API."/{$v}/{$id}/media";          // Instagram Graph API (business account id)
+            $urls[] = self::API."/{$v}/{$id}/media";             // Instagram API ("Instagram Login compatible")
+        }
+        $urls[] = self::API."/{$v}/me/media";                    // token that belongs to the Instagram account itself
+
+        foreach ($urls as $url) {
+            $res = Http::timeout($timeout)->acceptJson()->get($url, $q);
+            if ($res->successful() && is_array($res->json('data'))) {
+                if ($ids && ! $this->accountId()) {
+                    Setting::setMany(['instagram.account_id' => $ids[0]]);
+                }
+
+                return $res;
+            }
+            $errors[] = (string) ($res->json('error.message') ?: 'HTTP '.$res->status());
+        }
+
+        return null;
+    }
+
+    /** Find the Instagram business account linked to the token (via its Facebook Pages), if Meta allows it. */
+    private function discoverAccountId(string $token, int $timeout): ?string
+    {
+        try {
+            $res = Http::timeout($timeout)->acceptJson()->get(self::FB_API.'/'.self::GRAPH_VERSION.'/me/accounts', [
+                'fields' => 'instagram_business_account', 'access_token' => $token,
+            ]);
+            foreach ((array) $res->json('data', []) as $page) {
+                if ($id = $page['instagram_business_account']['id'] ?? null) {
+                    return preg_replace('/\D/', '', (string) $id) ?: null;
+                }
+            }
+        } catch (Throwable) {
+        }
+
+        return null;
+    }
+
+    /** @param list<string> $errors */
+    private function explain(array $errors): string
+    {
+        $first = $errors[0] ?? 'Instagram did not return any posts.';
+
+        return $first.' — Check in Meta Business settings (business.facebook.com > Settings > Accounts > Instagram accounts) that magicframes.co.in is added to the Magic Frames portfolio and assigned to the app, then generate a new token.';
+    }
+
     /** Instagram account ID (only needed for Meta Unified login / system-user tokens). */
     public function accountId(): ?string
     {
@@ -100,14 +160,12 @@ class InstagramFeed
         try {
             $fields = 'id,caption,media_type,media_url,thumbnail_url,permalink,timestamp';
             if ($this->isFacebookToken($token)) {
-                // Meta Unified login / system-user token: never expires, needs the Instagram account ID
-                $igId = $this->accountId();
-                if (! $igId) {
-                    return $this->fail($data, 'This token type also needs the Instagram account ID (the long number shown under your account in the Meta app, e.g. 17841…).');
+                // Meta Unified login / system-user token (never expires). Meta answers differently depending on
+                // the token and account setup, so try the known ways in turn and use the first that works.
+                $res = $this->fetchWithFacebookToken($token, $fields, $timeout, $errors);
+                if (! $res) {
+                    return $this->fail($data, $this->explain($errors));
                 }
-                $res = Http::timeout($timeout)->acceptJson()->get(self::FB_API.'/'.$igId.'/media', [
-                    'fields' => $fields, 'limit' => 12, 'access_token' => $token,
-                ]);
             } else {
                 $this->maybeRefreshToken($token, $timeout);
                 $res = Http::timeout($timeout)->acceptJson()->get(self::API.'/me/media', [

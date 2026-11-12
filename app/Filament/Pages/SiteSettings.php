@@ -126,6 +126,10 @@ class SiteSettings extends SettingsPage
             $r = $feed->sync();
             $this->data['instagram_token'] = null;
             Notification::make()->title($r['ok'] ? 'Instagram connected' : 'Token saved, but Instagram refused it')->body($r['message'])->{$r['ok'] ? 'success' : 'danger'}()->send();
+        } elseif ($feed->token()) {
+            // Saving again (e.g. after changing the account ID) retries the feed straight away
+            $r = $feed->sync();
+            Notification::make()->title($r['ok'] ? 'Instagram feed updated' : 'Instagram feed could not be updated')->body($r['message'])->{$r['ok'] ? 'success' : 'danger'}()->send();
         }
     }
 }
