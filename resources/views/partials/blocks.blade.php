@@ -39,5 +39,28 @@
         @if($b['button_label'] && $b['button_url'])<a href="{{ $b['button_url'] }}" class="btn">{{ $b['button_label'] }}</a>@endif
       </div></section>
       @break
+    @case('team')
+      @if($b['members'])
+      <section class="section block block--team"><div class="container">
+        <div class="section-head center" data-reveal="up">
+          <span class="section-label">{{ $b['label'] ?: 'The people behind the lens' }}</span>
+          <h2 class="section-title">{{ $b['heading'] ?: 'Our Team' }}</h2>
+          @if(filled($b['body']))<div class="prose section-lead">{!! rich($b['body']) !!}</div>@endif
+        </div>
+        <div class="team__grid">
+          @foreach($b['members'] as $i => $m)
+            <article class="team__card" data-reveal="up" style="--d:{{ ($i % 4) * 0.1 }}s">
+              <div class="team__photo">
+                @if($m['photo_url'])<img src="{{ img_url($m['photo_url'], 640) }}" alt="{{ $m['name'] }}" loading="lazy" decoding="async" />
+                @else<span class="team__initials" aria-hidden="true">{{ collect(preg_split('/\s+/', trim($m['name'])))->filter()->take(2)->map(fn ($w) => mb_strtoupper(mb_substr($w, 0, 1)))->implode('') }}</span>@endif
+              </div>
+              <h3 class="team__name">{{ $m['name'] }}</h3>
+              @if($m['position'])<p class="team__role">{{ $m['position'] }}</p>@endif
+            </article>
+          @endforeach
+        </div>
+      </div></section>
+      @endif
+      @break
   @endswitch
 @endforeach

@@ -60,9 +60,9 @@ class PageForm
                         ->schema([
                             Select::make('type')->options(PageSection::TYPES)->required()->default('text')->live()->native(false),
                             Toggle::make('is_visible')->label('Visible')->default(true)->inline(false),
-                            TextInput::make('label')->maxLength(60)->label('Small script label')->visible(fn (Get $g) => in_array($g('type'), ['text', 'image_text', 'cta', 'video'], true)),
+                            TextInput::make('label')->maxLength(60)->label('Small script label')->visible(fn (Get $g) => in_array($g('type'), ['text', 'image_text', 'cta', 'video', 'team'], true)),
                             TextInput::make('heading')->maxLength(160)->visible(fn (Get $g) => $g('type') !== 'image'),
-                            RichEditor::make('body')->columnSpanFull()->visible(fn (Get $g) => in_array($g('type'), ['text', 'image_text', 'cta', 'video'], true)),
+                            RichEditor::make('body')->columnSpanFull()->visible(fn (Get $g) => in_array($g('type'), ['text', 'image_text', 'cta', 'video', 'team'], true)),
                             FileUpload::make('image_path')->label('Image')->image()->disk('public')->directory('pages')->visibility('public')
                                 ->acceptedFileTypes(self::IMG)->maxSize(15360)->hint('Max file size: 15 MB')
                                 ->visible(fn (Get $g) => in_array($g('type'), ['image_text', 'image', 'cta'], true))
@@ -76,6 +76,18 @@ class PageForm
                                         $fail('Please enter a valid YouTube or Vimeo link.');
                                     }
                                 }),
+                            Repeater::make('items')->label('Team members')->addActionLabel('Add team member')
+                                ->visible(fn (Get $g) => $g('type') === 'team')
+                                ->reorderable()->collapsible()->cloneable()->defaultItems(0)->grid(2)->columnSpanFull()
+                                ->itemLabel(fn (array $state): ?string => trim(($state['name'] ?? '').(! empty($state['position']) ? ' – '.$state['position'] : '')) ?: null)
+                                ->schema([
+                                    TextInput::make('name')->label('Name')->required()->maxLength(80),
+                                    TextInput::make('position')->label('Position')->maxLength(80)->placeholder('e.g. Lead photographer'),
+                                    FileUpload::make('photo')->label('Photo (optional)')->image()->avatar()->disk('public')->directory('pages/team')->visibility('public')
+                                        ->acceptedFileTypes(self::IMG)->maxSize(5120)->hint('Max file size: 5 MB')
+                                        ->helperText('Square photos look best. Without a photo the initials are shown.'),
+                                ])
+                                ->helperText('Add as many people as you like; drag to change the order.'),
                             TextInput::make('button_label')->maxLength(40)->visible(fn (Get $g) => in_array($g('type'), ['text', 'image_text', 'cta'], true)),
                             TextInput::make('button_url')->maxLength(255)->placeholder('/contact')->visible(fn (Get $g) => in_array($g('type'), ['text', 'image_text', 'cta'], true)),
                         ])->columns(2),
