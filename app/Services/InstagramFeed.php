@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 /**
- * Latest Instagram posts for the home page, via the official Instagram API (Instagram Login).
+ * Latest Instagram posts for the home page, via the official Instagram API.
+ * Two token types work: Instagram Login tokens (IGAA…, read from graph.instagram.com/me) and
+ * Meta "Unified login" / system-user tokens (EAA…, read from graph.facebook.com/{instagram account id}).
  * Needs an access token of a Business / Creator account (Admin > Site settings > Instagram feed).
  *
  * The feed is saved to storage (JSON + local copies of the pictures), so visitors never wait for
@@ -18,6 +20,8 @@ use Throwable;
 class InstagramFeed
 {
     private const API = 'https://graph.instagram.com';
+
+    private const FB_API = 'https://graph.facebook.com';
 
     private const REFRESH_AFTER = 3600;        // look for new posts at most once an hour
 
@@ -45,6 +49,19 @@ class InstagramFeed
         if (! $token) {
             $this->clear();
         }
+    }
+
+    /** Instagram account ID (only needed for Meta Unified login / system-user tokens). */
+    public function accountId(): ?string
+    {
+        $id = preg_replace('/\D/', '', (string) Setting::get('instagram.account_id'));
+
+        return $id !== '' ? $id : null;
+    }
+
+    public function isFacebookToken(string $token): bool
+    {
+        return str_starts_with($token, 'EAA');
     }
 
     public function limit(): int
@@ -81,12 +98,22 @@ class InstagramFeed
         $this->write($data);
 
         try {
-            $this->maybeRefreshToken($token, $timeout);
-            $res = Http::timeout($timeout)->acceptJson()->get(self::API.'/me/media', [
-                'fields' => 'id,caption,media_type,media_url,thumbnail_url,permalink,timestamp',
-                'limit' => 12,
-                'access_token' => $this->token(),
-            ]);
+            $fields = 'id,caption,media_type,media_url,thumbnail_url,permalink,timestamp';
+            if ($this->isFacebookToken($token)) {
+                // Meta Unified login / system-user token: never expires, needs the Instagram account ID
+                $igId = $this->accountId();
+                if (! $igId) {
+                    return $this->fail($data, 'This token type also needs the Instagram account ID (the long number shown under your account in the Meta app, e.g. 17841…).');
+                }
+                $res = Http::timeout($timeout)->acceptJson()->get(self::FB_API.'/'.$igId.'/media', [
+                    'fields' => $fields, 'limit' => 12, 'access_token' => $token,
+                ]);
+            } else {
+                $this->maybeRefreshToken($token, $timeout);
+                $res = Http::timeout($timeout)->acceptJson()->get(self::API.'/me/media', [
+                    'fields' => $fields, 'limit' => 12, 'access_token' => $this->token(),
+                ]);
+            }
             if (! $res->successful()) {
                 $msg = $res->json('error.message') ?: 'Instagram answered with an error ('.$res->status().').';
 

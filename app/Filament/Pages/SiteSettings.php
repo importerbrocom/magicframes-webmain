@@ -30,7 +30,7 @@ class SiteSettings extends SettingsPage
     public const KEYS = [
         'site.name', 'site.tagline', 'site.effects', 'footer.about', 'footer.copyright',
         'contact.phone', 'contact.whatsapp', 'contact.email', 'contact.address', 'contact.hours', 'contact.map_embed_url',
-        'instagram.limit', 'social.instagram', 'social.facebook', 'social.youtube', 'social.pinterest',
+        'instagram.limit', 'instagram.account_id', 'social.instagram', 'social.facebook', 'social.youtube', 'social.pinterest',
         'seo.default_description', 'seo.default_og_image',
     ];
 
@@ -72,6 +72,10 @@ class SiteSettings extends SettingsPage
                     ->helperText(fn () => app(InstagramFeed::class)->token()
                         ? (app(InstagramFeed::class)->lastError() ? 'Connected, but the last update failed: '.app(InstagramFeed::class)->lastError() : 'Connected. New posts are picked up automatically about every hour.')
                         : 'Not connected yet. How to get the token: see "Instagram feed" in docs/ADMIN-GUIDE.md (Meta developer app > Instagram API with Instagram Login > Generate token). The Instagram account must be a Professional (Business or Creator) account.')
+                    ->columnSpanFull(),
+                TextInput::make('instagram.account_id')->label('Instagram account ID (only for Meta "Unified login" tokens)')
+                    ->maxLength(30)->rule('nullable')->rule('regex:/^\d{5,30}$/')->placeholder('e.g. 17841405012112577')
+                    ->helperText('The long number shown under your Instagram account name in the Meta app (Generate access tokens). Leave empty for normal Instagram Login tokens.')
                     ->columnSpanFull(),
                 Select::make('instagram.limit')->label('Number of posts to show')->native(false)->selectablePlaceholder(false)
                     ->options(['4' => '4', '6' => '6', '8' => '8', '10' => '10', '12' => '12']),
