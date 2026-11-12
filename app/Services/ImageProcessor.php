@@ -12,7 +12,11 @@ use Illuminate\Support\Facades\Storage;
  */
 class ImageProcessor
 {
-    public const WIDTHS = [480, 960, 1600];
+    /** HD sizes: sharp on retina / 4K screens (never upscaled beyond the original). */
+    public const WIDTHS = [640, 1280, 2048, 2560];
+
+    /** WebP quality (0-100): 90 keeps fine detail such as jewellery and fabric. */
+    public const QUALITY = 90;
 
     public function __construct(private string $disk = 'public') {}
 
@@ -64,7 +68,7 @@ class ImageProcessor
             imagecopyresampled($dst, $src, 0, 0, 0, 0, $w, $h, $width, $height);
 
             ob_start();
-            imagewebp($dst, null, 82);
+            imagewebp($dst, null, self::QUALITY);
             $data = ob_get_clean();
             imagedestroy($dst);
 

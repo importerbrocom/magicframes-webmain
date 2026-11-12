@@ -22,14 +22,15 @@ the public pages were also checked in a real browser (Chromium) at desktop and p
 | Item | Status |
 |---|---|
 | Page transitions, scroll-triggered reveals, animated hero, parallax, counters, loading animation, custom cursor, hover/zoom effects, animated headings | ✅ (original effects kept + page fade, word-by-word headings, gallery hover captions) — all disabled for visitors who prefer reduced motion |
-| Image "reveal" effects | 🟡 slide/fade reveals are used; a clip-path reveal helper exists in the CSS but is not applied anywhere |
-| "Beautiful background graphics" | 🟡 only the original template styling; no new decorative graphics were invented |
+| Image "reveal" effects | ✅ curtain-style photo reveals (gallery, portfolio, blog, about), staggered |
+| Extra effects (added on request) | ✅ golden bokeh and glitter sparkles on the hero and soft light on banners, letter-by-letter hero headline, scrolling gallery-name band, camera-viewfinder corners + "View/Play" cursor on photos, card tilt with glow, magnetic buttons with light sweep, section-heading ornaments, scroll progress line + back-to-top ring, preloader curtain, lightbox slide direction, About-photo parallax. All switchable in Admin, off for reduced-motion visitors, lighter on phones |
+| "Beautiful background graphics" | ✅ golden sparkles / light particles (canvas), hero vignette, ornaments; GSAP / Framer Motion not used (plain JS, no libraries) |
 
 ## 4. Home page
 | Item | Status |
 |---|---|
 | Hero, about, services, featured photography, featured videos, recent projects, testimonials, statistics, contact/enquiry, footer; all manageable and re-orderable | ✅ |
-| Instagram section | 🟡 shows a "Follow us" button linking to your Instagram. A live photo feed needs an Instagram API token (not available). |
+| Instagram section | ✅ latest-posts grid from the official Instagram API (token pasted in Site settings, see ADMIN-GUIDE.md); shows the Follow button only until a token is saved |
 | Real content (texts, photos, stats, testimonials) | 📝 Intentionally empty until the studio enters genuine content. |
 
 ## 5–6. Galleries & videos
@@ -61,7 +62,7 @@ Tables for users, roles/permissions, settings, headers, navigation, pages, secti
 Select multiple, preview before saving, upload video + thumbnail preview, captions, replace, delete, publish ✅.
 
 ## 11. Responsive
-Layouts verified in a real browser at **1440 px and 390 px** (no horizontal scrolling). Tablet widths and real iPhone Safari / Android Chrome are covered by responsive CSS but **were not tested on physical devices** 🟡 — see the launch checklist.
+A dedicated **mobile layer** (`public/css/enhancements.css`, section "MOBILE LAYER") was added and audited in a real browser (Chromium) at **360, 390 and 768 px** on all 12 public page types: no sideways scrolling anywhere; 44 px+ tap targets (small dots have an enlarged hidden hit area); 16 px form fields (no iPhone zoom); header slimmed on phones; hero uses the visible screen height; hero/banner images are served in a smaller size on phones; notch-safe spacing; menu locks page scroll, hides from keyboards when closed and closes with Esc; lightbox supports swipe; filter chips swipe sideways inside their own row; floating enquiry button moved off the content. Tablet widths and real iPhone Safari / Android Chrome **were not tested on physical devices** 🟡 — see the launch checklist. The admin panel is Filament's own responsive layout plus a few phone tweaks; it was not audited on a phone.
 
 ## 12. SEO & performance
 Dynamic titles, meta descriptions, canonical, Open Graph / Twitter, alt text, sitemap.xml, robots.txt, clean URLs, lazy loading, WebP, resized images, cached API/pages, security headers ✅. Not measured: Lighthouse / PageSpeed scores (no live server here) 🟡. No strict Content-Security-Policy yet.

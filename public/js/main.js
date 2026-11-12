@@ -35,8 +35,8 @@
   const burger = $('#burger');
   const mobileMenu = $('#mobileMenu');
   const mobileClose = $('#mobileClose');
-  const openMenu  = () => { mobileMenu.classList.add('open'); burger && burger.setAttribute('aria-expanded', 'true'); };
-  const closeMenu = () => { mobileMenu.classList.remove('open'); burger && burger.setAttribute('aria-expanded', 'false'); };
+  const openMenu  = () => { mobileMenu.classList.add('open'); document.body.classList.add('menu-open'); burger && burger.setAttribute('aria-expanded', 'true'); const c = $('#mobileClose'); c && setTimeout(() => c.focus(), 50); };
+  const closeMenu = () => { mobileMenu.classList.remove('open'); document.body.classList.remove('menu-open'); burger && burger.setAttribute('aria-expanded', 'false'); };
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
   burger && burger.addEventListener('click', openMenu);
   mobileClose && mobileClose.addEventListener('click', closeMenu);
@@ -133,11 +133,17 @@
     counters.forEach(c => cio.observe(c));
   }
 
-  /* ---------- Hero slider ---------- */
+  /* ---------- Hero slider (images and/or background videos with sound controls) ---------- */
   const heroSlides = $$('#heroSlides .hero__slide');
   const heroDots = $('#heroDots');
   if (heroSlides.length && heroDots) {
     let hi = 0, htimer;
+    const multi = heroSlides.length > 1;
+    const soundBox = $('#heroSound'), muteBtn = $('#heroMute'), volBar = $('#heroVol');
+    // Shared sound state. Browsers only allow autoplay WITH sound in some cases, so we start
+    // muted when needed and switch the sound on at the visitor's first click / tap / key press.
+    const snd = { muted: true, volume: 0.7, chosen: false };
+
     heroSlides.forEach((_, i) => {
       const b = document.createElement('button');
       b.setAttribute('aria-label', `Slide ${i + 1}`);
@@ -146,16 +152,154 @@
       heroDots.appendChild(b);
     });
     const hDots = $$('button', heroDots);
+
+    const mediaOf = k => {
+      const sl = heroSlides[k];
+      return { video: sl.querySelector('.hero__video'), frame: sl.querySelector('.hero__embed') };
+    };
+    const post = (f, msg) => { try { f.contentWindow && f.contentWindow.postMessage(typeof msg === 'string' ? msg : JSON.stringify(msg), '*'); } catch (e) {} };
+    // Send the current sound state to the player on the visible slide
+    function applySound() {
+      const { video, frame } = mediaOf(hi);
+      if (video) { video.volume = snd.volume; video.muted = snd.muted; }
+      if (frame && frame.getAttribute('src')) {
+        if (frame.classList.contains('hero__embed--youtube')) {
+          post(frame, { event: 'command', func: snd.muted ? 'mute' : 'unMute', args: [] });
+          post(frame, { event: 'command', func: 'setVolume', args: [Math.round(snd.volume * 100)] });
+        } else if (frame.classList.contains('hero__embed--vimeo')) {
+          post(frame, { method: 'setMuted', value: snd.muted });
+          post(frame, { method: 'setVolume', value: snd.volume });
+        }
+      }
+      if (muteBtn) {
+        muteBtn.setAttribute('aria-pressed', snd.muted ? 'true' : 'false');
+        muteBtn.setAttribute('aria-label', snd.muted ? 'Turn sound on' : 'Turn sound off');
+        muteBtn.innerHTML = `<i class="fa-solid ${snd.muted || snd.volume === 0 ? 'fa-volume-xmark' : (snd.volume < 0.4 ? 'fa-volume-low' : 'fa-volume-high')}"></i>`;
+      }
+      if (volBar) volBar.value = Math.round(snd.volume * 100);
+    }
+    // Show the controls only when the visible slide has a video whose sound we can control (not Drive)
+    function updateControls() {
+      const heroEl = $('.hero');
+      const m = mediaOf(hi);
+      if (heroEl) heroEl.classList.toggle('hero--video', !!(m.video || m.frame));   // video slide: no sparkle effect
+      if (!soundBox) return;
+      const { video, frame } = m;
+      const ok = !!video || (!!frame && !frame.classList.contains('hero__embed--drive'));
+      soundBox.hidden = !ok;
+      if (ok) applySound();
+    }
+    function userSound(muted) { snd.muted = muted; snd.chosen = true; applySound(); }
+    if (muteBtn) muteBtn.addEventListener('click', () => {
+      if (snd.muted && snd.volume === 0) snd.volume = 0.7;
+      userSound(!snd.muted);
+    });
+    if (volBar) volBar.addEventListener('input', () => {
+      snd.volume = volBar.value / 100;
+      snd.muted = snd.volume === 0;
+      snd.chosen = true;
+      applySound();
+    });
+
+    // Start a video; if sound is refused fall back to muted; if even that fails, retry on events / first touch
+    function startVideo(v) {
+      const tryPlay = () => {
+        if (!v.paused && !v.ended) return;
+        const pr = v.play();
+        if (pr && pr.catch) pr.catch(() => {
+          if (!v.muted) { snd.muted = true; applySound(); v.muted = true; const p2 = v.play(); if (p2 && p2.catch) p2.catch(() => {}); }
+        });
+      };
+      tryPlay();
+      if (!v.dataset.armed) {
+        v.dataset.armed = '1';
+        ['loadeddata', 'canplay'].forEach(ev => v.addEventListener(ev, () => { if (heroSlides[hi].contains(v)) tryPlay(); }));
+        window.addEventListener('load', () => { if (heroSlides[hi].contains(v)) tryPlay(); });
+        document.addEventListener('visibilitychange', () => { if (!document.hidden && heroSlides[hi].contains(v)) tryPlay(); });
+        ['pointerdown', 'touchend', 'keydown', 'scroll'].forEach(ev => window.addEventListener(ev, () => { if (heroSlides[hi].contains(v) && v.paused) tryPlay(); }, { passive: true }));
+        v.addEventListener('error', () => { if (window.console) console.warn('Hero video could not be played - re-export it as MP4 (H.264 video + AAC audio) or WebM.'); });
+      }
+    }
+
+    // Play the visible slide's video, pause / unload the others
+    function heroVideos() {
+      heroSlides.forEach((sl, k) => {
+        const { video: v, frame: f } = mediaOf(k);
+        if (f) {                                   // YouTube / Vimeo / Drive: load when shown, unload to stop
+          if (multi && !f.dataset.once) {          // several slides: play once, then move on (no looping)
+            f.dataset.once = '1';
+            f.dataset.src = f.dataset.src.replace(/&loop=1&playlist=[A-Za-z0-9_-]+/, '&loop=0').replace('&loop=1', '&loop=0');
+            if (f.getAttribute('src') && k === hi) f.setAttribute('src', f.dataset.src);
+          }
+          if (k === hi) {
+            if (f.getAttribute('src') !== f.dataset.src) f.setAttribute('src', f.dataset.src);
+          } else if (f.getAttribute('src')) f.removeAttribute('src');
+        }
+        if (!v) return;
+        if (k !== hi) { v.pause(); return; }
+        v.loop = !multi;                           // with several slides, move on when the video ends
+        try { v.currentTime = 0; } catch (e) {}
+        // Try with sound first when the browser clearly allows it, otherwise start muted
+        const canSound = !snd.chosen ? (navigator.getAutoplayPolicy && navigator.getAutoplayPolicy(v) === 'allowed') : !snd.muted;
+        if (canSound) { snd.muted = false; }
+        v.volume = snd.volume; v.muted = snd.muted;
+        startVideo(v);
+      });
+      updateControls();
+    }
+    heroSlides.forEach((sl) => {
+      const f = sl.querySelector('.hero__embed');
+      if (f) f.addEventListener('load', () => {
+        if (sl !== heroSlides[hi]) return;
+        setTimeout(applySound, 600);
+        // ask YouTube / Vimeo to tell us when the video finishes
+        if (f.classList.contains('hero__embed--youtube')) post(f, { event: 'listening', id: 1, channel: 'widget' });
+        if (f.classList.contains('hero__embed--vimeo')) post(f, { method: 'addEventListener', value: 'finish' });
+      });
+      const v = sl.querySelector('.hero__video');
+      if (v) {
+        v.addEventListener('ended', () => { if (multi && sl === heroSlides[hi]) { heroNext(); heroReset(); } });
+        v.addEventListener('error', () => { if (multi && sl === heroSlides[hi]) setTimeout(() => { if (sl === heroSlides[hi]) { heroNext(); heroReset(); } }, 3000); });   // unplayable file: don't get stuck
+      }
+    });
+    // YouTube / Vimeo "video ended" messages -> next slide
+    window.addEventListener('message', (e) => {
+      if (!multi) return;
+      const f = mediaOf(hi).frame;
+      if (!f || e.source !== f.contentWindow) return;
+      let d = e.data; if (typeof d === 'string') { try { d = JSON.parse(d); } catch (x) { return; } }
+      if (!d) return;
+      const ended = (d.event === 'onStateChange' && d.info === 0) || (d.event === 'infoDelivery' && d.info && d.info.playerState === 0) || d.event === 'finish';
+      if (ended) { heroNext(); heroReset(); }
+    });
+    // First click / tap / key press anywhere: turn the sound on (unless the visitor already chose)
+    const wake = (e) => {
+      if (e && e.target && e.target.closest && e.target.closest('#heroSound')) return;   // the sound buttons handle themselves
+      ['pointerdown', 'keydown', 'touchend'].forEach(ev => window.removeEventListener(ev, wake, true));
+      if (!snd.chosen && snd.muted && !soundBox.hidden) { snd.muted = false; applySound(); }
+    };
+    if (soundBox) ['pointerdown', 'keydown', 'touchend'].forEach(ev => window.addEventListener(ev, wake, true));
+
     const heroGo = i => {
       heroSlides[hi].classList.remove('is-active');
       hDots[hi].classList.remove('active');
       hi = (i + heroSlides.length) % heroSlides.length;
       heroSlides[hi].classList.add('is-active');
       hDots[hi].classList.add('active');
+      heroVideos();
     };
     const heroNext = () => heroGo(hi + 1);
-    const heroStart = () => (htimer = setInterval(heroNext, 6000));
-    const heroReset = () => { clearInterval(htimer); heroStart(); };
+    // How long a slide stays: pictures 6s; a video slide until the video ENDS (long safety timeout only);
+    // Google Drive can't tell us when it ends, so it stays 30s
+    const heroStart = () => {
+      clearTimeout(htimer);
+      if (!multi) return;
+      const { video, frame } = mediaOf(hi);
+      const drive = frame && frame.classList.contains('hero__embed--drive');
+      htimer = setTimeout(() => { heroNext(); heroStart(); }, drive ? 30000 : (video || frame ? 900000 : 6000));
+    };
+    const heroReset = () => { heroStart(); };
+    heroVideos();
     heroStart();
   }
 
@@ -201,3 +345,19 @@
   }
 
 })();
+
+/* ---------- HD YouTube thumbnails: use the 1280x720 image when the video has one ---------- */
+(function () {
+  function upgrade(root) {
+    (root || document).querySelectorAll('img[src*="img.youtube.com/vi/"][src$="/hqdefault.jpg"]:not([data-hd-tried])').forEach(function (img) {
+      img.setAttribute('data-hd-tried', '1');
+      var hd = img.src.replace('/hqdefault.jpg', '/maxresdefault.jpg');
+      var probe = new Image();
+      probe.onload = function () { if (probe.naturalWidth > 200) img.src = hd; };   // missing HD = 120px placeholder
+      probe.src = hd;
+    });
+  }
+  window.mfHdThumbs = upgrade;
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { upgrade(); }); else upgrade();
+})();
+

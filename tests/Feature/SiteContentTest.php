@@ -9,7 +9,9 @@ use App\Filament\Resources\HomeSections\Pages\ManageHomeSections;
 use App\Filament\Resources\NavigationMenus\Pages\ManageNavigationMenus;
 use App\Filament\Resources\Pages\Pages\CreatePage;
 use App\Filament\Resources\Pages\Pages\EditPage;
-use App\Filament\Resources\Services\Pages\ManageServices;
+use App\Filament\Resources\Services\Pages\CreateService;
+use App\Filament\Resources\Services\Pages\EditService;
+use App\Filament\Resources\Services\Pages\ListServices;
 use App\Filament\Resources\Statistics\Pages\ManageStatistics;
 use App\Filament\Resources\Testimonials\Pages\ManageTestimonials;
 use App\Models\GalleryCategory;
@@ -18,6 +20,7 @@ use App\Models\HomeSection;
 use App\Models\NavigationMenu;
 use App\Models\Page;
 use App\Models\Service;
+use App\Models\Setting;
 use App\Models\Testimonial;
 use App\Models\User;
 use Database\Seeders\RolesAndAdminSeeder;
@@ -227,15 +230,12 @@ class SiteContentTest extends TestCase
     public function test_services_crud_and_ordering_reflect_in_api(): void
     {
         $this->login();
-        Livewire::test(ManageServices::class)
-            ->callAction(CreateAction::class, [
-                'title' => 'Wedding Photography', 'short_description' => 'Full-day coverage', 'is_published' => true, 'sort_order' => 2,
-                'image_path' => UploadedFile::fake()->image('s.jpg', 800, 600),
-            ])->assertHasNoFormErrors();
-        Livewire::test(ManageServices::class)
-            ->callAction(CreateAction::class, ['title' => 'Albums', 'is_published' => true, 'sort_order' => 1])->assertHasNoFormErrors();
-        Livewire::test(ManageServices::class)
-            ->callAction(CreateAction::class, ['title' => 'Draft service', 'is_published' => false])->assertHasNoFormErrors();
+        Livewire::test(CreateService::class)->fillForm([
+            'title' => 'Wedding Photography', 'short_description' => 'Full-day coverage', 'is_published' => true, 'sort_order' => 2,
+            'image_path' => UploadedFile::fake()->image('s.jpg', 800, 600),
+        ])->call('create')->assertHasNoFormErrors();
+        Livewire::test(CreateService::class)->fillForm(['title' => 'Albums', 'is_published' => true, 'sort_order' => 1])->call('create')->assertHasNoFormErrors();
+        Livewire::test(CreateService::class)->fillForm(['title' => 'Draft service', 'is_published' => false])->call('create')->assertHasNoFormErrors();
 
         $list = $this->getJson('/api/v1/services')->assertOk()->json('data');
         $this->assertSame(['Albums', 'Wedding Photography'], array_column($list, 'title'));
@@ -244,14 +244,14 @@ class SiteContentTest extends TestCase
         $this->getJson('/api/v1/services/draft-service')->assertNotFound();
 
         $svc = Service::where('slug', 'albums')->first();
-        Livewire::test(ManageServices::class)
-            ->callTableAction('edit', $svc, ['title' => 'Photo Albums'])->assertHasNoFormErrors();
+        Livewire::test(EditService::class, ['record' => $svc->getRouteKey()])
+            ->fillForm(['title' => 'Photo Albums'])->call('save')->assertHasNoFormErrors();
         $this->assertSame('Photo Albums', $this->getJson('/api/v1/services')->json('data.0.title'));
 
         $withImage = Service::where('slug', 'wedding-photography')->first();
         $path = $withImage->image_path;
         Storage::disk('public')->assertExists($path);
-        Livewire::test(ManageServices::class)->callTableAction('delete', $withImage);
+        Livewire::test(ListServices::class)->callTableAction('delete', $withImage);
         Storage::disk('public')->assertMissing($path);
         $this->getJson('/api/v1/services')->assertJsonCount(1, 'data');
     }
@@ -359,5 +359,20 @@ class SiteContentTest extends TestCase
             $this->assertStringNotContainsString('__PHP_Incomplete_Class', json_encode($second));
         }
         $this->assertSame('Home', $this->getJson('/api/v1/site')->json('data.menus.left.0.label'));
+    }
+
+    public function test_admin_can_switch_motion_effects_off_and_on(): void
+    {
+        $this->login();
+        $this->get('/')->assertSee('js/fx.js', false);
+
+        Livewire::test(SiteSettings::class)->assertFormSet(['site.effects' => '1'])
+            ->fillForm(['site' => ['name' => 'Magic Frames', 'effects' => '0']])->call('save')->assertHasNoFormErrors();
+        $this->assertSame('0', Setting::get('site.effects'));
+        $this->get('/')->assertDontSee('js/fx.js', false)->assertDontSee('css/fx.css', false);
+
+        Livewire::test(SiteSettings::class)->assertFormSet(['site.effects' => '0'])
+            ->fillForm(['site' => ['name' => 'Magic Frames', 'effects' => '1']])->call('save');
+        $this->get('/')->assertSee('js/fx.js', false);
     }
 }

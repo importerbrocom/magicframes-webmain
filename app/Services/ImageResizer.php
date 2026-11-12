@@ -21,7 +21,7 @@ class ImageResizer
         }
 
         $disk = Storage::disk('public');
-        $target = '_cache/'.$width.'/'.preg_replace('/\.[A-Za-z0-9]+$/', '', $path).'.webp';
+        $target = '_cache/hd/'.$width.'/'.preg_replace('/\.[A-Za-z0-9]+$/', '', $path).'.webp';
 
         try {
             if (! $disk->exists($target)) {
@@ -47,7 +47,7 @@ class ImageResizer
                 imagesavealpha($dst, true);
                 imagecopyresampled($dst, $src, 0, 0, 0, 0, $newW, $newH, $w, $h);
                 ob_start();
-                imagewebp($dst, null, 82);
+                imagewebp($dst, null, ImageProcessor::QUALITY);
                 $disk->put($target, ob_get_clean());
                 imagedestroy($src);
                 imagedestroy($dst);

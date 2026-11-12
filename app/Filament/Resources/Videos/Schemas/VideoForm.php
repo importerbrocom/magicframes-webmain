@@ -42,14 +42,14 @@ class VideoForm
                 FileUpload::make('video_path')->label('Video file')
                     ->helperText('MP4, WebM or MOV. Max '.number_format(config('media.max_video_kb') / 1024).' MB. Large files are only loaded when a visitor presses play.')
                     ->acceptedFileTypes(['video/mp4', 'video/webm', 'video/quicktime'])
-                    ->maxSize(config('media.max_video_kb'))
+                    ->maxSize(config('media.max_video_kb'))->hint('Max file size: '.number_format(config('media.max_video_kb') / 1024).' MB')
                     ->disk('public')->directory('videos')->visibility('public')
                     ->visible(fn (Get $get) => $get('source_type') === 'upload')
                     ->required(fn (Get $get) => $get('source_type') === 'upload'),
                 FileUpload::make('thumbnail_path')->label('Thumbnail')
                     ->helperText('Recommended for uploaded videos. For YouTube links it is fetched automatically if left empty.')
                     ->image()->imagePreviewHeight('160')
-                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])->maxSize(config('media.max_image_kb'))
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])->maxSize(config('media.max_image_kb'))->hint('Max file size: '.number_format(config('media.max_image_kb') / 1024).' MB')
                     ->disk('public')->directory('videos/thumbnails')->visibility('public'),
             ]),
             Section::make('Display')->columns(3)->schema([

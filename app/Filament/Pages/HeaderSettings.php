@@ -35,7 +35,7 @@ class HeaderSettings extends SettingsPage
         return [
             Section::make('Logo & display')->columns(2)->schema([
                 FileUpload::make('logo_path')->label('Logo')->image()->disk('public')->directory('branding')->visibility('public')
-                    ->acceptedFileTypes(['image/png', 'image/webp', 'image/jpeg'])->maxSize(2048)
+                    ->acceptedFileTypes(['image/png', 'image/webp', 'image/jpeg'])->maxSize(2048)->hint('Max file size: 2 MB')
                     ->helperText('Leave empty to use the original Magic Frames logo.'),
                 TextInput::make('logo_alt')->label('Logo alt text')->required()->maxLength(120),
                 Toggle::make('is_visible')->label('Show header')->inline(false),

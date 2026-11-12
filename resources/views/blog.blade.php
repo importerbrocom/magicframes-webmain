@@ -19,7 +19,7 @@
       <div class="blog-grid">
         @foreach($posts as $i => $p)
           <article class="post" data-reveal="up" style="--d:{{ ($i % 3) * 0.1 }}s">
-            <a href="/blog/{{ $p['slug'] }}" class="post__media" tabindex="-1" aria-hidden="true">@if($p['cover_url'])<img src="{{ img_url($p['cover_url'], 700) }}" alt="{{ $p['cover_alt'] }}" loading="lazy" decoding="async" />@endif</a>
+            <a href="/blog/{{ $p['slug'] }}" class="post__media" tabindex="-1" aria-hidden="true">@if($p['cover_url'])<img src="{{ img_url($p['cover_url'], 1280) }}" alt="{{ $p['cover_alt'] }}" loading="lazy" decoding="async" />@endif</a>
             <div class="post__body">
               <span class="post__date">{{ $p['published_label'] }}@if($p['category']) · {{ $p['category'] }}@endif</span>
               <h3 class="post__title"><a href="/blog/{{ $p['slug'] }}">{{ $p['title'] }}</a></h3>

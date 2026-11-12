@@ -16,6 +16,7 @@ read their content from the database.
 | 5a | Blade framework, home, about/services/contact/custom pages, 404, SEO, sitemap | **done** |
 | 5b | Gallery, portfolio, video gallery, lightbox, blog | **done** |
 | 6 | Production hardening, backups, deployment guide, requirements report | **done** |
+| 7 | Mobile layer (phones & tablets), admin look | **done** |
 
 ## Documentation
 

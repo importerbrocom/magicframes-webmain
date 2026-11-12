@@ -1,0 +1,131 @@
+/* =========================================================
+   Magic Frames — motion & graphic effects layer
+   Loaded only when "Decorative motion effects" is On (Admin > Site settings).
+   Uses the original theme colours/fonts. Every hidden "before" state is gated on `.fx-js`
+   (added by fx.js), so with no JavaScript, or with reduced motion, the page is simply the normal page.
+   ========================================================= */
+
+/* ---------- 1. Scroll progress line ---------- */
+.fx-progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:1000;pointer-events:none;
+  background:linear-gradient(90deg,var(--rose),#e6c3b3);transform-origin:0 50%;transform:scaleX(0);will-change:transform}
+
+/* ---------- 2. Preloader: logo breathes, then the cream curtain lifts ---------- */
+.preloader{transition:transform 1s var(--ease),visibility 0s linear 1s}
+.preloader.hide{opacity:1;transform:translateY(-100%);visibility:hidden}
+.preloader__logo-img{animation:fxBreath 1.8s ease-in-out infinite}
+@keyframes fxBreath{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.05);opacity:1}}
+
+/* ---------- 3. Photo "curtain" reveal (gated: needs fx.js) ---------- */
+.fx-js [data-fx="curtain"] img{clip-path:inset(0 0 100% 0)}
+.fx-js [data-fx="curtain"].fx-in img{clip-path:none;animation:fxCurtain 1.25s var(--ease) backwards;animation-delay:var(--fx-d,0s)}
+@keyframes fxCurtain{
+  from{clip-path:inset(0 0 100% 0);transform:scale(1.28)}
+  to{clip-path:inset(0 0 0 0);transform:scale(1)}
+}
+
+/* ---------- 4. Camera-viewfinder corners on photos ---------- */
+.fx-corners{position:absolute;inset:0;z-index:4;pointer-events:none;opacity:0;
+  --c:rgba(255,255,255,.95);
+  background:
+    linear-gradient(var(--c),var(--c)) top left/22px 2px no-repeat,
+    linear-gradient(var(--c),var(--c)) top left/2px 22px no-repeat,
+    linear-gradient(var(--c),var(--c)) top right/22px 2px no-repeat,
+    linear-gradient(var(--c),var(--c)) top right/2px 22px no-repeat,
+    linear-gradient(var(--c),var(--c)) bottom left/22px 2px no-repeat,
+    linear-gradient(var(--c),var(--c)) bottom left/2px 22px no-repeat,
+    linear-gradient(var(--c),var(--c)) bottom right/22px 2px no-repeat,
+    linear-gradient(var(--c),var(--c)) bottom right/2px 22px no-repeat;
+  background-origin:content-box;padding:26px;
+  transition:opacity .5s var(--ease),padding .6s var(--ease)}
+.m-item:hover .fx-corners,.m-item:focus-visible .fx-corners,
+.gallery__item:hover .fx-corners,.pf-card:hover .fx-corners,.vcard:hover .fx-corners,.post:hover .fx-corners,
+.story__img:hover .fx-corners{opacity:1;padding:14px}
+
+/* ---------- 5. Section headings: animated ornament ---------- */
+.section-head::after{content:"";display:block;height:10px;width:0;margin:1.1rem auto 0;opacity:0;
+  background:
+    radial-gradient(circle,var(--rose) 0 3px,transparent 4px) center/10px 10px no-repeat,
+    linear-gradient(90deg,transparent,var(--rose),transparent) center/100% 1px no-repeat;
+  transition:width 1.4s var(--ease),opacity 1s var(--ease)}
+.section-head:not(.center)::after{margin-left:0}
+.fx-js .section-head.fx-in::after{width:min(220px,60%);opacity:1}
+.section-head.light::after{filter:brightness(1.4)}
+
+/* ---------- 6. Hero ---------- */
+.fx-c{display:inline-block;opacity:0}
+.fx-w{display:inline-block;white-space:nowrap}
+.hero__slide.is-active .fx-c{animation:fxLetter 1s var(--ease) both;animation-delay:calc(.3s + var(--i) * .045s)}
+@keyframes fxLetter{
+  from{opacity:0;transform:translateY(.55em) rotate(5deg);filter:blur(7px)}
+  to{opacity:1;transform:none;filter:blur(0)}
+}
+.hero__caption{translate:calc(var(--px,0) * -16px) calc(var(--py,0) * -10px);transition:translate .6s var(--ease)}
+.fx-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
+.page-banner .fx-canvas,.quote .fx-canvas{z-index:1}
+.hero__slide:not(.hero__slide--plain)::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  /* warm shade at the top gives the golden sparkles something to glow against + a soft edge vignette */
+  background:
+    linear-gradient(180deg,rgba(54,30,8,.5) 0%,rgba(54,30,8,.2) 34%,transparent 60%),
+    radial-gradient(ellipse at 50% 45%,transparent 38%,rgba(20,15,12,.38) 100%)}
+
+/* ---------- 7. Category band (marquee) ---------- */
+.marquee{overflow:hidden;background:var(--cream-2);border-block:1px solid var(--line);padding:1.5rem 0;user-select:none}
+.marquee__track{display:flex;width:max-content;animation:fxMarquee 48s linear infinite}
+.marquee:hover .marquee__track{animation-play-state:paused}
+.marquee__list{display:flex;flex:0 0 auto;align-items:center}
+.marquee__list li{display:flex;align-items:center;flex:0 0 auto}
+.marquee__list a{font-family:var(--serif);font-style:italic;font-size:clamp(1.5rem,3.2vw,2.5rem);color:var(--ink);padding:0 .35rem;transition:color .4s}
+.marquee__list a:hover{color:var(--rose-dark)}
+.marquee__list li::after{content:"";flex:0 0 auto;width:8px;height:8px;margin:0 2.4rem;background:var(--rose);transform:rotate(45deg)}
+@keyframes fxMarquee{to{transform:translateX(-50%)}}
+
+/* ---------- 8. Cards: spotlight + tilt (movement is set by fx.js, desktop pointers only) ---------- */
+.fx-js .fx-tilt.in{transition:transform .3s ease-out,opacity .4s,box-shadow .5s var(--ease);transition-delay:0s}
+.fx-tilt{transform-style:preserve-3d}
+.fx-spot{background-image:radial-gradient(280px circle at var(--mx,-600px) var(--my,-600px),rgba(201,154,134,.17),transparent 62%)}
+
+/* ---------- 9. Buttons: light sweep ---------- */
+.btn::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.38) 50%,transparent 65%);transform:translateX(-130%)}
+.btn:hover::after{transform:translateX(130%);transition:transform .9s var(--ease)}
+.btn--outline:hover::after{opacity:.25}
+
+/* ---------- 10. Cursor label ("View", "Play") ---------- */
+.cursor-follow{display:flex;align-items:center;justify-content:center;font-size:.62rem;letter-spacing:2px;text-transform:uppercase;color:#fff;font-family:var(--sans);font-weight:500}
+.cursor-follow.label{width:78px;height:78px;background:rgba(201,154,134,.88);border-color:transparent;mix-blend-mode:normal}
+
+/* ---------- 11. Back-to-top progress ring ---------- */
+.totop{overflow:visible}
+.totop .fx-ring{position:absolute;inset:-5px;width:58px;height:58px;transform:rotate(-90deg);pointer-events:none}
+.totop .fx-ring circle{fill:none;stroke-width:2;stroke-linecap:round}
+.totop .fx-ring .bg{stroke:rgba(201,154,134,.28)}
+.totop .fx-ring .fg{stroke:var(--rose-dark);stroke-dasharray:157;stroke-dashoffset:157}
+
+/* ---------- 12. Lightbox: images slide in the direction you navigate ---------- */
+.lightbox img.loaded[data-dir="next"]{animation:fxLbNext .55s var(--ease)}
+.lightbox img.loaded[data-dir="prev"]{animation:fxLbPrev .55s var(--ease)}
+@keyframes fxLbNext{from{opacity:0;transform:translateX(60px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes fxLbPrev{from{opacity:0;transform:translateX(-60px) scale(.98)}to{opacity:1;transform:none}}
+
+/* ---------- Phones: lighter, thumb-friendly ---------- */
+@media (max-width:700px){
+  .marquee{padding:1.1rem 0}
+  .marquee__track{animation-duration:34s}
+  .marquee__list li::after{margin:0 1.5rem}
+  .fx-corners{display:none}
+  .hero__caption{translate:none}
+}
+
+/* ---------- Visitors who prefer reduced motion get the plain, still page ---------- */
+@media (prefers-reduced-motion:reduce){
+  .fx-progress,.fx-canvas,.fx-corners,.totop .fx-ring{display:none!important}
+  .marquee__track{animation:none;flex-wrap:wrap;width:auto;justify-content:center}
+  .marquee__list[aria-hidden]{display:none}
+  .marquee__list{flex-wrap:wrap;justify-content:center;row-gap:.4rem}
+  .preloader,.preloader.hide{transition:opacity .2s}
+  .preloader.hide{transform:none;opacity:0}
+  .fx-c{opacity:1!important;animation:none!important}
+  .section-head::after{width:min(220px,60%);opacity:1;transition:none}
+  .btn::after{display:none}
+  .lightbox img.loaded[data-dir]{animation:none}
+}

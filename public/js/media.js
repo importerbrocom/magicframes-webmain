@@ -71,6 +71,7 @@
     function show() {
       const it = items[index];
       img.classList.remove('loaded');
+      void img.offsetWidth; // restart the slide-in animation even when the image is cached
       img.onload = () => img.classList.add('loaded');
       img.alt = it.alt;
       img.src = it.src;
@@ -88,6 +89,7 @@
 
     function go(step) {
       if (items.length < 2) return;
+      img.setAttribute('data-dir', step > 0 ? 'next' : 'prev'); // used by the (optional) slide animation
       index = (index + step + items.length) % items.length;
       show();
     }
@@ -95,6 +97,7 @@
     function open(list, i, trigger) {
       if (!root) build();
       items = list; index = i; opener = trigger;
+      img.removeAttribute('data-dir');
       show();
       root.classList.add('open');
       document.body.style.overflow = 'hidden';
@@ -128,7 +131,7 @@
     const ratio = img.width && img.height ? `${img.width}/${img.height}` : '4/3';
     const alt = img.alt || (img.category && img.category.name) || 'Photograph';
     return `<a class="m-item" href="${esc(img.large_url)}" data-lightbox data-full="${esc(img.large_url)}" data-title="${esc(img.title)}" data-caption="${esc(img.caption)}" style="aspect-ratio:${ratio}">
-      <img src="${esc(img.thumb_url)}" ${img.srcset ? `srcset="${esc(img.srcset)}" sizes="(max-width:600px) 50vw, (max-width:1000px) 33vw, 25vw"` : ''} alt="${esc(alt)}" ${img.width ? `width="${img.width}" height="${img.height}"` : ''} loading="lazy" decoding="async" />
+      <img src="${esc(img.thumb_url)}" ${img.srcset ? `srcset="${esc(img.srcset)}" sizes="(max-width:1000px) 50vw, 34vw"` : ''} alt="${esc(alt)}" ${img.width ? `width="${img.width}" height="${img.height}"` : ''} loading="lazy" decoding="async" />
       <span class="m-item__cap">${img.title ? esc(img.title) : '<i class="fa-solid fa-magnifying-glass-plus"></i>'}</span></a>`;
   }
 
@@ -154,6 +157,7 @@
         const data = await getJson(`${box.dataset.endpoint}?${q}`);
         const html = data.data.map(render).join('');
         if (replace) box.innerHTML = html; else box.insertAdjacentHTML('beforeend', html);
+        if (window.mfHdThumbs) window.mfHdThumbs(box);
         page = data.meta.current_page; last = data.meta.last_page;
         if (more) more.hidden = page >= last;
         if (empty) { empty.hidden = box.children.length > 0; empty.textContent = empty.dataset.msg || empty.textContent; }

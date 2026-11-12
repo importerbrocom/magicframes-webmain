@@ -25,6 +25,40 @@ class VideoLinkParser
         return null;
     }
 
+    /** Google Drive share link -> file id (file must be shared as "Anyone with the link"). */
+    public static function driveId(?string $url): ?string
+    {
+        if ($url && preg_match('~^https?://drive\.google\.com/(?:file/d/|open\?(?:.*&)?id=|uc\?(?:.*&)?id=)([A-Za-z0-9_-]{10,})~i', trim($url), $m)) {
+            return $m[1];
+        }
+
+        return null;
+    }
+
+    /**
+     * Hero-slide background embed for a pasted link.
+     *
+     * @return array{type:string,src:string}|null
+     */
+    public static function heroEmbed(?string $url): ?array
+    {
+        if ($v = self::parse($url)) {
+            if ($v['type'] === 'youtube') {
+                $id = $v['id'];
+
+                return ['type' => 'youtube', 'src' => "https://www.youtube-nocookie.com/embed/{$id}?autoplay=1&mute=1&loop=1&playlist={$id}&controls=0&playsinline=1&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&enablejsapi=1"];
+            }
+            if ($v['type'] === 'vimeo') {
+                return ['type' => 'vimeo', 'src' => "https://player.vimeo.com/video/{$v['id']}?autoplay=1&muted=1&loop=1&controls=0&title=0&byline=0&portrait=0&dnt=1"];
+            }
+        }
+        if ($id = self::driveId($url)) {
+            return ['type' => 'drive', 'src' => "https://drive.google.com/file/d/{$id}/preview"];
+        }
+
+        return null;
+    }
+
     public static function embedUrl(string $type, string $id): string
     {
         return match ($type) {
@@ -36,6 +70,6 @@ class VideoLinkParser
 
     public static function thumbnailUrl(string $type, string $id): ?string
     {
-        return $type === 'youtube' ? "https://img.youtube.com/vi/{$id}/hqdefault.jpg" : null;
+        return $type === 'youtube' ? "https://img.youtube.com/vi/{$id}/hqdefault.jpg" : null;   // always exists; main.js upgrades it to maxresdefault (HD) when available
     }
 }
