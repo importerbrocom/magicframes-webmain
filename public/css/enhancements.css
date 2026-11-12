@@ -362,7 +362,7 @@ body.menu-open{overflow:hidden}
 /* Services page: no big empty band between the banner (or intro text) and the service cards */
 .page-banner + .services.section{padding-top:3rem}
 .section + .services.section{padding-top:0}
-.page-banner + .section{padding-bottom:2rem}
+.page-banner + .section:has(+ .section){padding-bottom:2rem}
 .services.section .services__grid{margin-top:0}
 
 /* Hero slide with a background video: fills the slide, sits under the shade and the headline */
@@ -466,3 +466,7 @@ a.service:hover .service__more i{transform:translateX(5px)}
 .vmodal__box{width:min(1600px,100%,calc((92vh - 6rem) * 16 / 9))}
 /* crisp image scaling */
 .m-item img,.gallery__item img,.ig-tile img,.vcard__media img,.service__thumb img{image-rendering:auto;-webkit-backface-visibility:hidden;backface-visibility:hidden}
+
+/* Inner pages (everything except home): smaller empty band between the page banner and the content */
+.page-banner + .section,.page-banner + .svc{padding-top:3.5rem}
+@media (max-width:560px){.page-banner + .section,.page-banner + .svc,.page-banner + .services.section{padding-top:2.2rem}}
