@@ -36,7 +36,7 @@ class HomeSectionResource extends Resource
             TextInput::make('admin_label')->disabled()->dehydrated(false)->label('Section'),
             Toggle::make('is_visible')->label('Show on home page')->inline(false),
             TextInput::make('label')->label('Small script label')->maxLength(60),
-            TextInput::make('title')->maxLength(160),
+            TextInput::make('title')->maxLength(160)->helperText('Portfolio block: leave the label and title empty to show the photos without a heading.'),
             Textarea::make('body')->label('Text')->rows(4)->maxLength(2000)->columnSpanFull(),
             Textarea::make('body_secondary')->label('Additional text')->rows(3)->maxLength(2000)->columnSpanFull(),
             FileUpload::make('image_path')->label('Main image')->image()->disk('public')->directory('home')->visibility('public')

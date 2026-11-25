@@ -48,4 +48,36 @@ class HomePortfolioTest extends TestCase
 
         $this->get('/')->assertOk()->assertSee('Star one')->assertDontSee('Plain one');
     }
+
+    public function test_portfolio_has_no_heading_by_default_but_one_can_be_added(): void
+    {
+        $cat = GalleryCategory::first();
+        GalleryImage::create(['gallery_category_id' => $cat->id, 'alt_text' => 'Photo one', 'path' => 'gallery/a.jpg', 'is_published' => true]);
+
+        $html = $this->get('/')->assertOk()->getContent();
+        $this->assertStringContainsString('gallery--nohead', $html);
+        $this->assertStringNotContainsString('Our Portfolio', $html);
+        $this->assertStringNotContainsString('Captured Moments', $html);
+        $this->assertStringContainsString('Photo one', $html);
+
+        HomeSection::where('key', 'portfolio')->first()->update(['title' => 'Our Work']);
+        $this->get('/')->assertOk()->assertSee('Our Work')->assertDontSee('gallery--nohead', false);
+    }
+
+    public function test_migration_clears_only_the_old_default_heading(): void
+    {
+        $migration = require database_path('migrations/2026_11_25_000000_hide_home_portfolio_heading.php');
+        $s = HomeSection::where('key', 'portfolio')->first();
+
+        $s->update(['label' => 'Captured Moments', 'title' => 'Our Portfolio']);
+        $migration->up();
+        $s->refresh();
+        $this->assertNull($s->label);
+        $this->assertNull($s->title);
+
+        $s->update(['label' => 'My label', 'title' => 'My own title']);
+        $migration->up();
+        $s->refresh();
+        $this->assertSame('My own title', $s->title);
+    }
 }

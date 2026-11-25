@@ -86,7 +86,7 @@ class SiteContentSeeder extends Seeder
             'quote' => ['Quote band', null, null, null],
             'services' => ['Services showcase', 'What We Offer', 'Our Services', null],
             'stats' => ['Statistics & achievements', null, null, null],
-            'portfolio' => ['Featured photography', 'Captured Moments', 'Our Portfolio', null],
+            'portfolio' => ['Featured photography', null, null, null],   // no heading above the photos (client request)
             'videos' => ['Featured films', 'In Motion', 'Featured Films', null],
             'recent' => ['Recent projects', 'Latest Work', 'Recent Projects', null],
             'testimonials' => ['Client testimonials', 'Kind Words', 'Love Notes', null],
