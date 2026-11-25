@@ -1,0 +1,97 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Models\GalleryCategory;
+use App\Models\GalleryImage;
+use App\Models\HomeSection;
+use Database\Seeders\GalleryStructureSeeder;
+use Database\Seeders\RolesAndAdminSeeder;
+use Database\Seeders\SiteContentSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
+use Tests\TestCase;
+
+class HomePortfolioTest extends TestCase
+{
+    use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Storage::fake('public');
+        $this->seed([RolesAndAdminSeeder::class, GalleryStructureSeeder::class, SiteContentSeeder::class]);
+        HomeSection::where('key', 'portfolio')->update(['is_visible' => true]);
+    }
+
+    public function test_portfolio_shows_newest_photos_when_none_are_featured(): void
+    {
+        $cat = GalleryCategory::where('slug', 'wedding-photography')->first();
+        GalleryImage::create(['gallery_category_id' => $cat->id, 'title' => 'Not featured', 'alt_text' => 'Own photo alt', 'path' => 'gallery/a.jpg', 'is_published' => true, 'is_featured' => false]);
+
+        $this->get('/')->assertOk()->assertSee('class="gallery__item"', false)->assertSee('Own photo alt');
+    }
+
+    public function test_portfolio_falls_back_to_category_covers(): void
+    {
+        Storage::disk('public')->put('gallery/covers/c.jpg', 'x');
+        GalleryCategory::where('slug', 'engagement')->update(['cover_path' => 'gallery/covers/c.jpg', 'is_published' => true]);
+
+        $this->get('/')->assertOk()->assertSee('href="/gallery/engagement"', false)->assertSee('class="gallery__item"', false);
+    }
+
+    public function test_when_photos_are_featured_only_those_show(): void
+    {
+        $cat = GalleryCategory::first();
+        GalleryImage::create(['gallery_category_id' => $cat->id, 'alt_text' => 'Plain one', 'path' => 'gallery/p.jpg', 'is_published' => true]);
+        GalleryImage::create(['gallery_category_id' => $cat->id, 'alt_text' => 'Star one', 'path' => 'gallery/s.jpg', 'is_published' => true, 'is_featured' => true]);
+
+        $this->get('/')->assertOk()->assertSee('Star one')->assertDontSee('Plain one');
+    }
+
+    public function test_portfolio_has_no_heading_by_default_but_one_can_be_added(): void
+    {
+        $cat = GalleryCategory::first();
+        GalleryImage::create(['gallery_category_id' => $cat->id, 'alt_text' => 'Photo one', 'path' => 'gallery/a.jpg', 'is_published' => true]);
+
+        $html = $this->get('/')->assertOk()->getContent();
+        $this->assertStringContainsString('gallery--nohead', $html);
+        $this->assertStringNotContainsString('Our Portfolio', $html);
+        $this->assertStringNotContainsString('Captured Moments', $html);
+        $this->assertStringContainsString('Photo one', $html);
+
+        HomeSection::where('key', 'portfolio')->first()->update(['title' => 'Our Work']);
+        $this->get('/')->assertOk()->assertSee('Our Work')->assertDontSee('gallery--nohead', false);
+    }
+
+    public function test_migration_clears_only_the_old_default_heading(): void
+    {
+        $migration = require database_path('migrations/2026_11_25_000000_hide_home_portfolio_heading.php');
+        $s = HomeSection::where('key', 'portfolio')->first();
+
+        $s->update(['label' => 'Captured Moments', 'title' => 'Our Portfolio']);
+        $migration->up();
+        $s->refresh();
+        $this->assertNull($s->label);
+        $this->assertNull($s->title);
+
+        $s->update(['label' => 'My label', 'title' => 'My own title']);
+        $migration->up();
+        $s->refresh();
+        $this->assertSame('My own title', $s->title);
+    }
+
+    public function test_portfolio_block_is_removed_from_the_home_page(): void
+    {
+        $cat = GalleryCategory::first();
+        GalleryImage::create(['gallery_category_id' => $cat->id, 'alt_text' => 'Photo one', 'path' => 'gallery/a.jpg', 'is_published' => true, 'is_featured' => true]);
+        $migration = require database_path('migrations/2026_11_25_010000_hide_home_portfolio_block.php');
+        $migration->up();
+
+        $html = $this->get('/')->assertOk()->getContent();
+        $this->assertStringNotContainsString('class="gallery__grid"', $html);
+        $this->assertStringNotContainsString('View All Galleries', $html);
+        $this->get('/gallery')->assertOk();   // the Gallery and Portfolio pages themselves still work
+        $this->get('/portfolio')->assertOk();
+    }
+}

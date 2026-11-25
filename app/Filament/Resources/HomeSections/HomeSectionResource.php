@@ -5,6 +5,7 @@ namespace App\Filament\Resources\HomeSections;
 use App\Filament\Resources\HomeSections\Pages\ManageHomeSections;
 use App\Models\HomeSection;
 use BackedEnum;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
@@ -36,13 +37,13 @@ class HomeSectionResource extends Resource
             TextInput::make('admin_label')->disabled()->dehydrated(false)->label('Section'),
             Toggle::make('is_visible')->label('Show on home page')->inline(false),
             TextInput::make('label')->label('Small script label')->maxLength(60),
-            TextInput::make('title')->maxLength(160),
+            TextInput::make('title')->maxLength(160)->helperText('Portfolio block: leave the label and title empty to show the photos without a heading.'),
             Textarea::make('body')->label('Text')->rows(4)->maxLength(2000)->columnSpanFull(),
             Textarea::make('body_secondary')->label('Additional text')->rows(3)->maxLength(2000)->columnSpanFull(),
             FileUpload::make('image_path')->label('Main image')->image()->disk('public')->directory('home')->visibility('public')
-                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])->maxSize(15360),
+                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])->maxSize(15360)->hint('Max file size: 15 MB'),
             FileUpload::make('image_secondary_path')->label('Second image')->image()->disk('public')->directory('home')->visibility('public')
-                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])->maxSize(15360),
+                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])->maxSize(15360)->hint('Max file size: 15 MB'),
             TextInput::make('button_label')->maxLength(40),
             TextInput::make('button_url')->maxLength(255)->placeholder('/about'),
             TextInput::make('items_limit')->label('Items shown')->numeric()->minValue(1)->maxValue(24)->default(6)
@@ -59,7 +60,12 @@ class HomeSectionResource extends Resource
                 ToggleColumn::make('is_visible')->label('Visible'),
             ])
             ->defaultSort('sort_order')->reorderable('sort_order')->paginated(false)
-            ->recordActions([EditAction::make()]);
+            ->recordActions([
+                EditAction::make(),
+                DeleteAction::make()->requiresConfirmation()
+                    ->modalHeading(fn (HomeSection $r) => 'Delete "'.$r->admin_label.'"?')
+                    ->modalDescription('The block is removed from the home page together with its text and pictures. You can bring an empty block back later with "Restore deleted sections". Tip: to only hide it, switch "Visible" off instead.'),
+            ]);
     }
 
     public static function canCreate(): bool

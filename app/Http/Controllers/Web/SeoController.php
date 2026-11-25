@@ -29,6 +29,9 @@ class SeoController extends Controller
             foreach (GalleryCategory::published()->whereHas('publishedImages')->get() as $cat) {
                 $add('/gallery/'.$cat->slug, $cat->updated_at, 'weekly', '0.7');
             }
+            foreach (Service::published()->get() as $svc) {
+                $add('/services/'.$svc->slug, $svc->updated_at, 'monthly', '0.7');
+            }
             foreach (BlogPost::published()->with('seo')->get() as $post) {
                 if (! $post->seo?->noindex) {
                     $add('/blog/'.$post->slug, $post->updated_at, 'monthly', '0.6');

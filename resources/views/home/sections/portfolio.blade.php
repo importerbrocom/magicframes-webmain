@@ -1,10 +1,14 @@
-<section class="gallery" id="gallery">
+@php $hasHead = filled($s['label']) || filled($s['title']); @endphp
+<section class="gallery {{ $hasHead ? '' : 'gallery--nohead' }}" id="gallery">
+  {{-- Heading is optional: leave "Small label" and "Title" empty in Admin > Home sections > Portfolio to hide it --}}
+  @if($hasHead)
   <div class="container">
     <div class="section-head center">
       @if($s['label'])<span class="section-label">{{ $s['label'] }}</span>@endif
-      <h2 class="section-title">{{ $s['title'] ?: 'Our Portfolio' }}</h2>
+      @if($s['title'])<h2 class="section-title">{{ $s['title'] }}</h2>@endif
     </div>
   </div>
+  @endif
   <div class="gallery__grid">
     @foreach($s['items'] as $i => $img)
       <a class="gallery__item" data-reveal="up" style="--d:{{ ($i % 3) * 0.08 }}s" href="/gallery/{{ $img['category']['slug'] }}" aria-label="{{ $img['title'] ?: $img['category']['name'] }}">

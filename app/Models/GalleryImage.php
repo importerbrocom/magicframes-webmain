@@ -66,19 +66,30 @@ class GalleryImage extends Model
 
     public function getThumbUrlAttribute(): string
     {
-        $variants = $this->variants ?? [];
-        $path = $variants[480] ?? $variants['480'] ?? null;
+        $path = $this->variantFor([1280, 960, 1600, 2048, 640, 480]);
 
         return $path ? Storage::disk('public')->url($path) : $this->url;
     }
 
-    /** Best size for the lightbox: the 1600px variant when available, else the original. */
+    /** Best size for the lightbox: the 2560/2048 px HD variant, else the full-resolution original. */
     public function getLargeUrlAttribute(): string
     {
-        $variants = $this->variants ?? [];
-        $path = $variants[1600] ?? $variants['1600'] ?? null;
+        $path = $this->variantFor([2560, 2048]);
 
         return $path ? Storage::disk('public')->url($path) : $this->url;
+    }
+
+    /** First existing variant path from a preference list of widths. */
+    private function variantFor(array $widths): ?string
+    {
+        $variants = $this->variants ?? [];
+        foreach ($widths as $w) {
+            if ($p = $variants[$w] ?? $variants[(string) $w] ?? null) {
+                return $p;
+            }
+        }
+
+        return null;
     }
 
     public function getSrcsetAttribute(): ?string

@@ -3,8 +3,8 @@
   <div class="container story__grid {{ $hasImages ? '' : 'story__grid--single' }}">
     @if($hasImages)
     <div class="story__images">
-      @if($s['image_url'])<div class="story__img story__img--one" data-reveal="left"><img src="{{ img_url($s['image_url'], 800) }}" alt="{{ $s['title'] ?: 'About '.$site['name'] }}" loading="lazy" /></div>@endif
-      @if($s['image_secondary_url'])<div class="story__img story__img--two" data-reveal="up"><img src="{{ img_url($s['image_secondary_url'], 600) }}" alt="" loading="lazy" /></div>@endif
+      @if($s['image_url'])<div class="story__img story__img--one" data-reveal="left"><img src="{{ img_url($s['image_url'], 1400) }}" alt="{{ $s['title'] ?: 'About '.$site['name'] }}" loading="lazy" /></div>@endif
+      @if($s['image_secondary_url'])<div class="story__img story__img--two" data-reveal="up"><img src="{{ img_url($s['image_secondary_url'], 1200) }}" alt="" loading="lazy" /></div>@endif
     </div>
     @endif
     <div class="story__text" data-reveal="right">

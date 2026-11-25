@@ -79,27 +79,12 @@ class SiteContentSeeder extends Seeder
             );
         }
 
-        // key => [admin label, small label, title, body]
-        $home = [
-            'hero' => ['Hero banner', null, null, null],
-            'about' => ['About Magic Frames', 'Our Story', 'We turn moments into memories', null],
-            'quote' => ['Quote band', null, null, null],
-            'services' => ['Services showcase', 'What We Offer', 'Our Services', null],
-            'stats' => ['Statistics & achievements', null, null, null],
-            'portfolio' => ['Featured photography', 'Captured Moments', 'Our Portfolio', null],
-            'videos' => ['Featured films', 'In Motion', 'Featured Films', null],
-            'recent' => ['Recent projects', 'Latest Work', 'Recent Projects', null],
-            'testimonials' => ['Client testimonials', 'Kind Words', 'Love Notes', null],
-            'social' => ['Instagram / social', 'Follow Along', 'On Instagram', null],
-            'contact' => ['Contact & enquiry', 'Get in Touch', "Let's plan something beautiful", "Tell us about your day and we'll be in touch within 24 hours."],
-        ];
         $order = 0;
-        foreach ($home as $key => [$admin, $label, $title, $body]) {
+        foreach (HomeSection::DEFAULTS as $key => [$admin, $label, $title, $body, $visible]) {
             HomeSection::firstOrCreate(['key' => $key], [
                 'admin_label' => $admin, 'label' => $label, 'title' => $title, 'body' => $body,
                 'sort_order' => $order++,
-                // blocks with no content yet stay hidden until the admin fills them in
-                'is_visible' => in_array($key, ['hero', 'about', 'portfolio', 'contact'], true),
+                'is_visible' => $visible,   // blocks with no content yet stay hidden until the admin fills them in
             ]);
         }
     }

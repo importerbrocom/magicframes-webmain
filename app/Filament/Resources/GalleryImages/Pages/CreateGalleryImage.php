@@ -18,17 +18,21 @@ class CreateGalleryImage extends CreateRecord
     protected function handleRecordCreation(array $data): Model
     {
         $files = array_values($data['uploads'] ?? []);
-        unset($data['uploads']);
+        $number = ! empty($data['number_titles']) && count($files) > 1 && filled($data['title'] ?? null);
+        unset($data['uploads'], $data['number_titles']);
+        $title = filled($data['title'] ?? null) ? trim($data['title']) : null;
+        $i = 0;
 
         $order = (int) GalleryImage::where('gallery_category_id', $data['gallery_category_id'])->max('sort_order');
         $first = null;
 
         foreach ($files as $path) {
-            $record = GalleryImage::create($data + [
+            $i++;
+            $record = GalleryImage::create(array_merge($data, [
                 'path' => $path,
-                'title' => null,
+                'title' => $title !== null && $number ? "$title $i" : $title,
                 'sort_order' => ++$order,
-            ]);
+            ]));
             $first ??= $record;
         }
 

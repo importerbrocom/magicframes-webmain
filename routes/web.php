@@ -4,6 +4,7 @@ use App\Http\Controllers\Web\BlogController;
 use App\Http\Controllers\Web\GalleryController;
 use App\Http\Controllers\Web\PageController;
 use App\Http\Controllers\Web\SeoController;
+use App\Http\Controllers\Web\ServiceController;
 use App\Http\Controllers\Web\VideoController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,6 +18,7 @@ Route::get('/robots.txt', [SeoController::class, 'robots']);
 Route::get('/portfolio', [GalleryController::class, 'portfolio'])->name('portfolio');
 Route::get('/gallery', [GalleryController::class, 'index'])->name('gallery');
 Route::get('/gallery/{slug}', [GalleryController::class, 'show'])->where('slug', $slug)->name('gallery.show');
+Route::get('/services/{slug}', [ServiceController::class, 'show'])->where('slug', $slug)->name('services.show');
 Route::get('/videos', [VideoController::class, 'index'])->name('videos');
 Route::get('/blog', [BlogController::class, 'index'])->name('blog');
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->where('slug', $slug)->name('blog.show');

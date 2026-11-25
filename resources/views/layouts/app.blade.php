@@ -12,7 +12,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>{{ $title }}</title>
   @if($description)<meta name="description" content="{{ $description }}" />@endif
   <link rel="canonical" href="{{ $canonical }}" />
@@ -37,6 +37,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
   <link rel="stylesheet" href="{{ asset('css/enhancements.css') }}?v={{ filemtime(public_path('css/enhancements.css')) }}" />
+  @if($site['effects'])
+  <link rel="stylesheet" href="{{ asset('css/fx.css') }}?v={{ filemtime(public_path('css/fx.css')) }}" />
+  @endif
   @stack('head')
   <noscript><style>[data-reveal],.reveal-scroll{opacity:1!important;transform:none!important}.preloader{display:none!important}</style></noscript>
 </head>
@@ -69,10 +72,24 @@
 
   @include('partials.footer')
 
+  @php
+    $waDigits = preg_replace('/\D/', '', (string) ($site['contact']['whatsapp'] ?? ''));
+    if (strlen($waDigits) === 10) { $waDigits = '91'.$waDigits; }   // local Indian number without country code
+  @endphp
+  @if(strlen($waDigits) >= 8)
+    <a class="wa-float" href="https://wa.me/{{ $waDigits }}?text={{ rawurlencode('Hello '.$site['name'].', I would like to know more about your photography services.') }}"
+       target="_blank" rel="noopener noreferrer" aria-label="Chat with us on WhatsApp" title="Chat with us on WhatsApp">
+      <i class="fa-brands fa-whatsapp"></i><span class="wa-float__tip">Chat on WhatsApp</span>
+    </a>
+  @endif
+
   <button class="totop" id="toTop" aria-label="Back to top"><i class="fa-solid fa-arrow-up"></i></button>
 
   <script src="{{ asset('js/main.js') }}?v={{ filemtime(public_path('js/main.js')) }}"></script>
   <script src="{{ asset('js/site.js') }}?v={{ filemtime(public_path('js/site.js')) }}"></script>
+  @if($site['effects'])
+  <script src="{{ asset('js/fx.js') }}?v={{ filemtime(public_path('js/fx.js')) }}" defer></script>
+  @endif
   @stack('scripts')
 </body>
 </html>

@@ -61,6 +61,55 @@ class SiteData
         return ContentCache::remember('testimonials:list', fn () => TestimonialResource::collection(Testimonial::published()->get())->response()->getData(true))['data'];
     }
 
+    /** Full data for one service's own page (null when missing / unpublished). */
+    public static function service(string $slug): ?array
+    {
+        $data = ContentCache::remember("services:page:{$slug}", function () use ($slug) {
+            $svc = Service::published()->where('slug', $slug)->first();
+            if (! $svc) {
+                return ['missing' => true];
+            }
+            $url = fn (?string $path) => $path ? Storage::disk('public')->url($path) : null;
+
+            $photos = collect($svc->gallery ?? [])->filter(fn ($g) => ! empty($g['image']))->map(fn ($g) => [
+                'url' => $url($g['image']), 'title' => $g['title'] ?? null, 'alt' => ($g['alt'] ?? null) ?: ($g['title'] ?? null),
+            ])->values()->all();
+
+            $videos = collect($svc->videos ?? [])->map(function ($v) use ($url) {
+                $title = $v['title'] ?? 'Video';
+                if (($v['source'] ?? 'link') === 'upload') {
+                    if (empty($v['file'])) {
+                        return null;
+                    }
+
+                    return ['title' => $title, 'description' => $v['description'] ?? null, 'embed' => null, 'file' => $url($v['file']), 'thumb' => $url($v['thumbnail'] ?? null)];
+                }
+                $parsed = VideoLinkParser::parse($v['url'] ?? null);
+                if (! $parsed) {
+                    return null;
+                }
+
+                return [
+                    'title' => $title, 'description' => $v['description'] ?? null,
+                    'embed' => VideoLinkParser::embedUrl($parsed['type'], $parsed['id']), 'file' => null,
+                    'thumb' => $url($v['thumbnail'] ?? null) ?: VideoLinkParser::thumbnailUrl($parsed['type'], $parsed['id']),
+                ];
+            })->filter()->values()->all();
+
+            return [
+                'id' => $svc->id, 'title' => $svc->title, 'slug' => $svc->slug, 'icon' => $svc->icon,
+                'short_description' => $svc->short_description, 'description' => $svc->description,
+                'image_url' => $svc->image_url,
+                'highlights' => collect($svc->highlights ?? [])->map(fn ($h) => is_array($h) ? ($h['text'] ?? null) : $h)->filter()->values()->all(),
+                'faqs' => collect($svc->faqs ?? [])->filter(fn ($f) => filled($f['question'] ?? null) && filled($f['answer'] ?? null))->values()->all(),
+                'photos' => $photos, 'videos' => $videos,
+                'seo' => ['title' => $svc->seo_title, 'description' => $svc->seo_description],
+            ];
+        }, 86400);
+
+        return empty($data['missing']) ? $data : null;
+    }
+
     private static function buildSite(): array
     {
         $header = Header::current();
@@ -76,6 +125,7 @@ class SiteData
         return [
             'name' => Setting::get('site.name', 'Magic Frames'),
             'tagline' => Setting::get('site.tagline'),
+            'effects' => Setting::get('site.effects', '1') !== '0',
             'header' => [
                 'visible' => $header->is_visible,
                 'sticky' => $header->is_sticky,
@@ -112,6 +162,29 @@ class SiteData
         ];
     }
 
+    /**
+     * Home "Portfolio" block: the photos marked Featured; when none are featured, the newest published
+     * photos, so the block never disappears just because nothing is featured. With no photos at all it falls back
+     * to the gallery categories' cover images.
+     */
+    private static function portfolioItems(int $limit, Request $request): array
+    {
+        $featured = GalleryImage::published()->with('category')->where('is_featured', true)
+            ->orderBy('sort_order')->orderByDesc('id')->limit($limit)->get();
+        if ($featured->isEmpty()) {   // nothing marked Featured: show the newest photos instead
+            $featured = GalleryImage::published()->with('category')->latest('id')->limit($limit)->get();
+        }
+        if ($featured->isNotEmpty()) {
+            return GalleryImageResource::collection($featured)->resolve($request);
+        }
+
+        return GalleryCategory::published()->whereNotNull('cover_path')->orderBy('sort_order')->orderBy('name')->limit($limit)->get()
+            ->map(fn (GalleryCategory $c) => [
+                'title' => $c->name, 'alt' => $c->name, 'thumb_url' => img_url($c->cover_url, 1400), 'srcset' => null,
+                'category' => ['slug' => $c->slug, 'name' => $c->name],
+            ])->all();
+    }
+
     private static function buildHome(): array
     {
         $request = Request::create('/');
@@ -122,9 +195,7 @@ class SiteData
                 'stats' => Statistic::published()->limit($limit)->get()->map(fn ($x) => [
                     'label' => $x->label, 'value' => $x->value, 'suffix' => $x->suffix,
                 ])->all(),
-                'portfolio' => GalleryImageResource::collection(
-                    GalleryImage::published()->with('category')->where('is_featured', true)->orderBy('sort_order')->orderByDesc('id')->limit($limit)->get()
-                )->resolve($request),
+                'portfolio' => self::portfolioItems($limit, $request),
                 'videos' => VideoResource::collection(
                     Video::published()->with('category')->where('is_featured', true)->orderBy('sort_order')->orderByDesc('id')->limit($limit)->get()
                 )->resolve($request),
@@ -156,9 +227,11 @@ class SiteData
         })->filter()->values()->all();
 
         return [
+            // names of galleries that have photos: scrolling band under the hero
+            'marquee' => GalleryCategory::published()->whereHas('publishedImages')->orderBy('sort_order')->orderBy('name')->pluck('name')->all(),
             'hero' => HeroSlide::published()->get()->map(fn ($h) => [
                 'heading' => $h->heading, 'subheading' => $h->subheading, 'description' => $h->description,
-                'image_url' => $h->image_url, 'button_label' => $h->button_label, 'button_url' => $h->button_url,
+                'image_url' => $h->image_url, 'video_url' => $h->video_url, 'video_embed' => $h->video_embed, 'button_label' => $h->button_label, 'button_url' => $h->button_url,
             ])->all(),
             'sections' => $sections,
         ];

@@ -27,7 +27,7 @@ class GalleryCategoryForm
                 Textarea::make('description')->rows(3)->maxLength(1000)->columnSpanFull(),
                 FileUpload::make('cover_path')
                     ->label('Cover image')->image()->disk('public')->directory('gallery/covers')
-                    ->maxSize(10240)->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                    ->maxSize(10240)->hint('Max file size: 10 MB')->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                     ->helperText('Optional. If empty, the first published image is used.')
                     ->columnSpanFull(),
                 TextInput::make('sort_order')->numeric()->default(0)->minValue(0)->helperText('Lower numbers appear first. You can also drag rows in the list.'),

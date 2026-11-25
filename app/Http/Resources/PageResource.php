@@ -45,6 +45,10 @@ class PageResource extends JsonResource
                     'button_label' => $s->button_label,
                     'button_url' => $s->button_url,
                     'image_right' => $s->image_right,
+                    'members' => $s->type === 'team' ? collect($s->items ?? [])->filter(fn ($m) => filled($m['name'] ?? null))->map(fn ($m) => [
+                        'name' => $m['name'], 'position' => $m['position'] ?? null,
+                        'photo_url' => ! empty($m['photo']) ? \Illuminate\Support\Facades\Storage::disk('public')->url($m['photo']) : null,
+                    ])->values()->all() : [],
                 ];
             })),
             'seo' => [

@@ -390,4 +390,12 @@ class MediaPagesTest extends TestCase
         exec('node --check '.escapeshellarg(public_path('js/media.js')).' 2>&1', $out, $code);
         $this->assertSame(0, $code, implode("\n", $out));
     }
+
+    public function test_hidden_attribute_always_wins_so_load_more_stays_hidden_on_short_galleries(): void
+    {
+        $this->cat('Short', 3);
+        $html = $this->get('/gallery/short')->assertOk()->getContent();
+        $this->assertMatchesRegularExpression('~class="btn btn--outline g-more"\\s+hidden~', $html);
+        $this->assertStringContainsString('[hidden]{display:none!important}', file_get_contents(public_path('css/enhancements.css')));
+    }
 }
