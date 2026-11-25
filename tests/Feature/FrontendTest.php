@@ -62,7 +62,7 @@ class FrontendTest extends TestCase
         GalleryImage::create(['gallery_category_id' => $cat->id, 'title' => 'Vows', 'is_featured' => true,
             'path' => UploadedFile::fake()->image('v.jpg', 1400, 900)->store('gallery', 'public')]);
         Video::create(['title' => 'Highlights Film', 'source_type' => 'youtube', 'video_url' => 'https://youtu.be/dQw4w9WgXcQ', 'is_featured' => true]);
-        HomeSection::whereIn('key', ['services', 'stats', 'testimonials', 'videos', 'recent'])->get()->each->update(['is_visible' => true]);
+        HomeSection::whereIn('key', ['services', 'stats', 'testimonials', 'videos', 'recent', 'portfolio'])->get()->each->update(['is_visible' => true]);
 
         $html = $this->get('/')->assertOk()->getContent();
         $this->assertStringContainsString('Timeless Frames', $html);

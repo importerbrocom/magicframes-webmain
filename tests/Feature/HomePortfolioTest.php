@@ -80,4 +80,18 @@ class HomePortfolioTest extends TestCase
         $s->refresh();
         $this->assertSame('My own title', $s->title);
     }
+
+    public function test_portfolio_block_is_removed_from_the_home_page(): void
+    {
+        $cat = GalleryCategory::first();
+        GalleryImage::create(['gallery_category_id' => $cat->id, 'alt_text' => 'Photo one', 'path' => 'gallery/a.jpg', 'is_published' => true, 'is_featured' => true]);
+        $migration = require database_path('migrations/2026_11_25_010000_hide_home_portfolio_block.php');
+        $migration->up();
+
+        $html = $this->get('/')->assertOk()->getContent();
+        $this->assertStringNotContainsString('class="gallery__grid"', $html);
+        $this->assertStringNotContainsString('View All Galleries', $html);
+        $this->get('/gallery')->assertOk();   // the Gallery and Portfolio pages themselves still work
+        $this->get('/portfolio')->assertOk();
+    }
 }

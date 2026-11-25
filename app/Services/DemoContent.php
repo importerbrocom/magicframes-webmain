@@ -194,7 +194,7 @@ class DemoContent
             ],
             'quote' => ['label' => 'A thousand little moments', 'title' => '“Every frame tells a story”', 'image_path' => $this->photo('wedding-thali', 'demo/home')],
             'services' => ['body' => 'Sample services shown for layout preview.'],
-            'stats' => [], 'portfolio' => [], 'videos' => [], 'recent' => [],
+            'stats' => [], 'videos' => [], 'recent' => [],   // Portfolio is left switched off (client request)
             'testimonials' => ['image_path' => $this->photo('wedding-ritual', 'demo/home')],
             'social' => ['body' => 'Follow our latest work.'],
             'contact' => [],

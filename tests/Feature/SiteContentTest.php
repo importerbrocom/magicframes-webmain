@@ -315,7 +315,8 @@ class SiteContentTest extends TestCase
             ->assertHasNoFormErrors();
         $this->assertSame('Timeless Frames', $home()['hero'][0]['heading']);
 
-        // featured gallery images flow into the "portfolio" block
+        // featured gallery images flow into the "portfolio" block (off by default; switched on here)
+        HomeSection::where('key', 'portfolio')->first()->update(['is_visible' => true]);
         $cat = GalleryCategory::create(['name' => 'Weddings']);
         GalleryImage::create(['gallery_category_id' => $cat->id, 'title' => 'Featured one', 'is_featured' => true, 'path' => UploadedFile::fake()->image('f.jpg', 900, 600)->store('gallery', 'public')]);
         GalleryImage::create(['gallery_category_id' => $cat->id, 'title' => 'Not featured', 'path' => UploadedFile::fake()->image('g.jpg', 900, 600)->store('gallery', 'public')]);

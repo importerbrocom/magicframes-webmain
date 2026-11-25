@@ -99,7 +99,7 @@ class SiteContentSeeder extends Seeder
                 'admin_label' => $admin, 'label' => $label, 'title' => $title, 'body' => $body,
                 'sort_order' => $order++,
                 // blocks with no content yet stay hidden until the admin fills them in
-                'is_visible' => in_array($key, ['hero', 'about', 'portfolio', 'contact'], true),
+                'is_visible' => in_array($key, ['hero', 'about', 'contact'], true),   // Portfolio stays off (client request)
             ]);
         }
     }

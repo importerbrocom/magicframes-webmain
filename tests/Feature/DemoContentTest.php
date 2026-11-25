@@ -50,9 +50,10 @@ class DemoContentTest extends TestCase
 
         $home = $this->getJson('/api/v1/home')->json('data');
         $keys = array_column($home['sections'], 'key');
-        foreach (['hero', 'about', 'quote', 'services', 'stats', 'portfolio', 'videos', 'recent', 'testimonials', 'social', 'contact'] as $k) {
+        foreach (['hero', 'about', 'quote', 'services', 'stats', 'videos', 'recent', 'testimonials', 'social', 'contact'] as $k) {
             $this->assertContains($k, $keys, "home block $k should be visible");
         }
+        $this->assertNotContains('portfolio', $keys, 'the home Portfolio block stays switched off (client request)');
         $this->assertCount(3, $home['hero']);
 
         $html = $this->get('/')->assertOk()->getContent();
