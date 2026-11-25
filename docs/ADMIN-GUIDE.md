@@ -91,3 +91,7 @@ Each page ends with an "Enquire now" button that opens the Contact page with the
 ## "Our team" block (About page or any page)
 
 Website > Pages > About > Edit > tab **Content blocks** > **Add content block** > type **Our team**. Fill in the heading (default "Our Team"), an optional small label and intro text, then **Add team member** for each person: name, position and an optional photo (square photos look best; without a photo the initials are shown). Add as many people as you like and drag to change the order. To place the block after "Our Approach", use the ▲ / ▼ arrow buttons at the top right of each block (or drag the ↑↓ handle) until it sits between "Our Approach" and the next block, then click **Save changes**. Blocks open folded so the order is easy to see; click a block's title to open it. Members are shown 4 per row on computers and 2 per row on phones. After deploying run `php artisan migrate --force`.
+
+## Deleting a home page block
+
+Homepage > Home sections: each block has a red **Delete** button. It asks for confirmation and then removes the block with its text and pictures. To only hide a block for a while, switch **Visible** off instead (nothing is lost). A deleted block can be brought back with **Restore deleted sections** (top right); it returns empty and switched off at the end of the list.

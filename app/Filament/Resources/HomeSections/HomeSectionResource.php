@@ -5,6 +5,7 @@ namespace App\Filament\Resources\HomeSections;
 use App\Filament\Resources\HomeSections\Pages\ManageHomeSections;
 use App\Models\HomeSection;
 use BackedEnum;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
@@ -59,7 +60,12 @@ class HomeSectionResource extends Resource
                 ToggleColumn::make('is_visible')->label('Visible'),
             ])
             ->defaultSort('sort_order')->reorderable('sort_order')->paginated(false)
-            ->recordActions([EditAction::make()]);
+            ->recordActions([
+                EditAction::make(),
+                DeleteAction::make()->requiresConfirmation()
+                    ->modalHeading(fn (HomeSection $r) => 'Delete "'.$r->admin_label.'"?')
+                    ->modalDescription('The block is removed from the home page together with its text and pictures. You can bring an empty block back later with "Restore deleted sections". Tip: to only hide it, switch "Visible" off instead.'),
+            ]);
     }
 
     public static function canCreate(): bool
